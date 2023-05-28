@@ -1,14 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Views.RegistrationFragment">
-
-    <!-- TODO: Update blank fragment layout -->
+    android:background="@color/whitehue">
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_login_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:text="Login"
+        android:textAllCaps="false"
+        android:layout_marginLeft="300dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"/>
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/zyter_pietient_connect"
+        android:layout_marginRight="130dp"
+        android:layout_marginBottom="55dp"/>
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="30dp"
+        android:text="Welcome"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="4dp"
+        android:layout_marginHorizontal="30dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="Please introduce yourself"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="25dp"
+        android:layout_marginHorizontal="30dp"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Username"
+        android:inputType="textPersonName"
+        android:paddingVertical="15dp"
+        android:paddingHorizontal="12dp"
+        android:layout_marginVertical="10dp"
+        android:layout_marginHorizontal="30dp"
+        android:elevation="5dp"
+        android:background="@drawable/round_rectangle" />
+    <TextView
+        android:id="@+id/bday"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Date"
+        android:inputType="date"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="15dp"
+        android:layout_marginVertical="10dp"
+        android:layout_marginHorizontal="30dp"
+        android:elevation="5dp"
+        android:background="@drawable/round_rectangle" />
+    <Spinner
+        android:id="@+id/gender"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginVertical="10dp"
+        android:layout_marginHorizontal="30dp"
+        android:elevation="5dp"
+        android:background="@drawable/round_rectangle"/>
 
-</FrameLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginVertical="20dp"
+        android:textColor="@color/white"
+        android:background="@drawable/button_blue"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Already have an account?"
+        android:layout_marginHorizontal="30dp"
+        android:textAlignment="center"
+        android:gravity="center_horizontal" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        style="?android:attr/borderlessButtonStyle"
+        android:id="@+id/button_login_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/whitehue"
+        android:textAllCaps="false"
+        android:layout_marginHorizontal="30dp"
+        android:text="Login"
+        android:textSize="12dp"
+        android:textColor="@color/colorPrimary"/>
+</LinearLayout>

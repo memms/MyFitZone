@@ -1,14 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Views.LoginFragment">
+    android:background="@color/whitehue"
+    android:id="@+id/fragment_login">
+    <!--        style="@style/Widget.AppCompat.Button.Borderless"-->
 
-    <!-- TODO: Update blank fragment layout -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_register_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:textAllCaps="false"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_marginLeft="280dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="15dp"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/zyter_pietient_connect"
+        android:layout_marginRight="130dp"
+        android:layout_marginBottom="60dp"/>
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="30dp"
+        android:text="Welcome"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="4dp"
+        android:layout_marginHorizontal="30dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="Please Login"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="25dp"
+        android:layout_marginHorizontal="30dp"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Username"
+        android:inputType="textPersonName"
+        android:paddingVertical="20dp"
+        android:paddingHorizontal="12dp"
+        android:layout_marginVertical="10dp"
+        android:layout_marginHorizontal="30dp"
+        android:elevation="5dp"
+        android:background="@drawable/round_rectangle" />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="20dp"
+        android:layout_marginVertical="10dp"
+        android:layout_marginHorizontal="30dp"
+        android:elevation="5dp"
+        android:background="@drawable/round_rectangle" />
 
-</FrameLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginVertical="20dp"
+        android:textColor="@color/white"
+        android:background="@drawable/button_blue"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No Account yet?"
+        android:layout_marginHorizontal="30dp"
+        android:textAlignment="center"
+        android:gravity="center_horizontal" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_register_bottom"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginHorizontal="30dp"
+        android:background="@color/whitehue"
+        android:text="Create Account"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimary"
+        android:textSize="12dp" />
+</LinearLayout>
