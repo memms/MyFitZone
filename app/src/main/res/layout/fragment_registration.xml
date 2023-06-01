@@ -6,8 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/whitehue">
+
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button_login_top"
+        android:id="@+id/button_login_top_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.AppCompat.Button.Borderless"
@@ -41,6 +42,7 @@
         android:layout_marginBottom="25dp"
         android:layout_marginHorizontal="30dp"/>
     <EditText
+        android:id="@+id/username_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Username"
@@ -51,26 +53,65 @@
         android:layout_marginHorizontal="30dp"
         android:elevation="5dp"
         android:background="@drawable/round_rectangle" />
-    <TextView
-        android:id="@+id/bday"
+    <EditText
+        android:id="@+id/email_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Date"
-        android:inputType="date"
-        android:paddingHorizontal="12dp"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
         android:paddingVertical="15dp"
+        android:paddingHorizontal="12dp"
         android:layout_marginVertical="10dp"
         android:layout_marginHorizontal="30dp"
         android:elevation="5dp"
         android:background="@drawable/round_rectangle" />
-    <Spinner
-        android:id="@+id/gender"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <TextView
+            android:id="@+id/bday_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/round_rectangle"
+            android:elevation="5dp"
+            android:hint="Date Of Birth"
+            android:inputType="date"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Spinner
+            android:id="@+id/gender_register"
+            android:layout_width="wrap_content"
+            android:layout_height="55dp"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/round_rectangle"
+            android:elevation="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <EditText
+        android:id="@+id/password_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:paddingVertical="15dp"
+        android:paddingHorizontal="12dp"
         android:layout_marginVertical="10dp"
         android:layout_marginHorizontal="30dp"
         android:elevation="5dp"
-        android:background="@drawable/round_rectangle"/>
+        android:background="@drawable/round_rectangle" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/button_register"
@@ -91,7 +132,7 @@
 
     <androidx.appcompat.widget.AppCompatButton
         style="?android:attr/borderlessButtonStyle"
-        android:id="@+id/button_login_bottom"
+        android:id="@+id/button_login_bottom_register"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:background="@color/whitehue"

@@ -10,7 +10,7 @@
     <!--        style="@style/Widget.AppCompat.Button.Borderless"-->
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button_register_top"
+        android:id="@+id/button_register_top_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Register"
@@ -44,11 +44,13 @@
         android:textColor="@color/black"
         android:layout_marginBottom="25dp"
         android:layout_marginHorizontal="30dp"/>
+
     <EditText
+        android:id="@+id/email_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Username"
-        android:inputType="textPersonName"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
         android:paddingVertical="20dp"
         android:paddingHorizontal="12dp"
         android:layout_marginVertical="10dp"
@@ -56,6 +58,7 @@
         android:elevation="5dp"
         android:background="@drawable/round_rectangle" />
     <EditText
+        android:id="@+id/password_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
@@ -73,9 +76,23 @@
         android:layout_height="wrap_content"
         android:text="Login"
         android:layout_marginHorizontal="30dp"
-        android:layout_marginVertical="20dp"
+        android:layout_marginTop="20dp"
         android:textColor="@color/white"
         android:background="@drawable/button_blue"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_forgot_password_login"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/whitehue"
+        android:text="Forgot Password?"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimary"
+        android:textSize="12dp" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -85,7 +102,7 @@
         android:gravity="center_horizontal" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button_register_bottom"
+        android:id="@+id/button_register_bottom_login"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="match_parent"
         android:layout_height="20dp"
@@ -95,4 +112,5 @@
         android:textAllCaps="false"
         android:textColor="@color/colorPrimary"
         android:textSize="12dp" />
+
 </LinearLayout>
