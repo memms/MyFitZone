@@ -22,8 +22,8 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/zyter_pietient_connect"
+        android:layout_height="80dp"
+        android:src="@drawable/placeholder_banner"
         android:layout_marginRight="130dp"
         android:layout_marginBottom="60dp"/>
     <TextView
