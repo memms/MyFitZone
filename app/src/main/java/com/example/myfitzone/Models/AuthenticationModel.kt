@@ -2,20 +2,21 @@ package com.example.myfitzone.Models
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.MutableData
 import com.google.firebase.ktx.Firebase
 
-class AuthenticationModel (application: Application) :AndroidViewModel(application){
-    private val context = getApplication<Application>().applicationContext
+class AuthenticationModel : ViewModel(){
 
     private lateinit var auth: FirebaseAuth
     private val TAG = "AuthenticationModel"
-
+    var exception: MutableLiveData<java.lang.Exception> = MutableLiveData()
     init {
         auth = Firebase.auth
     }
@@ -39,21 +40,29 @@ class AuthenticationModel (application: Application) :AndroidViewModel(applicati
     }
 
     fun register(email: String, password: String) {
+        if(email.isEmpty() || password.isEmpty()) {
+            Log.d(TAG, "register: Email or password is empty")
+            exception.value = Exception("Email or password is empty")
+            return
+        }
         try {
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         // Register success
                         Log.d(TAG, "createUserWithEmail:success")
-
+                        Log.d(TAG, "UID: ${auth.currentUser!!.uid}")
                     } else {
                         // Sign in failed
                         //updateUI(null)
                         Log.w(TAG, "createUserWithEmail:failure", task.exception)
+                        exception.value = task.exception
+
                     }
                 }
         } catch (e: Exception) {
-            Log.e(TAG, "createUserWithEmail:failure", e)
+            Log.e(TAG, "createUserWithEmailCatch:failure", e)
+            exception.value = e
         }
     }
 
