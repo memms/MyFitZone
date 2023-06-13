@@ -39,7 +39,7 @@ class DatabaseModel: ViewModel() {
                 this.user =
                     User(UID, username, email,
                         hashMapOf("first" to fName, "last" to lName),
-                        DOB, Weight, Height, Gender)
+                        DOB.toString(), Weight, Height, Gender)
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error writing document", e) }

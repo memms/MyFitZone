@@ -66,40 +66,6 @@
         android:elevation="5dp"
         android:background="@drawable/round_rectangle" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center">
-
-        <TextView
-            android:id="@+id/bday_register"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="30dp"
-            android:layout_marginVertical="10dp"
-            android:background="@drawable/round_rectangle"
-            android:elevation="5dp"
-            android:hint="Date Of Birth"
-            android:inputType="date"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="15dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Spinner
-            android:id="@+id/gender_register"
-            android:layout_width="wrap_content"
-            android:layout_height="55dp"
-            android:layout_marginHorizontal="30dp"
-            android:layout_marginVertical="10dp"
-            android:background="@drawable/round_rectangle"
-            android:elevation="5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
     <EditText
         android:id="@+id/password_register"
         android:layout_width="match_parent"

@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.myfitzone.Models.AuthenticationModel
 import com.example.myfitzone.Models.DatabaseModel
+import com.example.myfitzone.Models.UserDetailModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.FragmentRegistrationBinding
 import java.util.Calendar
@@ -26,8 +27,7 @@ class RegistrationFragment : Fragment() {
     private val TAG = "RegistrationFragment"
     private lateinit var authModel : AuthenticationModel
     private lateinit var databaseModel : DatabaseModel
-
-    private var DOB = Calendar.getInstance()
+    private lateinit var userDetailModel : UserDetailModel
 
 
     override fun onCreateView(
@@ -43,17 +43,24 @@ class RegistrationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         authModel = ViewModelProvider(requireActivity())[AuthenticationModel::class.java]
         databaseModel = ViewModelProvider(requireActivity())[DatabaseModel::class.java]
-
+        userDetailModel = ViewModelProvider(requireActivity())[UserDetailModel::class.java]
         binding.buttonLoginBottomRegister.setOnClickListener { onLoginClick() }
         binding.buttonLoginTopRegister.setOnClickListener { onLoginClick() }
         binding.buttonRegister.setOnClickListener { onRegisterClick() }
 
-        binding.bdayRegister.setOnClickListener { inflateDatePickers() }
 
         authModel.exception.observe(viewLifecycleOwner) {
             Log.e(TAG, "onViewCreated: ", it)
             Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-            binding.passwordRegister.text.clear()
+            if(it.message == "Register Successful" && authModel.checkUser()){
+                view.findNavController().navigate(R.id.action_registrationFragment_to_userDetailsFragment)
+                userDetailModel.setUsername(binding.usernameRegister.text.toString())
+                userDetailModel.setEmail(binding.emailRegister.text.toString())
+                userDetailModel.setUID(authModel.getUser().uid)
+            }
+            else{
+                binding.passwordRegister.text.clear()
+            }
         }
     }
 
@@ -62,33 +69,21 @@ class RegistrationFragment : Fragment() {
         _binding = null
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun inflateDatePickers(){
-        val calendar =  DOB
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val dpd = DatePickerDialog(requireContext(), DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-            // Display Selected date in textbox
-            binding.bdayRegister.text = ""+ (monthOfYear+1) + "/" + dayOfMonth + "/" + year
-            DOB.set(year, monthOfYear, dayOfMonth)
-        }, year, month, day)
-
-        dpd.show()
-    }
 
     private fun onLoginClick(){
         requireView().findNavController().navigate(R.id.action_registrationFragment_to_loginFragment)
     }
 
-    private fun onRegisterClick(){
-        val username = binding.usernameRegister.text.toString()
+    //TODO: Handle Errors
+    private fun onRegisterClick() {
+        if(binding.usernameRegister.text.isEmpty() || binding.emailRegister.text.isEmpty() || binding.passwordRegister.text.isEmpty()){
+            Toast.makeText(requireContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show()
+            return
+        }
         val email = binding.emailRegister.text.toString().trim()
         val password = binding.passwordRegister.text.toString()
         authModel.register(email, password)
-
-
     }
 
 }

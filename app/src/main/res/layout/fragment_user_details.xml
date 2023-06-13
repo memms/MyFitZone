@@ -8,17 +8,43 @@
     tools:context=".Views.UserDetailsFragment">
 
     <TextView
+        android:id="@+id/aboutYou_userinfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center"
+        android:text="About You"
+        android:textSize="30dp"
+        android:textColor="@color/black"
+        android:layout_margin="40dp"/>
+
+    <TextView
         android:id="@+id/UserInfoGreeting"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:text="Please tell us about yourself"
+        android:layout_marginTop="40dp"
         android:layout_marginBottom="25dp"
         android:layout_marginHorizontal="30dp"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:textSize="20sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/aboutYou_userinfo"/>
+
+    <TextView
+        android:id="@+id/info_userinfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingHorizontal="20dp"
+        android:text="@string/AboutYouInfo"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="25dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/UserInfoGreeting"/>
+
 
     <EditText
         android:id="@+id/fname_userinfo"
@@ -27,14 +53,15 @@
         android:hint="First Name"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/UserInfoGreeting"
+        app:layout_constraintTop_toBottomOf="@id/info_userinfo"
         android:inputType="textPersonName"
         android:paddingVertical="15dp"
         android:paddingHorizontal="12dp"
-        android:layout_marginVertical="10dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginHorizontal="30dp"
-        android:elevation="5dp"
-        android:background="@drawable/round_rectangle" />
+        android:elevation="0dp"
+        android:background="@drawable/custom_button" />
 
     <EditText
         android:id="@+id/lname_userinfo"
@@ -49,9 +76,11 @@
         android:paddingHorizontal="12dp"
         android:layout_marginVertical="10dp"
         android:layout_marginHorizontal="30dp"
-        android:elevation="5dp"
-        android:background="@drawable/round_rectangle" />
+        android:elevation="0dp"
+        android:background="@drawable/custom_button" />
+
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/first_row_userinfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="2"
@@ -69,8 +98,8 @@
             android:paddingHorizontal="12dp"
             android:layout_marginVertical="10dp"
             android:layout_marginHorizontal="30dp"
-            android:elevation="5dp"
-            android:background="@drawable/round_rectangle" />
+            android:elevation="0dp"
+            android:background="@drawable/custom_button" />
 
         <Spinner
             android:id="@+id/gender_userinfo"
@@ -83,10 +112,63 @@
             android:paddingHorizontal="12dp"
             android:layout_marginVertical="10dp"
             android:layout_marginHorizontal="30dp"
-            android:elevation="5dp"
-            android:background="@drawable/round_rectangle" />
+            android:elevation="0dp"
+            android:background="@drawable/custom_button" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        app:layout_constraintTop_toBottomOf="@id/first_row_userinfo"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/weight_userinfo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="0 lbs"
+            android:textAllCaps="false"
+            android:paddingVertical="15dp"
+            android:paddingHorizontal="12dp"
+            android:layout_marginVertical="10dp"
+            android:layout_marginHorizontal="30dp"
+            android:elevation="0dp"
+            android:background="@drawable/custom_button"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/height_userinfo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="0'0''"
+            android:paddingVertical="15dp"
+            android:paddingHorizontal="12dp"
+            android:layout_marginVertical="10dp"
+            android:layout_marginHorizontal="30dp"
+            android:elevation="0dp"
+            android:background="@drawable/custom_button"/>
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/next_userinfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        android:textAllCaps="false"
+        android:paddingVertical="15dp"
+        android:paddingHorizontal="12dp"
+        android:background="@drawable/custom_button"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:backgroundTint="#3A74FF"
+        android:textColor="@color/white"
+        android:layout_margin="30dp"/>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,4 +11,8 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+
+
+    <string name="AboutYouInfo">This information lets the app to estimate calories, distance, and the intensity of your activity. You can change these values later, inside the app.</string>
+
 </resources>

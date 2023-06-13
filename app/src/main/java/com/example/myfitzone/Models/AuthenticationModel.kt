@@ -39,6 +39,21 @@ class AuthenticationModel : ViewModel(){
         return auth.currentUser!!
     }
 
+    fun sendVerificationEmail(){
+        auth.currentUser?.let {
+            it.sendEmailVerification()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        // Email sent
+                        Log.d(TAG, "Email sent.")
+                    } else {
+                        // Email not sent
+                        Log.d(TAG, "sendVerificationEmail:failure", task.exception)
+                    }
+                }
+        }
+    }
+
     fun register(email: String, password: String) {
         if(email.isEmpty() || password.isEmpty()) {
             Log.d(TAG, "register: Email or password is empty")
@@ -52,12 +67,12 @@ class AuthenticationModel : ViewModel(){
                         // Register success
                         Log.d(TAG, "createUserWithEmail:success")
                         Log.d(TAG, "UID: ${auth.currentUser!!.uid}")
+                        exception.value = Exception("Register Successful")
                     } else {
                         // Sign in failed
                         //updateUI(null)
                         Log.w(TAG, "createUserWithEmail:failure", task.exception)
                         exception.value = task.exception
-
                     }
                 }
         } catch (e: Exception) {

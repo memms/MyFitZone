@@ -6,7 +6,7 @@ data class User(var UID:String,
                 var username: String,
                 var email: String,
                 var name: HashMap<String, String>,
-                var DOB: Date,
+                var DOB: String,
                 var Weight: Float,
                 var Height: Float,
                 var Gender: String)
