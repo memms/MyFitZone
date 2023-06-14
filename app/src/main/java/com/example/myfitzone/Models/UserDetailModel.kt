@@ -8,8 +8,11 @@ import java.util.Calendar
 class UserDetailModel : ViewModel() {
     private val TAG = "UserDetailModel"
 
-    var TempRegistrationUser = User("", "", "", hashMapOf("first" to "", "last" to ""), Calendar.getInstance().toString(), 0f, 0f, "")
+    private var TempRegistrationUser = User("", "", "", hashMapOf("first" to "", "last" to ""), "", 0f, 0f, "")
 
+    fun getUser(): User {
+        return TempRegistrationUser
+    }
 
     fun setUID(UID: String) {
         TempRegistrationUser.UID = UID
@@ -49,6 +52,15 @@ class UserDetailModel : ViewModel() {
     fun setHeight(Height: Float) {
         TempRegistrationUser.let { it.Height = Height }
         Log.d(TAG, "setHeight: ${TempRegistrationUser.Height}")
+    }
+
+    fun setGender(gender: String){
+        TempRegistrationUser.let { it.Gender = gender }
+        Log.d(TAG, "setGender: ${TempRegistrationUser.Gender}")
+    }
+
+    fun getGender(): String {
+        TempRegistrationUser.let { return it.Gender}
     }
 
     fun getUID(): String {

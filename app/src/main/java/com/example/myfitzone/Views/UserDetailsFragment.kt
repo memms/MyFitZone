@@ -3,15 +3,20 @@ package com.example.myfitzone.Views
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.NumberPicker
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.myfitzone.Models.DatabaseModel
 import com.example.myfitzone.Models.UserDetailModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.FragmentUserDetailsBinding
@@ -26,7 +31,7 @@ class UserDetailsFragment : Fragment() {
     private var DOB = Calendar.getInstance()
 
     private lateinit var registrationUserDetails : UserDetailModel
-
+    private lateinit var databaseModel : DatabaseModel
     private var weight = 0.0
     private var tempHeight = listOf<Int>(0,0)
 
@@ -47,8 +52,68 @@ class UserDetailsFragment : Fragment() {
         binding.weightUserinfo.setOnClickListener{ weightAlertBuilder() }
         binding.heightUserinfo.setOnClickListener{ heightAlertBuilder() }
         registrationUserDetails = ViewModelProvider(requireActivity())[UserDetailModel::class.java]
+        databaseModel = ViewModelProvider(requireActivity())[DatabaseModel::class.java]
+        setSpinner()
+        binding.nextUserinfo.setOnClickListener { onNextClick() }
+    }
+
+    private fun setSpinner(){
+        val items = resources.getStringArray(R.array.Genders)
+        val mySpinner = binding.genderUserinfo
+        val spinnerAdapter = object: ArrayAdapter<String>(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            items
+        ) {
+            override fun isEnabled(position: Int): Boolean {
+                // Disable the first item from Spinner
+                // First item will be used for hint
+                return position != 0
+            }
+
+            override fun getDropDownView(
+                position: Int,
+                convertView: View?,
+                parent: ViewGroup
+            ): View {
+                val view: TextView =
+                    super.getDropDownView(position, convertView, parent) as TextView
+                //set the color of first item in the drop down list to gray
+                if (position == 0) {
+                    view.setTextColor(Color.GRAY)
+                } else {
+                    //here it is possible to define color for other items by
+                    //view.setTextColor(Color.RED)
+                }
+                return view
+            }
+        }
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        mySpinner.adapter = spinnerAdapter
+
+        mySpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val value = parent!!.getItemAtPosition(position).toString()
+                if(value == items[0]){
+                    (view as TextView).setTextColor(Color.GRAY)
+                }
+                else{
+                    registrationUserDetails.setGender(value)
+                }
+            }
+
+        }
 
     }
+
 
     @SuppressLint("SetTextI18n")
     private fun inflateDatePickers(){
@@ -79,6 +144,24 @@ class UserDetailsFragment : Fragment() {
         registrationUserDetails.setHeight(meters.toFloat())
         //Weight
         registrationUserDetails.setWeight((weight/2.205).toFloat())
+
+        if(sufficientDetails()){
+            Log.d("UserDetailsFragment", "User Details: ${registrationUserDetails.getUser().toString()}")
+            databaseModel.createUser(registrationUserDetails.getUser())
+        }
+
+    }
+
+    fun sufficientDetails():Boolean{
+        return  registrationUserDetails.getEmail() != "" &&
+                registrationUserDetails.getUID() != "" &&
+                registrationUserDetails.getUsername() != "" &&
+                registrationUserDetails.getFirstName() != "" &&
+                registrationUserDetails.getLastName() != "" &&
+                registrationUserDetails.getDOB() != "" &&
+                registrationUserDetails.getHeight() != 0.0f &&
+                registrationUserDetails.getWeight() != 0.0f &&
+                registrationUserDetails.getGender() != ""
     }
 
     @SuppressLint("SetTextI18n")
@@ -152,6 +235,18 @@ class UserDetailsFragment : Fragment() {
                 Toast.makeText(requireContext(), "Height not set", Toast.LENGTH_SHORT).show()
                 dialog.cancel()
             }
+            show()
+        }
+    }
+
+    fun loadingAlertBuilder(){
+        val builder = AlertDialog.Builder(requireContext())
+        val mView = layoutInflater.inflate(R.layout.dialog_loading, null)
+        val dialog = builder.create()
+        with(builder){
+            setTitle("Loading")
+            setView(mView)
+            setCancelable(false)
             show()
         }
     }

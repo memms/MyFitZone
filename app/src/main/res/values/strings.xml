@@ -15,4 +15,10 @@
 
     <string name="AboutYouInfo">This information lets the app to estimate calories, distance, and the intensity of your activity. You can change these values later, inside the app.</string>
 
+
+    <string-array name="Genders">
+        <item>Gender</item>
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
 </resources>

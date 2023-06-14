@@ -26,7 +26,6 @@ class RegistrationFragment : Fragment() {
 
     private val TAG = "RegistrationFragment"
     private lateinit var authModel : AuthenticationModel
-    private lateinit var databaseModel : DatabaseModel
     private lateinit var userDetailModel : UserDetailModel
 
 
@@ -42,7 +41,6 @@ class RegistrationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         authModel = ViewModelProvider(requireActivity())[AuthenticationModel::class.java]
-        databaseModel = ViewModelProvider(requireActivity())[DatabaseModel::class.java]
         userDetailModel = ViewModelProvider(requireActivity())[UserDetailModel::class.java]
         binding.buttonLoginBottomRegister.setOnClickListener { onLoginClick() }
         binding.buttonLoginTopRegister.setOnClickListener { onLoginClick() }

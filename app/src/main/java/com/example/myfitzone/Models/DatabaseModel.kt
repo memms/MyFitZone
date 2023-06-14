@@ -16,30 +16,29 @@ class DatabaseModel: ViewModel() {
     var user: User? = null
 
     //create user
-    fun createUser(UID:String, username:String, email: String, fName: String, lName: String, DOB: Date,
-                   Weight: Float, Height: Float, Gender: String) {
+    fun createUser(userToRegister: User) {
+
         val user = hashMapOf(
-            "email" to email,
-            "username" to username,
-            "name" to hashMapOf(
-                "first" to fName,
-                "last" to lName
+            "email" to userToRegister.email,
+            "username" to userToRegister.username,
+            "name" to mapOf(
+                "first" to userToRegister.name["first"].toString(),
+                "last" to userToRegister.name["last"].toString()
             ),
-            "DOB" to DOB,
-            "Weight" to Weight,
-            "Height" to Height,
-            "Gender" to Gender,
+            "DOB" to userToRegister.DOB,
+            "Weight" to userToRegister.Weight,
+            "Height" to userToRegister.Height,
+            "Gender" to userToRegister.Gender,
         )
 
         db.collection("users")
-            .document(UID)
+            .document(userToRegister.UID)
             .set(user)
             .addOnSuccessListener { documentReference ->
                 Log.d(TAG, "DocumentSnapshot successfully written with ID: ${documentReference}!")
                 this.user =
-                    User(UID, username, email,
-                        hashMapOf("first" to fName, "last" to lName),
-                        DOB.toString(), Weight, Height, Gender)
+                    userToRegister
+                Log.d(TAG, "createUser: ${this.user.toString()}")
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error writing document", e) }

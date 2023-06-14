@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
@@ -14,12 +15,9 @@ import com.google.firebase.ktx.Firebase
 
 class AuthenticationModel : ViewModel(){
 
-    private lateinit var auth: FirebaseAuth
+    private var auth: FirebaseAuth = Firebase.auth
     private val TAG = "AuthenticationModel"
     var exception: MutableLiveData<java.lang.Exception> = MutableLiveData()
-    init {
-        auth = Firebase.auth
-    }
 
     fun setLanguage(language: String) {
         auth.setLanguageCode(language)
@@ -229,8 +227,10 @@ class AuthenticationModel : ViewModel(){
 
 
 
+
+
     fun logout() {
-        auth.signOut()
+        FirebaseAuth.getInstance().signOut()
     }
 
 
