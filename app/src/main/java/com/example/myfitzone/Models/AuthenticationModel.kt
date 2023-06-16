@@ -85,7 +85,7 @@ class AuthenticationModel : ViewModel(){
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         // Sign in success
-                        Log.d(TAG, "signInWithEmail:success")
+                        Log.d(TAG, "signInWithEmail:success ${auth.currentUser!!.uid}")
 
                     } else {
                         // Sign in failed
@@ -102,16 +102,18 @@ class AuthenticationModel : ViewModel(){
 
     fun updateProfile(profileChangeRequest: UserProfileChangeRequest) {
         try {
-            auth.currentUser!!.updateProfile(profileChangeRequest)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        // Update profile success
-                        Log.d(TAG, "Profile updated.")
-                    } else {
-                        // Update profile failed
-                        Log.w(TAG, "Profile not updated.", task.exception)
+            auth.currentUser?.let {
+                it.updateProfile(profileChangeRequest)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // Update profile success
+                            Log.d(TAG, "Profile updated.")
+                        } else {
+                            // Update profile failed
+                            Log.w(TAG, "Profile not updated.", task.exception)
+                        }
                     }
-                }
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Profile not updated.", e)
         }
@@ -120,16 +122,18 @@ class AuthenticationModel : ViewModel(){
 
     fun updateEmail(email: String) {
         try {
-            auth.currentUser!!.updateEmail(email)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        // Set email success
-                        Log.d(TAG, "Email updated.")
-                    } else {
-                        // Set email failed
-                        Log.w(TAG, "Email not updated.", task.exception)
+            auth.currentUser?.let {
+                it.updateEmail(email)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // Set email success
+                            Log.d(TAG, "Email updated.")
+                        } else {
+                            // Set email failed
+                            Log.w(TAG, "Email not updated.", task.exception)
+                        }
                     }
-                }
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Email not updated.", e)
         }

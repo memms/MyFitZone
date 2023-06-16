@@ -34,8 +34,8 @@ class DatabaseModel: ViewModel() {
         db.collection("users")
             .document(userToRegister.UID)
             .set(user)
-            .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "DocumentSnapshot successfully written with ID: ${documentReference}!")
+            .addOnSuccessListener {
+                Log.d(TAG, "DocumentSnapshot successfully written!")
                 this.user =
                     userToRegister
                 Log.d(TAG, "createUser: ${this.user.toString()}")

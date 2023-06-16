@@ -14,6 +14,7 @@ class UserDetailModel : ViewModel() {
         return TempRegistrationUser
     }
 
+
     fun setUID(UID: String) {
         TempRegistrationUser.UID = UID
         Log.d(TAG, "setUID: ${TempRegistrationUser.UID}")

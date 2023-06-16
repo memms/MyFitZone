@@ -20,11 +20,14 @@ import com.example.myfitzone.Models.DatabaseModel
 import com.example.myfitzone.Models.UserDetailModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.FragmentUserDetailsBinding
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import java.util.Calendar
 
 
 class UserDetailsFragment : Fragment() {
-
+    private val TAG = "UserDetailsFragment"
     private var _binding: FragmentUserDetailsBinding? = null
     private val binding get() = _binding!!
 
@@ -145,9 +148,19 @@ class UserDetailsFragment : Fragment() {
         //Weight
         registrationUserDetails.setWeight((weight/2.205).toFloat())
 
+
+        if(registrationUserDetails.getEmail() == ""){
+            registrationUserDetails.setEmail(Firebase.auth.currentUser!!.email.toString())
+        }
+        if(registrationUserDetails.getUID() == ""){
+            registrationUserDetails.setUID(Firebase.auth.currentUser!!.uid)
+        }
         if(sufficientDetails()){
             Log.d("UserDetailsFragment", "User Details: ${registrationUserDetails.getUser().toString()}")
             databaseModel.createUser(registrationUserDetails.getUser())
+        }
+        else{
+            Log.d(TAG, "onNextClick: Not enough details ${registrationUserDetails.getUser().toString()}")
         }
 
     }
