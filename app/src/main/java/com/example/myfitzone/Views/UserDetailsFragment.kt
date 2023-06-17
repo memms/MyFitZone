@@ -16,6 +16,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.myfitzone.Models.DatabaseModel
 import com.example.myfitzone.Models.UserDetailModel
 import com.example.myfitzone.R
@@ -158,9 +159,16 @@ class UserDetailsFragment : Fragment() {
         if(sufficientDetails()){
             Log.d("UserDetailsFragment", "User Details: ${registrationUserDetails.getUser().toString()}")
             databaseModel.createUser(registrationUserDetails.getUser())
+            if(databaseModel.user?.DOB?.isNotEmpty() == true) {
+                findNavController().navigate(R.id.go_home)
+            }
+            else{
+                Toast.makeText(requireContext(), "Error saving user details", Toast.LENGTH_SHORT).show()
+            }
         }
         else{
             Log.d(TAG, "onNextClick: Not enough details ${registrationUserDetails.getUser().toString()}")
+            Toast.makeText(requireContext(), "Please fill out all fields", Toast.LENGTH_SHORT).show()
         }
 
     }

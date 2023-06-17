@@ -23,9 +23,18 @@
     <action
         android:id="@+id/go_home"
         app:destination="@id/homeFragment"
-        app:popUpTo="@id/loginFragment"
+        app:popUpTo="@id/nav_graph.xml"
         app:popUpToInclusive="true"/>
-
+    <action
+        android:id="@+id/go_login"
+        app:destination="@id/loginFragment"
+        app:popUpTo="@id/nav_graph.xml"
+        app:popUpToInclusive="true"/>
+    <action
+        android:id="@+id/go_userDetails"
+        app:destination="@id/userDetailsFragment"
+        app:popUpTo="@id/nav_graph.xml"
+        app:popUpToInclusive="true"/>
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.myfitzone.Views.LoginFragment"
