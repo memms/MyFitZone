@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.example.myfitzone.BroadcastRecievers.NetworkConectivityReceiver
 import com.example.myfitzone.BroadcastRecievers.NetworkConectivityReceiver.Companion.registerNetworkConnectivityListener
+import com.example.myfitzone.BroadcastRecievers.NetworkConectivityReceiver.Companion.unregisterNetworkConnectivityListener
 import com.example.myfitzone.Models.UserDetailModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -68,6 +69,12 @@ class MainActivity : AppCompatActivity(), NetworkConectivityReceiver.NetworkConn
     override fun onResume() {
         super.onResume()
         registerNetworkConnectivityListener(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterNetworkConnectivityListener(this)
+        unregisterReceiver(NetworkConectivityReceiver())
     }
 
     override fun onNetworkConnectivityChanged(connection: Int) {
