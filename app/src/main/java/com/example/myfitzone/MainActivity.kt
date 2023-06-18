@@ -72,12 +72,9 @@ class MainActivity : AppCompatActivity(), NetworkConectivityReceiver.NetworkConn
 
         binding.bottomNavMain
             .setupWithNavController(controller)
-        controller.addOnDestinationChangedListener() { _, destination, _ ->
-            Log.d(TAG, "onCreate: ${destination.id}")
-            if (destination.id == R.id.go_login || destination.id == R.id.go_userDetails || destination.id == R.id.action_loginFragment_to_registrationFragment
-                || destination.id == R.id.splashFragment) {
+        controller.addOnDestinationChangedListener() { _, _, argument ->
+            if(argument?.getBoolean("ShowNavBar") == false) {
                 binding.bottomNavMain.visibility = BottomNavigationView.GONE
-
             } else {
                 binding.bottomNavMain.visibility = BottomNavigationView.VISIBLE
             }
