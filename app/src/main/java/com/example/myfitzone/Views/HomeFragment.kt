@@ -47,25 +47,18 @@ class HomeFragment : Fragment() {
         dataList.add(DashboardRecyclerData("Sleep", "", "8", "hours", "Updated 2 hours ago"))
         dataList.add(DashboardRecyclerData("Steps", "", "10000", "steps", "Updated 2 hours ago"))
         dataList.add(DashboardRecyclerData("Heart Rate", "", "70", "bpm", "Updated 2 hours ago"))
-        dataList.add(
-            DashboardRecyclerData(
-                "Blood Pressure",
-                "",
-                "120/80",
-                "mmHg",
-                "Updated 2 hours ago"
-            )
-        )
-        dataList.add(
-            DashboardRecyclerData(
-                "Blood Sugar",
-                "",
-                "100",
-                "mg/dL",
-                "Updated 2 hours ago"
-            )
-        )
         dataList.add(DashboardRecyclerData("Body Fat", "", "20", "%", "Updated 2 hours ago"))
+        dataList.add(DashboardRecyclerData("Blood Pressure", "", "120/80", "mmHg", "Updated 2 hours ago"))
+        dataList.add(DashboardRecyclerData("Blood Sugar", "", "100", "mg/dL", "Updated 2 hours ago"))
+        dataList.add(DashboardRecyclerData("Body Temperature", "", "98.6", "°F", "Updated 2 hours ago"))
+        dataList.add(DashboardRecyclerData("Oxygen Saturation", "", "98", "%", "Updated 2 hours ago"))
+        dataList.add(DashboardRecyclerData("Respiratory Rate", "", "16", "breaths/min", "Updated 2 hours ago"))
+        dataList.add(DashboardRecyclerData("Body Temperature", "", "98.6", "°F", "Updated 2 hours ago"))
+        dataList.add(DashboardRecyclerData("Oxygen Saturation", "", "98", "%", "Updated 2 hours ago"))
+        dataList.add(DashboardRecyclerData("Respiratory Rate", "", "16", "breaths/min", "Updated 2 hours ago"))
+        dataList.add(DashboardRecyclerData("Body Temperature", "", "98.6", "°F", "Updated 2 hours ago"))
+        dataList.add(DashboardRecyclerData("Oxygen Saturation", "", "98", "%", "Updated 2 hours ago"))
+        dataList.add(DashboardRecyclerData("Respiratory Rate", "", "16", "breaths/min", "Updated 2 hours ago"))
 
         recyclerView = binding.recyclerViewHome
         recyclerView.layoutManager = GridLayoutManager(context, 2)

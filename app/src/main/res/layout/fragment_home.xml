@@ -1,74 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scrollView_home"
+    android:id="@+id/mainView_home"
     android:layout_width="match_parent"
-
     android:layout_height="match_parent"
     tools:context=".Views.HomeFragment">
 
-    <LinearLayout
-        android:id="@+id/dash_header"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/white"
+        app:elevation="6dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <ScrollView
+        android:id="@+id/scrollView_home"
         android:layout_width="match_parent"
-        android:background="@color/white"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
+            android:id="@+id/dash_header"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="match_parent"
             android:background="@color/white"
             android:orientation="vertical">
 
-            <!-- Profile Image -->
-            <!-- Needs profile implementation -->
             <LinearLayout
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="30dp">
+                android:id="@+id/linearLayout_home"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:background="@color/white"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/DprofilePic"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                <!-- Profile Image -->
+                <!-- Needs profile implementation -->
+                <LinearLayout
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="30dp">
+
+                    <ImageView
+                        android:id="@+id/DprofilePic"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+                <!-- Welcome @user -->
+                <!-- Needs @user implementation -->
+                <TextView
+                    android:id="@+id/DprofileName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Welcome @User"
+                    android:textColor="@color/black"
+                    android:textSize="26sp"
+                    android:textStyle="bold" />
+
+                <!-- Date/Time Text -->
+                <!-- Format Month Date, Year hh:mm a at the launch of the fragment -->
+                <TextView
+                    android:id="@+id/datetime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="2dp"
+                    android:text="June 13, 2023 12:00 AM"
+                    android:textSize="15dp" />
             </LinearLayout>
 
-            <!-- Welcome @user -->
-            <!-- Needs @user implementation -->
-            <TextView
-                android:id="@+id/DprofileName"
-                android:layout_width="wrap_content"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_home"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
-                android:text="Welcome @User"
-                android:textColor="@color/black"
-                android:textSize="26sp"
-                android:textStyle="bold" />
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="@color/white"
+                tools:listitem="@layout/dashboard_cardview" />
 
-            <!-- Date/Time Text -->
-            <!-- Format Month Date, Year hh:mm a at the launch of the fragment -->
-            <TextView
-                android:id="@+id/datetime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="2dp"
-                android:text="June 13, 2023 12:00 AM"
-                android:textSize="15dp" />
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_home"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            tools:listitem="@layout/dashboard_cardview"/>
+    </ScrollView>
 
-    </LinearLayout>
-
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

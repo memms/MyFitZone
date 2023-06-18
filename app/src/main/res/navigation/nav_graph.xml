@@ -56,14 +56,7 @@
         android:id="@+id/homeFragment"
         android:name="com.example.myfitzone.Views.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
-        <action
-            android:id="@+id/action_homeFragment_to_trackFragment"
-            app:destination="@id/trackFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_friendsFragment"
-            app:destination="@id/friendsFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/trackFragment"
         android:name="com.example.myfitzone.Views.TrackFragment"
@@ -85,4 +78,14 @@
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
     </fragment>
+    <fragment
+        android:id="@+id/preferencesFragment"
+        android:name="com.example.myfitzone.Views.PreferencesFragment"
+        android:label="fragment_preferences"
+        tools:layout="@layout/fragment_preferences" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.myfitzone.Views.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>

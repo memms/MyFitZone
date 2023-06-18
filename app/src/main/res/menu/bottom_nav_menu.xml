@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/placeholder_banner"
+        android:title="Dashboard" />
+    <item
+        android:id="@+id/trackFragment"
+        android:icon="@drawable/placeholder_banner"
+        android:title="Journal"/>
+    <item
+        android:id="@+id/friendsFragment"
+        android:icon="@drawable/placeholder_banner"
+        android:title="Friends"/>
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@drawable/placeholder_banner"
+        android:title="Profile"/>
+    <item
+        android:id="@+id/preferencesFragment"
+        android:icon="@drawable/placeholder_banner"
+        android:title="Setting" />
+</menu>

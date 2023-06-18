@@ -5,10 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
-import androidx.core.content.ContextCompat.getSystemService
-import com.example.myfitzone.MainActivity
-
 class NetworkConectivityReceiver: BroadcastReceiver() {
     companion object{
         private val networkConnectivityListener = ArrayList<NetworkConnectivityListener>()

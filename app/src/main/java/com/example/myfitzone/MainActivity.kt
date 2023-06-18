@@ -7,10 +7,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.myfitzone.BroadcastRecievers.NetworkConectivityReceiver
 import com.example.myfitzone.BroadcastRecievers.NetworkConectivityReceiver.Companion.registerNetworkConnectivityListener
 import com.example.myfitzone.BroadcastRecievers.NetworkConectivityReceiver.Companion.unregisterNetworkConnectivityListener
 import com.example.myfitzone.Models.UserDetailModel
+import com.example.myfitzone.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
@@ -21,15 +25,21 @@ class MainActivity : AppCompatActivity(), NetworkConectivityReceiver.NetworkConn
     private val TAG = "MainActivity"
     private var snackbar: Snackbar? = null
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         registerReceiver(NetworkConectivityReceiver(), IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"))
 
         val UserDetailModel = ViewModelProvider(this)[UserDetailModel::class.java]
         val auth = FirebaseAuth.getInstance();
         auth.currentUser?.let { it.reload() }
         val controller = Navigation.findNavController(this, R.id.fragment)
+
+
         auth.addAuthStateListener {
             Log.i(TAG, "AuthState changed to ${it.currentUser?.uid}")
             if (it.currentUser != null) {
@@ -60,6 +70,18 @@ class MainActivity : AppCompatActivity(), NetworkConectivityReceiver.NetworkConn
         }
 
 
+        binding.bottomNavMain
+            .setupWithNavController(controller)
+        controller.addOnDestinationChangedListener() { _, destination, _ ->
+            Log.d(TAG, "onCreate: ${destination.id}")
+            if (destination.id == R.id.go_login || destination.id == R.id.go_userDetails || destination.id == R.id.action_loginFragment_to_registrationFragment
+                || destination.id == R.id.splashFragment) {
+                binding.bottomNavMain.visibility = BottomNavigationView.GONE
+
+            } else {
+                binding.bottomNavMain.visibility = BottomNavigationView.VISIBLE
+            }
+        }
     }
 
     override fun onResume() {
