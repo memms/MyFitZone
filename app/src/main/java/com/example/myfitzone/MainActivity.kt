@@ -12,6 +12,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.myfitzone.BroadcastRecievers.NetworkConectivityReceiver
 import com.example.myfitzone.BroadcastRecievers.NetworkConectivityReceiver.Companion.registerNetworkConnectivityListener
 import com.example.myfitzone.BroadcastRecievers.NetworkConectivityReceiver.Companion.unregisterNetworkConnectivityListener
+import com.example.myfitzone.DataModels.User
 import com.example.myfitzone.Models.UserDetailModel
 import com.example.myfitzone.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -26,11 +27,13 @@ class MainActivity : AppCompatActivity(), NetworkConectivityReceiver.NetworkConn
     private var snackbar: Snackbar? = null
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var userDetailModel: UserDetailModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        userDetailModel = ViewModelProvider(this)[UserDetailModel::class.java]
 
         registerReceiver(NetworkConectivityReceiver(), IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"))
 
@@ -49,6 +52,10 @@ class MainActivity : AppCompatActivity(), NetworkConectivityReceiver.NetworkConn
                     .addOnSuccessListener { document ->
                         if (document.data?.get("DOB").toString().isNotEmpty()) {
                             Log.d(TAG, "DocumentSnapshot data: ${document.data}")
+                            var user: User
+                            document.let { user = it.toObject(User::class.java)!! }
+                            user.UID = it.currentUser?.uid.toString()
+                            UserDetailModel.setUser(user)
                             controller.navigate(R.id.go_home)
                         } else {
                             Log.d(TAG, "No such document")
@@ -66,6 +73,8 @@ class MainActivity : AppCompatActivity(), NetworkConectivityReceiver.NetworkConn
                 Toast.makeText(this, "User is logged out", Toast.LENGTH_SHORT).show()
                 //TODO: Navigate to login screen
                 controller.navigate(R.id.go_login)
+                userDetailModel.setUser(User())
+                Log.d(TAG, "UserDetailModel: ${userDetailModel.getUser()}")
             }
         }
 
@@ -89,7 +98,6 @@ class MainActivity : AppCompatActivity(), NetworkConectivityReceiver.NetworkConn
     override fun onDestroy() {
         super.onDestroy()
         unregisterNetworkConnectivityListener(this)
-        unregisterReceiver(NetworkConectivityReceiver())
     }
 
     override fun onNetworkConnectivityChanged(connection: Int) {

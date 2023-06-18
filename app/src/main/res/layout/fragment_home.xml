@@ -53,6 +53,7 @@
                     <ImageView
                         android:id="@+id/DprofilePic"
                         android:layout_width="match_parent"
+                        android:src="@drawable/placeholder_banner"
                         android:layout_height="match_parent" />
                 </LinearLayout>
 

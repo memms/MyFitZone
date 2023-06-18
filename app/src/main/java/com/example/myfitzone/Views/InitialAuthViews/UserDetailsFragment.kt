@@ -35,8 +35,8 @@ class UserDetailsFragment : Fragment() {
 
     private lateinit var registrationUserDetails : UserDetailModel
     private lateinit var databaseModel : DatabaseModel
-    private var weight = 0.0
-    private var tempHeight = listOf<Int>(0,0)
+    private var weight: Double = 121.5
+    private var tempHeight = listOf<Int>(5,5)
 
 
     override fun onCreateView(
@@ -50,6 +50,7 @@ class UserDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         binding.DOBUserinfo.setOnClickListener { inflateDatePickers() }
         binding.weightUserinfo.setOnClickListener{ weightAlertBuilder() }
@@ -142,10 +143,18 @@ class UserDetailsFragment : Fragment() {
         //DOB
         registrationUserDetails.setDOB(binding.DOBUserinfo.text.toString())
         //Height
+        if(binding.heightUserinfo.text.toString() == "0'0''"){
+            Toast.makeText(requireContext(), "Please enter a valid height", Toast.LENGTH_SHORT).show()
+            return
+        }
         val heightDec = tempHeight[0].toDouble() + (tempHeight[1].toDouble()/12)
         val meters = Math.round((heightDec/3.281)*10000.0)/10000.0
         registrationUserDetails.setHeight(meters.toFloat())
         //Weight
+        if(binding.weightUserinfo.text.toString() == "0 lbs"){
+            Toast.makeText(requireContext(), "Please enter a valid weight", Toast.LENGTH_SHORT).show()
+            return
+        }
         registrationUserDetails.setWeight((weight/2.205).toFloat())
 
 
@@ -193,20 +202,21 @@ class UserDetailsFragment : Fragment() {
             minValue = 1
             maxValue = 1000
             wrapSelectorWheel = true
-            value= (weight/10).toInt()
+            value= (weight).toInt()
         }
         val numberPicker2 = mView.findViewById<NumberPicker>(R.id.weight_double_picker)
         with(numberPicker2){
             minValue = 0
             maxValue = 9
             wrapSelectorWheel = true
-            value= weight.toInt()%10
+            value= ((weight%1)*10).toInt()
         }
         with(builder){
             setTitle("Weight")
             val dialog = create()
             setPositiveButton("OK"){_,_ ->
                 weight = numberPicker1.value.toDouble() + numberPicker2.value.toDouble()/10
+                Log.d(TAG, "weightAlertBuilder: $weight and ${numberPicker1.value.toDouble()} and ${numberPicker2.value.toDouble()/10}")
                 binding.weightUserinfo.text = "${weight.toString()} lbs"
                 Toast.makeText(requireContext(), "Weight set to $weight lbs", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
@@ -255,6 +265,7 @@ class UserDetailsFragment : Fragment() {
                 Toast.makeText(requireContext(), "Height not set", Toast.LENGTH_SHORT).show()
                 dialog.cancel()
             }
+            setView(mView)
             show()
         }
     }

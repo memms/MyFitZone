@@ -7,13 +7,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myfitzone.DataModels.DashboardRecyclerData
+import com.example.myfitzone.Models.UserDetailModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.DashboardCardviewBinding
 import com.example.myfitzone.databinding.FragmentHomeBinding
 import com.example.myfitzone.databinding.FragmentRegistrationBinding
+import kotlin.math.log
 
 
 class HomeFragment : Fragment() {
@@ -24,6 +27,9 @@ class HomeFragment : Fragment() {
     private lateinit var dashboardCardAdapter: DashCardRecyclerAdapter
     private lateinit var recyclerView: RecyclerView
     private var dataList = mutableListOf<DashboardRecyclerData>()
+
+    private val TAG = "HomeFragment"
+    private lateinit var loggedInUser : UserDetailModel
 
 
     override fun onCreateView(
@@ -38,6 +44,11 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        loggedInUser = ViewModelProvider(requireActivity())[UserDetailModel::class.java]
+        Log.d(TAG, "onViewCreated: ${loggedInUser.getUser().toString()}")
+
+
         //TODO: Remove Test Data
         dataList.add(DashboardRecyclerData("Weight", "", "70", "kg", "Updated 2 hours ago"))
         dataList.add(DashboardRecyclerData("Height", "", "170", "cm", "Updated 2 hours ago"))

@@ -8,12 +8,15 @@ import java.util.Calendar
 class UserDetailModel : ViewModel() {
     private val TAG = "UserDetailModel"
 
-    private var TempRegistrationUser = User("", "", "", hashMapOf("first" to "", "last" to ""), "", 0f, 0f, "")
+    private var TempRegistrationUser = User()
 
     fun getUser(): User {
         return TempRegistrationUser
     }
 
+    fun setUser(user: User) {
+        TempRegistrationUser = user
+    }
 
     fun setUID(UID: String) {
         TempRegistrationUser.UID = UID
