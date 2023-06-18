@@ -5,7 +5,7 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Views.UserDetailsFragment">
+    tools:context=".Views.InitialAuthViews.UserDetailsFragment">
 
     <TextView
         android:id="@+id/aboutYou_userinfo"

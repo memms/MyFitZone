@@ -1,7 +1,5 @@
-package com.example.myfitzone.Views
+package com.example.myfitzone.Views.InitialAuthViews
 
-import android.annotation.SuppressLint
-import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +14,6 @@ import com.example.myfitzone.Models.DatabaseModel
 import com.example.myfitzone.Models.UserDetailModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.FragmentRegistrationBinding
-import java.util.Calendar
 
 
 class RegistrationFragment : Fragment() {

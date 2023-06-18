@@ -1,4 +1,4 @@
-package com.example.myfitzone.Views
+package com.example.myfitzone.Views.InitialAuthViews
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -22,7 +22,6 @@ import com.example.myfitzone.Models.UserDetailModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.FragmentUserDetailsBinding
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.Calendar
 

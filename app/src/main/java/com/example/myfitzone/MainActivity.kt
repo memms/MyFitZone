@@ -1,13 +1,10 @@
 package com.example.myfitzone
 
 import android.content.IntentFilter
-import android.net.ConnectivityManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
-import androidx.compose.material3.Snackbar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.example.myfitzone.BroadcastRecievers.NetworkConectivityReceiver
@@ -27,7 +24,6 @@ class MainActivity : AppCompatActivity(), NetworkConectivityReceiver.NetworkConn
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         registerReceiver(NetworkConectivityReceiver(), IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"))
 
         val UserDetailModel = ViewModelProvider(this)[UserDetailModel::class.java]

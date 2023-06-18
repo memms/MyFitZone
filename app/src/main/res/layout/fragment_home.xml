@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="160dp"
@@ -25,10 +26,11 @@
                 android:layout_height="55dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="30dp">
+
                 <ImageView
                     android:id="@+id/DprofilePic"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent" />
             </LinearLayout>
 
             <!-- Welcome @user -->
@@ -37,12 +39,12 @@
                 android:id="@+id/DprofileName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Welcome @User"
-                android:textSize="26sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="10dp"
+                android:text="Welcome @User"
+                android:textColor="@color/black"
+                android:textSize="26sp"
+                android:textStyle="bold" />
 
             <!-- Date/Time Text -->
             <!-- Format Month Date, Year hh:mm a at the launch of the fragment -->
@@ -50,26 +52,19 @@
                 android:id="@+id/datetime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="15dp"
-                android:text="June 13, 2023 12:00 AM"
+                android:layout_marginLeft="20dp"
                 android:layout_marginTop="2dp"
-                android:layout_marginLeft="20dp"/>
+                android:text="June 13, 2023 12:00 AM"
+                android:textSize="15dp" />
         </LinearLayout>
 
-        <GridLayout
-            android:id="@+id/gridView_home"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:rowCount="3"
-            android:columnCount="2"
-            android:alignmentMode="alignMargins"
-            android:layout_gravity="center"
-            android:columnOrderPreserved="false">
-
-
-
-        </GridLayout>
-
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_home"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            tools:listitem="@layout/dashboard_cardview"/>
 
     </LinearLayout>
 

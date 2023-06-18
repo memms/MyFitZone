@@ -1,4 +1,4 @@
-package com.example.myfitzone.Views
+package com.example.myfitzone.Views.InitialAuthViews
 
 import android.os.Bundle
 import android.util.Log
@@ -12,7 +12,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.myfitzone.Models.AuthenticationModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.FragmentLoginBinding
-import com.example.myfitzone.databinding.FragmentRegistrationBinding
 
 class LoginFragment : Fragment() {
 
