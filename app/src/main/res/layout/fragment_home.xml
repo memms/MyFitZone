@@ -50,11 +50,13 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="30dp">
 
-                    <ImageView
-                        android:id="@+id/DprofilePic"
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/image_profile"
                         android:layout_width="match_parent"
-                        android:src="@drawable/placeholder_banner"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/ic_profile"
+                        app:shapeAppearanceOverlay="@style/ShapeAppearance.Image.PILL"/>
                 </LinearLayout>
 
                 <!-- Welcome @user -->
