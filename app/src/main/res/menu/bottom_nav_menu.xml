@@ -12,10 +12,10 @@
         android:id="@+id/friendsFragment"
         android:icon="@drawable/placeholder_banner"
         android:title="Friends"/>
-    <item
-        android:id="@+id/profileFragment"
-        android:icon="@drawable/placeholder_banner"
-        android:title="Profile"/>
+<!--    <item-->
+<!--        android:id="@+id/profileFragment"-->
+<!--        android:icon="@drawable/placeholder_banner"-->
+<!--        android:title="Profile"/>-->
     <item
         android:id="@+id/preferencesFragment"
         android:icon="@drawable/placeholder_banner"

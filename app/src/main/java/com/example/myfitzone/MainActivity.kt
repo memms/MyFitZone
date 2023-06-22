@@ -1,25 +1,43 @@
 package com.example.myfitzone
 
+import android.content.Context
 import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import android.Manifest
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.myfitzone.BroadcastRecievers.NetworkConectivityReceiver
 import com.example.myfitzone.BroadcastRecievers.NetworkConectivityReceiver.Companion.registerNetworkConnectivityListener
 import com.example.myfitzone.BroadcastRecievers.NetworkConectivityReceiver.Companion.unregisterNetworkConnectivityListener
 import com.example.myfitzone.DataModels.User
 import com.example.myfitzone.Models.UserDetailModel
+import com.example.myfitzone.Workers.DeviceSensorWorker
 import com.example.myfitzone.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity(), NetworkConectivityReceiver.NetworkConnectivityListener {
 
@@ -29,6 +47,7 @@ class MainActivity : AppCompatActivity(), NetworkConectivityReceiver.NetworkConn
     private lateinit var binding: ActivityMainBinding
     private lateinit var userDetailModel: UserDetailModel
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -57,6 +76,9 @@ class MainActivity : AppCompatActivity(), NetworkConectivityReceiver.NetworkConn
                             user.UID = it.currentUser?.uid.toString()
                             UserDetailModel.setUser(user)
                             controller.navigate(R.id.go_home)
+                            if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED) {
+                                createWorker()
+                            }
                         } else {
                             Log.d(TAG, "No such document")
                             UserDetailModel.setUsername(document.data?.get("username").toString())
@@ -88,6 +110,25 @@ class MainActivity : AppCompatActivity(), NetworkConectivityReceiver.NetworkConn
                 binding.bottomNavMain.visibility = BottomNavigationView.VISIBLE
             }
         }
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACTIVITY_RECOGNITION), 1)
+        }
+//        val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+//        val sensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
+//        if (sensor == null) {
+//            Toast.makeText(this, "No sensor detected on this device", Toast.LENGTH_SHORT).show()
+//        } else {
+//            Toast.makeText(this, "Sensor detected on this device", Toast.LENGTH_SHORT).show()
+//        }
+//        sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST)
+    }
+
+    private fun createWorker() {
+        Log.d(TAG, "createWorker: ")
+        val workRequest = PeriodicWorkRequestBuilder<DeviceSensorWorker>(15, TimeUnit.MINUTES)
+            .build()
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork("DeviceSensorWorker",
+            ExistingPeriodicWorkPolicy.KEEP, workRequest)
     }
 
     override fun onResume() {
@@ -125,4 +166,9 @@ class MainActivity : AppCompatActivity(), NetworkConectivityReceiver.NetworkConn
             snackbar = null
         }
     }
+
+    //TODO Remove below code
+
 }
+
+

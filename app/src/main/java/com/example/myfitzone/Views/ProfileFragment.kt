@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.example.myfitzone.MainActivity
 import com.example.myfitzone.Models.AuthenticationModel
 import com.example.myfitzone.R
@@ -57,12 +58,13 @@ class ProfileFragment : Fragment() {
     }
 
     fun editProfile(){
-
+        view?.findNavController()?.navigate(R.id.action_profileFragment_to_editInfoFragment)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+
     }
 
 

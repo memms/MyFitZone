@@ -30,6 +30,29 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/second_row_profile_diag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/placeholder_banner"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Profile"
+            android:layout_gravity="center_vertical"
+            android:padding="8dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/logout_row_profile_diag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
