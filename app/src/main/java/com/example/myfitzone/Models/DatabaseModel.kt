@@ -71,9 +71,10 @@ class DatabaseModel: ViewModel() {
             .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
             .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
     }
-
-    //update multiple user data values
-    //REMINDER: NESTED NEEDS TO BE with dot key, EX: "name.first"
+    /**
+     *update multiple user data values
+     *REMINDER: NESTED NEEDS TO BE with dot key, EX: "name.first"
+     **/
     fun updateMultiValue(hashMap: HashMap<String, Any>) {
         db.collection("users")
             .document(user!!.UID)

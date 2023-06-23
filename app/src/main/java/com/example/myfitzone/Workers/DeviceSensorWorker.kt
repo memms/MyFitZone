@@ -11,18 +11,20 @@ import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
-import java.time.LocalDateTime
-import java.util.Calendar
+import java.time.LocalDate
 
 
 class DeviceSensorWorker(context: Context, workerParams: WorkerParameters) : CoroutineWorker(context,
     workerParams), SensorEventListener{
 
     private lateinit var sensorManager: SensorManager
-    private var stepCount: Int = 0
+    private var totalStepCount: Int = 0
+    private var oldStepCount: Int = 0
+    private var currentStepCount: Int = 0
     private val TAG = "DeviceSensorWorker"
 
     override suspend fun doWork(): Result {
@@ -34,12 +36,14 @@ class DeviceSensorWorker(context: Context, workerParams: WorkerParameters) : Cor
             Log.d(TAG, "doWork: registerListener")
             sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_FASTEST)
 
-            delay(1000)
+//            delay(1000)
             Log.d(TAG, "doWork: unregisterListener")
             sensorManager.unregisterListener(this@DeviceSensorWorker)
 //            val stepCount = getStepCount()
-            Log.d(TAG, "doWork: $stepCount")
-            saveStepCount(stepCount)
+            Log.d(TAG, "doWork: $totalStepCount")
+            loadStepCount()
+            delay(2000)
+            getStepCount()
             return Result.success()
         }
         catch (e: Exception){
@@ -66,35 +70,88 @@ class DeviceSensorWorker(context: Context, workerParams: WorkerParameters) : Cor
         return s
     }
 
-//    private fun getStepCount(): Int{
-//        val sensorManager = mContext.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-//        val sensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
-//        sensor.let {
-//            if (it != null) {
-//                val stepCount = it.getStringType()
-//                return stepCount.toInt()
-//            } else {
-//                return 0
-//            }
-//        }
-//    }
+    private fun getStepCount(){
 
-    private fun saveStepCount(stepCount: Int){
-        Log.d(TAG, "saveStepCount: $stepCount")
+        Log.d(TAG, "getStepCount: called")
+        if (totalStepCount ==0 || totalStepCount < oldStepCount){
+            oldStepCount = totalStepCount
+            saveOldStepCount()
+        }
+        Log.d(TAG, "getStepCount: totalStepCount $totalStepCount")
+        Log.d(TAG, "getStepCount: oldStepCount $oldStepCount")
+        Log.d(TAG, "getStepCount: currentStepCount $currentStepCount")
+        currentStepCount += (totalStepCount - oldStepCount)
+        Log.d(TAG, "getStepCount: NEW currentStepCount $currentStepCount")
+        oldStepCount = totalStepCount
+        saveOldStepCount()
+        saveCurrentStepCount()
+        Log.d(TAG, "getStepCount: $currentStepCount")
+    }
+
+    private fun loadStepCount() {
         val db = Firebase.firestore
-        val data = hashMapOf(
-            "stepCount" to stepCount
-        )
         val firebaseAuth = FirebaseAuth.getInstance()
         val UID = firebaseAuth.currentUser?.uid
         if (UID != null) {
             db.collection("users")
                 .document(UID)
-                .collection("sensorsdata")
-                .document(LocalDateTime.now().toString())
-                .set(data)
+                .collection("sensorsData")
+                .document("steps")
+                .get()
                 .addOnSuccessListener {
-                    Log.d(TAG, "saveStepCount: Success")
+                    if (it.exists()){
+                        it.getLong("${LocalDate.now()}.currentStepCount")?.let {
+                                it1 -> currentStepCount = it1.toInt() }
+
+                        it.getLong("${LocalDate.now()}.oldStepCount")?.let {
+                                it1 -> oldStepCount = it1.toInt() }
+                        Log.d(TAG, "loadCurrentStepCount: $currentStepCount")
+                        Log.d(TAG, "loadOldStepCount: $oldStepCount")
+                    }
+                    else{
+                        currentStepCount = 0
+                        oldStepCount = 0
+                    }
+                }
+        }
+    }
+
+    private fun saveCurrentStepCount() {
+        Log.d(TAG, "saveCurrentStepCount: $currentStepCount")
+        val db = Firebase.firestore
+        val firebaseAuth = FirebaseAuth.getInstance()
+        val data = hashMapOf(
+            "${LocalDate.now()}.currentStepCount" to currentStepCount
+        )
+        val UID = firebaseAuth.currentUser?.uid
+        if (UID != null) {
+            db.collection("users")
+                .document(UID)
+                .collection("sensorsData")
+                .document("steps")
+                .update("${LocalDate.now()}.currentStepCount", currentStepCount)
+                .addOnSuccessListener {
+                    Log.d(TAG, "saveCurrentStepCount: Success")
+                }
+        }
+    }
+
+    private fun saveOldStepCount(){
+        Log.d(TAG, "saveOldStepCount: $oldStepCount")
+        val db = Firebase.firestore
+        val firebaseAuth = FirebaseAuth.getInstance()
+        val data = hashMapOf(
+            "${LocalDate.now()}.oldStepCount" to oldStepCount
+        )
+        val UID = firebaseAuth.currentUser?.uid
+        if (UID != null) {
+            db.collection("users")
+                .document(UID)
+                .collection("sensorsData")
+                .document("steps")
+                .update("${LocalDate.now()}.oldStepCount", oldStepCount)
+                .addOnSuccessListener {
+                    Log.d(TAG, "saveOldStepCount: Success")
                 }
         }
     }
@@ -103,8 +160,8 @@ class DeviceSensorWorker(context: Context, workerParams: WorkerParameters) : Cor
 
     override fun onSensorChanged(event: SensorEvent?) {
         if(event?.sensor?.type == Sensor.TYPE_STEP_COUNTER){
-            stepCount = event.values[0].toInt()
-            Log.d(TAG, "onSensorChanged: $stepCount")
+            totalStepCount = event.values[0].toInt()
+            Log.d(TAG, "onSensorChanged: $totalStepCount")
         }
     }
 
