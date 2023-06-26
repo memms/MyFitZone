@@ -7,7 +7,6 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.SystemClock
-import android.system.SystemCleaner
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
@@ -16,15 +15,15 @@ import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Source
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.type.DateTime
 import kotlinx.coroutines.delay
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Calendar
-import java.util.Date
-import kotlin.time.Duration.Companion.milliseconds
+import java.util.Locale
+import java.util.TimeZone
 
 
 class DeviceSensorWorker(context: Context, workerParams: WorkerParameters) : CoroutineWorker(context,
@@ -90,42 +89,102 @@ class DeviceSensorWorker(context: Context, workerParams: WorkerParameters) : Cor
     private fun getStepCount(){
 
         Log.d(TAG, "getStepCount: called")
-        if (totalStepCount ==0 || totalStepCount < oldStepCount){
-            oldStepCount = totalStepCount
-            saveOldStepCount()
-        }
+//        if (totalStepCount ==0 || totalStepCount < oldStepCount){
+//            oldStepCount = totalStepCount
+//            saveOldStepCount()
+//        }
         Log.d(TAG, "getStepCount: totalStepCount $totalStepCount")
         Log.d(TAG, "getStepCount: oldStepCount $oldStepCount")
         Log.d(TAG, "getStepCount: currentStepCount $currentStepCount")
-        //TODO: minus yesterday's last sensor read
+        Log.d(TAG, "getStepCount: lastsensorStepCount $lastsensorStepCount")
+        Log.d(TAG, "getStepCount: timestamp ${timestamp?.toDate().toString()}")
+        if(timestamp != null && didReboot() && !newDay()){
+            Log.d(TAG, "getStepCount: Reboot happened && !NewDay")
+            currentStepCount += totalStepCount //do not deduct last count
+            oldStepCount = totalStepCount
+//            saveOldStepCount()
+            saveCurrentStepCount()
+            return
+        }
+        if (timestamp != null && newDay() && !rebootNewDay() && !didReboot() && timestamp != null){
+            Log.d(TAG, "getStepCount: New Day && !RebootToday && !didReboot")
+            currentStepCount += (totalStepCount - oldStepCount) - lastsensorStepCount
+            oldStepCount = totalStepCount
+//            saveOldStepCount()
+            saveCurrentStepCount()
+            return
+        }
+        if(timestamp != null && newDay() && didReboot() && timestamp != null){
+            Log.d(TAG, "getStepCount: New Day and Reboot since last Timestamp")
+            currentStepCount = totalStepCount
+            oldStepCount = totalStepCount
+//            saveOldStepCount()
+            saveCurrentStepCount()
+            return
+        }
+        Log.d(TAG, "getStepCount: No New Day and No Reboot")
+        currentStepCount += (totalStepCount - oldStepCount)
+        Log.d(TAG, "getStepCount: NEW currentStepCount $currentStepCount")
+        oldStepCount = totalStepCount
+        //TODO possibly combine saving everything at once
+//        saveOldStepCount()
+        saveCurrentStepCount()
+        Log.d(TAG, "getStepCount: $currentStepCount")
+    }
+
+    private fun rebootNewDay(): Boolean {
+        val lastRebootTimeFromNowMS = SystemClock.elapsedRealtime() //get last reboot time in long ms from current time
+        val timeOfReboot = Calendar.getInstance()
+        timeOfReboot.add(Calendar.MILLISECOND, -lastRebootTimeFromNowMS.toInt())
+        val date = Calendar.getInstance()
+        date.set(Calendar.HOUR_OF_DAY, 0)
+        date.set(Calendar.MINUTE, 0)
+        date.set(Calendar.SECOND, 0)
+        date.set(Calendar.MILLISECOND, 0)
+        if(date.before(timeOfReboot)){
+            return true
+        }
+        return false
+    }
+
+    private fun didReboot(): Boolean {
+        val lastRebootTimeFromNowMS = SystemClock.elapsedRealtime() //get last reboot time in long ms from current time
+        val timeNow = Calendar.getInstance()
+        timeNow.add(Calendar.MILLISECOND, -lastRebootTimeFromNowMS.toInt())
+        val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss:SSS", Locale.getDefault())
+        format.timeZone = TimeZone.getTimeZone("UTC")   //set timezone to UTC
+        val timeOfReboot = format.format(timeNow.time)   //get time of reboot in UTC
+        Log.d(TAG, "didReboot: Reboot Time UTC $timeOfReboot")
+        val timeOfTimestamp = format.format(timestamp!!.toDate().time)
+        Log.d(TAG, "didReboot: Last Timestamp UTC $timeOfTimestamp")
+        //check if reboot was before or after last timestamp
+        if (format.parse(timeOfReboot)?.before(format.parse(timeOfTimestamp)) == false){    //time of reboot after last timestamp
+            Log.d(TAG, "didReboot: Reboot happened")
+            Log.d(TAG, "didReboot: Reboot Time UTC $timeOfReboot")
+            Log.d(TAG, "didReboot: Last Timestamp UTC $timeOfTimestamp")
+            return true    //reboot happened
+        }
+        Log.d(TAG, "didReboot: Reboot didn't happen")
+        Log.d(TAG, "didReboot: Reboot Time UTC $timeOfReboot")
+        Log.d(TAG, "didReboot: Last Timestamp UTC $timeOfTimestamp")
+        return false    //reboot didn't happen
+    }
+
+    private fun newDay(): Boolean {
         val date = Calendar.getInstance()
         date.set(Calendar.HOUR_OF_DAY, 0)
         date.set(Calendar.MINUTE, 0)
         date.set(Calendar.SECOND, 0)
         date.set(Calendar.MILLISECOND,0)
-        Log.d(TAG, "getStepCount: todayStartDate ${date.time}")
-        //TODO get last reboot time
-        val lastRebootTime = SystemClock.elapsedRealtime()
-        val currentTime = Calendar.getInstance().timeInMillis - lastRebootTime
-        val timestampTime = timestamp?.toDate()?.time
-        if(timestamp != null && timestamp!!.toDate().time.milliseconds > currentTime.milliseconds){
-                Log.d(TAG, "getStepCount: timestamp ${timestamp!!.toDate().time}")
-                Log.d(TAG, "getStepCount: lastRebootTime $lastRebootTime")
-                val lastSensorRead = timestamp!!.toDate().time - lastRebootTime
-                Log.d(TAG, "getStepCount: lastSensorRead $lastSensorRead")
-//                currentStepCount = totalStepCount - oldStepCount - lastsensorStepCount
-//                Log.d(TAG, "getStepCount: currentStepCount $currentStepCount")
-         }
-            currentStepCount += (totalStepCount - oldStepCount)
-
-        Log.d(TAG, "getStepCount: NEW currentStepCount $currentStepCount")
-        oldStepCount = totalStepCount
-        saveOldStepCount()
-        saveCurrentStepCount()
-        Log.d(TAG, "getStepCount: $currentStepCount")
+        Log.d(TAG, "newDay: todayStartDate ${date.time}")
+        if (timestamp!!.toDate().time < date.timeInMillis){
+            return true
+        }
+        return false
     }
 
     private fun setDistanceTravelled(){
+        //if hourly tracking is enabled, then this function will be called with every step sensor input
         db.collection("users")
             .document(UID)
             .get()
@@ -141,8 +200,8 @@ class DeviceSensorWorker(context: Context, workerParams: WorkerParameters) : Cor
                         .document(UID)
                         .collection("sensorsData")
                         .document("distanceTravelled")
-                        .update(mapOf("${LocalDate.now()}.distanceTravelled" to distanceTravelled,
-                            "timestamp" to FieldValue.serverTimestamp()))
+                        .set(mapOf("${LocalDate.now()}.distanceTravelled" to distanceTravelled,
+                            "timestamp" to FieldValue.serverTimestamp()), SetOptions.merge())
                         .addOnSuccessListener {
                             Log.d(TAG, "setDistanceTravelled: Success")
                         }
@@ -175,7 +234,7 @@ class DeviceSensorWorker(context: Context, workerParams: WorkerParameters) : Cor
                         it.getTimestamp("timestamp")?.let {
                                it1 -> timestamp = it1
                         }
-                        it.getLong("${LocalDate.now().minusDays(1)}.oldStepCount")?.let {
+                        it.getLong("${LocalDate.now().minusDays(1).toString()}.oldStepCount")?.let {
                                 it1 -> lastsensorStepCount = it1.toInt() }
                         Log.d(TAG, "loadCurrentStepCount: $currentStepCount")
                         Log.d(TAG, "loadOldStepCount: $oldStepCount")
@@ -200,13 +259,19 @@ class DeviceSensorWorker(context: Context, workerParams: WorkerParameters) : Cor
 //            "${LocalDate.now()}.currentStepCount" to currentStepCount
 //        )
 //        val UID = firebaseAuth.currentUser?.uid
+        Log.d(TAG, "saveCurrentStepCount: called")
+        val data = hashMapOf(
+            "${LocalDate.now()}" to
+                    hashMapOf("currentStepCount" to currentStepCount,
+                        "oldStepCount" to oldStepCount),
+            "timestamp" to FieldValue.serverTimestamp()
+        )
         if (UID != null) {
             db.collection("users")
                 .document(UID)
                 .collection("sensorsData")
                 .document("steps")
-                .update(mapOf("${LocalDate.now()}.currentStepCount" to currentStepCount,
-                    "timestamp" to FieldValue.serverTimestamp()))
+                .set(data, SetOptions.merge())
                 .addOnSuccessListener {
                     Log.d(TAG, "saveCurrentStepCount: Success")
                 }
@@ -226,7 +291,7 @@ class DeviceSensorWorker(context: Context, workerParams: WorkerParameters) : Cor
                 .document(UID)
                 .collection("sensorsData")
                 .document("steps")
-                .update("${LocalDate.now()}.oldStepCount", oldStepCount)
+                .set(mapOf("${LocalDate.now()}.oldStepCount" to oldStepCount), SetOptions.merge())
                 .addOnSuccessListener {
                     Log.d(TAG, "saveOldStepCount: Success")
                 }
