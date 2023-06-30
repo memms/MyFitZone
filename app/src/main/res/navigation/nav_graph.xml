@@ -109,6 +109,9 @@
         <argument
             android:name="ShowNavBar"
             android:defaultValue="true"/>
+        <action
+            android:id="@+id/action_homeFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/trackFragment"
@@ -133,4 +136,9 @@
         android:name="com.example.myfitzone.Views.EditInfoFragment"
         android:label="fragment_edit_info"
         tools:layout="@layout/fragment_edit_info" />
+    <fragment
+        android:id="@+id/newExerciseFragment"
+        android:name="com.example.myfitzone.Views.NewExerciseFragment"
+        android:label="fragment_new_exercise"
+        tools:layout="@layout/fragment_new_exercise" />
 </navigation>

@@ -8,10 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myfitzone.DataModels.DashboardRecyclerData
 import com.example.myfitzone.Models.UserDetailModel
+import com.example.myfitzone.Models.UserExercisesModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.DashboardCardviewBinding
 import com.example.myfitzone.databinding.FragmentHomeBinding
@@ -30,6 +32,7 @@ class HomeFragment : Fragment() {
 
     private val TAG = "HomeFragment"
     private lateinit var loggedInUser : UserDetailModel
+    private lateinit var exerciseModel: UserExercisesModel
 
 
     override fun onCreateView(
@@ -46,16 +49,20 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         loggedInUser = ViewModelProvider(requireActivity())[UserDetailModel::class.java]
+        exerciseModel = ViewModelProvider(requireActivity())[UserExercisesModel::class.java]
+
         Log.d(TAG, "onViewCreated: ${loggedInUser.getUser().toString()}")
 
-
+        populateCards()
         //TODO: Remove Test Data
+        //default
         dataList.add(DashboardRecyclerData("Weight", "", "00", "kg", "Updated 2 hours ago"))
         dataList.add(DashboardRecyclerData("Height", "", "00", "cm", "Updated 2 hours ago"))
         dataList.add(DashboardRecyclerData("Steps", "", "00", "steps", "Updated 2 hours ago"))
         dataList.add(DashboardRecyclerData("Calories", "", "00", "kcal", "Updated 2 hours ago"))
         dataList.add(DashboardRecyclerData("Distance Travelled", "", "0.0", "m", "Updated 2 hours ago"))
 
+        //user enabled
         dataList.add(DashboardRecyclerData("BMI", "", "24.2", "", "Updated 2 hours ago"))
         dataList.add(DashboardRecyclerData("Water", "", "2", "L", "Updated 2 hours ago"))
         dataList.add(DashboardRecyclerData("Sleep", "", "8", "hours", "Updated 2 hours ago"))
@@ -73,6 +80,29 @@ class HomeFragment : Fragment() {
         dashboardCardAdapter.setDashCardList(dataList)
         recyclerView.adapter = dashboardCardAdapter
 
+        binding.imageProfile.setOnClickListener {
+            Log.d(TAG, "onViewCreated: Profile Image Clicked")
+            onProfileImageClicked()
+        }
+
+    }
+
+    private fun populateCards() {
+//        TODO("Not yet implemented")
+        val exercises = exerciseModel.getExercises()
+        for (exercise in exercises) {
+            dataList.add(DashboardRecyclerData(exercise.name, exercise.image, exercise.map["value"].toString(),
+                exercise.map["unit"].toString(), "Updated: "))
+        }
+
+    }
+
+    private fun onProfileImageClicked() {
+//        TODO("Not yet implemented")
+        Log.d(TAG, "onProfileImageClicked: ")
+        view?.let {
+            it.findNavController().navigate(R.id.action_homeFragment_to_profileFragment)
+        }
     }
 
     override fun onDestroyView() {

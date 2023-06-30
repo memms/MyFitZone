@@ -125,7 +125,9 @@ class MainActivity : AppCompatActivity(), NetworkConectivityReceiver.NetworkConn
 
     private fun createWorker() {
         Log.d(TAG, "createWorker: ")
-        val workRequest = PeriodicWorkRequestBuilder<DeviceSensorWorker>(15, TimeUnit.MINUTES)
+        val workRequest = PeriodicWorkRequestBuilder<DeviceSensorWorker>(
+            15, TimeUnit.MINUTES,
+            5, TimeUnit.MINUTES)
             .build()
         WorkManager.getInstance(this).enqueueUniquePeriodicWork("DeviceSensorWorker",
             ExistingPeriodicWorkPolicy.KEEP, workRequest)

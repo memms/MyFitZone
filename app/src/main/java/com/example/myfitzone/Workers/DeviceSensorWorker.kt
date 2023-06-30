@@ -106,7 +106,7 @@ class DeviceSensorWorker(context: Context, workerParams: WorkerParameters) : Cor
             saveCurrentStepCount()
             return
         }
-        if (timestamp != null && newDay() && !rebootNewDay() && !didReboot() && timestamp != null){
+        if (timestamp != null && newDay() && !rebootNewDay() && !didReboot()){
             Log.d(TAG, "getStepCount: New Day && !RebootToday && !didReboot")
             currentStepCount += (totalStepCount - oldStepCount) - lastsensorStepCount
             oldStepCount = totalStepCount
@@ -114,7 +114,7 @@ class DeviceSensorWorker(context: Context, workerParams: WorkerParameters) : Cor
             saveCurrentStepCount()
             return
         }
-        if(timestamp != null && newDay() && didReboot() && timestamp != null){
+        if(timestamp != null && newDay() && didReboot()){
             Log.d(TAG, "getStepCount: New Day and Reboot since last Timestamp")
             currentStepCount = totalStepCount
             oldStepCount = totalStepCount
@@ -252,7 +252,6 @@ class DeviceSensorWorker(context: Context, workerParams: WorkerParameters) : Cor
     }
 
     private fun saveCurrentStepCount() {
-        Log.d(TAG, "saveCurrentStepCount: $currentStepCount")
 //        val db = Firebase.firestore
 //        val firebaseAuth = FirebaseAuth.getInstance()
 //        val data = hashMapOf(
@@ -260,6 +259,8 @@ class DeviceSensorWorker(context: Context, workerParams: WorkerParameters) : Cor
 //        )
 //        val UID = firebaseAuth.currentUser?.uid
         Log.d(TAG, "saveCurrentStepCount: called")
+        Log.d(TAG, "saveCurrentStepCount: $currentStepCount")
+        Log.d(TAG, "saveCurrentStepCount: $oldStepCount")
         val data = hashMapOf(
             "${LocalDate.now()}" to
                     hashMapOf("currentStepCount" to currentStepCount,
