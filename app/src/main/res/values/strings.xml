@@ -21,4 +21,19 @@
         <item>Male</item>
         <item>Female</item>
     </string-array>
+
+    <string-array name="ExerciseFields">
+        <item>Fields</item>
+        <item>Weight</item>
+        <item>Sets</item>
+        <item>Reps</item>
+        <item>Speed</item>
+        <item>Distance</item>
+        <item>Duration</item>
+        <item>Calories</item>
+        <item>Rest</item>
+        <item>Incline</item>
+        <item>Resistance</item>
+        <item>Intensity</item>
+    </string-array>
 </resources>
