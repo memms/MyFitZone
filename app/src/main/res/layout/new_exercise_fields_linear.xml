@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="20dp">
+
+    <TextView
+        android:id="@+id/title_new_exercise"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:text="New Exercise Field"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+        <Spinner
+            android:id="@+id/field_type_spinner_new_exercise"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_button"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/remove_field_button_new_exercise"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/baseline_close_24"
+            />
+
+
+    </LinearLayout>
+
+</LinearLayout>

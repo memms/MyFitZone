@@ -112,6 +112,9 @@
         <action
             android:id="@+id/action_homeFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_newExerciseFragment"
+            app:destination="@id/newExerciseFragment" />
     </fragment>
     <fragment
         android:id="@+id/trackFragment"

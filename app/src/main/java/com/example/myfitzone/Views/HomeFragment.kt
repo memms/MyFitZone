@@ -53,7 +53,7 @@ class HomeFragment : Fragment() {
 
         Log.d(TAG, "onViewCreated: ${loggedInUser.getUser().toString()}")
 
-        populateCards()
+//        populateCards()
         //TODO: Remove Test Data
         //default
         dataList.add(DashboardRecyclerData("Weight", "", "00", "kg", "Updated 2 hours ago"))
@@ -85,6 +85,18 @@ class HomeFragment : Fragment() {
             onProfileImageClicked()
         }
 
+        binding.fabHome.setOnClickListener {
+            Log.d(TAG, "onViewCreated: FAB Clicked")
+            onFabClicked()
+        }
+
+    }
+
+    private fun onFabClicked() {
+        Log.d(TAG, "onFabClicked: ")
+        view?.let {
+            it.findNavController().navigate(R.id.action_homeFragment_to_newExerciseFragment)
+        }
     }
 
     private fun populateCards() {
