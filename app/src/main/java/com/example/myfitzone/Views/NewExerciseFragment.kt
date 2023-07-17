@@ -49,6 +49,10 @@ class NewExerciseFragment : Fragment() {
         binding.saveNewExercise.setOnClickListener {
             saveExercise()
         }
+        binding.exitNewExercise.setOnClickListener {
+            onDestroyView()
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     override fun onDestroyView() {

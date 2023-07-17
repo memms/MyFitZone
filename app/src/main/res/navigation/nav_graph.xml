@@ -113,8 +113,8 @@
             android:id="@+id/action_homeFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_newExerciseFragment"
-            app:destination="@id/newExerciseFragment" />
+            android:id="@+id/action_homeFragment_to_exerciseGroupFragment"
+            app:destination="@id/exerciseGroupFragment" />
     </fragment>
     <fragment
         android:id="@+id/trackFragment"
@@ -144,4 +144,13 @@
         android:name="com.example.myfitzone.Views.NewExerciseFragment"
         android:label="fragment_new_exercise"
         tools:layout="@layout/fragment_new_exercise" />
+    <fragment
+        android:id="@+id/exerciseGroupFragment"
+        android:name="com.example.myfitzone.Views.ExerciseGroupFragment"
+        android:label="fragment_exercise_group"
+        tools:layout="@layout/fragment_exercise_group" >
+        <action
+            android:id="@+id/action_exerciseGroupFragment_to_newExerciseFragment"
+            app:destination="@id/newExerciseFragment" />
+    </fragment>
 </navigation>

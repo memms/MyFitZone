@@ -7,4 +7,5 @@ data class Exercise(
     var image: String,
     var map: HashMap<String, String>,
     var category: String,
+    var creator: String,
     )

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Views.ExerciseGroupFragment"
+    android:padding="10dp"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/exercise_group_close_button"
+        android:layout_width="29dp"
+        android:layout_height="29dp"
+        android:background="@drawable/baseline_close_24"
+        android:layout_gravity="start"
+        android:layout_margin="10dp"/>
+
+    <TextView
+        android:id="@+id/exercise_group_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Exercise Muscle Groups"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Select the muscle groups that this exercise targets."
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/exercise_group_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp"/>
+
+</LinearLayout>

@@ -1,6 +1,5 @@
 package com.example.myfitzone.Views
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -17,8 +16,6 @@ import com.example.myfitzone.Models.UserExercisesModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.DashboardCardviewBinding
 import com.example.myfitzone.databinding.FragmentHomeBinding
-import com.example.myfitzone.databinding.FragmentRegistrationBinding
-import kotlin.math.log
 
 
 class HomeFragment : Fragment() {
@@ -95,13 +92,13 @@ class HomeFragment : Fragment() {
     private fun onFabClicked() {
         Log.d(TAG, "onFabClicked: ")
         view?.let {
-            it.findNavController().navigate(R.id.action_homeFragment_to_newExerciseFragment)
+            it.findNavController().navigate(R.id.action_homeFragment_to_exerciseGroupFragment)
         }
     }
 
     private fun populateCards() {
 //        TODO("Not yet implemented")
-        val exercises = exerciseModel.getExercises()
+        val exercises = exerciseModel.getUserExercises()
         for (exercise in exercises) {
             dataList.add(DashboardRecyclerData(exercise.name, exercise.image, exercise.map["value"].toString(),
                 exercise.map["unit"].toString(), "Updated: "))

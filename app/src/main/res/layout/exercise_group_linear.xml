@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingBottom="20dp">
+
+    <TextView
+        android:id="@+id/title_exercise_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Exercise Group Name"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="5dp"/>
+    <Button
+        android:id="@+id/select_field_button_exercise_group"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/baseline_arrow_forward_ios_24"
+        android:layout_gravity="end"/>
+
+
+</LinearLayout>

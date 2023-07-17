@@ -8,27 +8,27 @@ class UserExercisesModel: ViewModel() {
     private var exercises = ArrayList<Exercise>()
     private val TAG = "UserExercisesModel"
 
-    fun getExercises(): ArrayList<Exercise> {
+    fun getUserExercises(): ArrayList<Exercise> {
         Log.d(TAG, "getExercises: $exercises")
         return exercises
     }
 
-    fun setExercises(exercises: ArrayList<Exercise>) {
+    fun setUserExercises(exercises: ArrayList<Exercise>) {
         Log.d(TAG, "setExercises: $exercises")
         this.exercises = exercises
     }
 
-    fun addExercise(exercise: Exercise) {
+    fun addUserExercise(exercise: Exercise) {
         Log.d(TAG, "addExercise: $exercise")
         exercises.add(exercise)
     }
 
-    fun removeExercise(exercise: Exercise) {
+    fun removeUserExercise(exercise: Exercise) {
         Log.d(TAG, "removeExercise: $exercise")
         exercises.remove(exercise)
     }
 
-    fun clearExercises() {
+    fun clearUserExercises() {
         Log.d(TAG, "clearExercises: ")
         exercises.clear()
     }
