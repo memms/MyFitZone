@@ -100,8 +100,8 @@ class HomeFragment : Fragment() {
 //        TODO("Not yet implemented")
         val exercises = exerciseModel.getUserExercises()
         for (exercise in exercises) {
-            dataList.add(DashboardRecyclerData(exercise.name, exercise.image, exercise.map["value"].toString(),
-                exercise.map["unit"].toString(), "Updated: "))
+//            dataList.add(DashboardRecyclerData(exercise.name, exercise.image, exercise.map["value"].toString(),
+//                exercise.map["unit"].toString(), "Updated: "))
         }
 
     }

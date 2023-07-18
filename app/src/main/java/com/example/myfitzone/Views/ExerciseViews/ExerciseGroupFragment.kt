@@ -1,4 +1,4 @@
-package com.example.myfitzone.Views
+package com.example.myfitzone.Views.ExerciseViews
 
 import android.os.Bundle
 import android.util.Log
@@ -6,19 +6,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallback
+import com.example.myfitzone.Models.DatabaseExercisesModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.ExerciseGroupLinearBinding
 import com.example.myfitzone.databinding.FragmentExerciseGroupBinding
-import com.example.myfitzone.databinding.NewExerciseFieldsLinearBinding
 
 
 class ExerciseGroupFragment : Fragment() {
 
     private var _binding : FragmentExerciseGroupBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var databaseExercisesModel: DatabaseExercisesModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,13 +35,18 @@ class ExerciseGroupFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        databaseExercisesModel = ViewModelProvider(requireActivity())[DatabaseExercisesModel::class.java]
         binding.exerciseGroupCloseButton.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
-        val arrTEmp = arrayListOf<String>("Chest", "Back", "Shoulders", "Biceps", "Triceps", "Legs", "Abs")
-        binding.exerciseGroupRecyclerView.adapter = ExerciseGroupAdapter(arrTEmp)
-        binding.exerciseGroupRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        databaseExercisesModel.getExerciseGroups(object: FirestoreGetCompleteCallback {
+            override fun onGetComplete(result: ArrayList<String>) {
+                binding.exerciseGroupRecyclerView.adapter = ExerciseGroupAdapter(result)
+                binding.exerciseGroupRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            }
+        })
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -71,7 +80,8 @@ class ExerciseGroupFragment : Fragment() {
             override fun onClick(p0: View?) {
                 Log.d("TAG", "onClick: ")
                 view?.let {
-                    it.findNavController().navigate(R.id.action_exerciseGroupFragment_to_newExerciseFragment)
+                    databaseExercisesModel.setSelectedGroup(exersiceGroups[adapterPosition])
+                    it.findNavController().navigate(R.id.action_exerciseGroupFragment_to_exerciseSelectorFragment)
                 }
             }
         }

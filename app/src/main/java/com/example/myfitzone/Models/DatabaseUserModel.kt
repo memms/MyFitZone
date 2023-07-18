@@ -1,19 +1,21 @@
 package com.example.myfitzone.Models
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallback
 import com.example.myfitzone.DataModels.User
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.util.Date
 
-class DatabaseModel: ViewModel() {
+class DatabaseUserModel: ViewModel() {
 //Use Firestore
 
     private val TAG = "DatabaseModel"
     private val db = Firebase.firestore
 
     var user: User? = null
+    var exerciseGroupsG: MutableLiveData<ArrayList<String>> = MutableLiveData()
 
     //create user
     fun createUser(userToRegister: User) {
@@ -82,6 +84,8 @@ class DatabaseModel: ViewModel() {
             .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
             .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
     }
+
+
 
     //delete user data
 

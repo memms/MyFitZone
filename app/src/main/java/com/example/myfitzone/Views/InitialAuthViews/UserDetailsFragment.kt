@@ -17,7 +17,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.myfitzone.Models.DatabaseModel
+import com.example.myfitzone.Models.DatabaseUserModel
 import com.example.myfitzone.Models.UserDetailModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.FragmentUserDetailsBinding
@@ -34,7 +34,7 @@ class UserDetailsFragment : Fragment() {
     private var DOB = Calendar.getInstance()
 
     private lateinit var registrationUserDetails : UserDetailModel
-    private lateinit var databaseModel : DatabaseModel
+    private lateinit var databaseModel : DatabaseUserModel
     private var weight: Double = 121.5
     private var tempHeight = listOf<Int>(5,5)
 
@@ -56,7 +56,7 @@ class UserDetailsFragment : Fragment() {
         binding.weightUserinfo.setOnClickListener{ weightAlertBuilder() }
         binding.heightUserinfo.setOnClickListener{ heightAlertBuilder() }
         registrationUserDetails = ViewModelProvider(requireActivity())[UserDetailModel::class.java]
-        databaseModel = ViewModelProvider(requireActivity())[DatabaseModel::class.java]
+        databaseModel = ViewModelProvider(requireActivity())[DatabaseUserModel::class.java]
         setSpinner()
         binding.nextUserinfo.setOnClickListener { onNextClick() }
     }

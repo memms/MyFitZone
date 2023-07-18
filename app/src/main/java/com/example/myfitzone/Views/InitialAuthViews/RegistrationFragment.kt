@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.example.myfitzone.Models.AuthenticationModel
-import com.example.myfitzone.Models.DatabaseModel
+import com.example.myfitzone.Models.DatabaseUserModel
 import com.example.myfitzone.Models.UserDetailModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.FragmentRegistrationBinding
@@ -24,7 +24,7 @@ class RegistrationFragment : Fragment() {
     private val TAG = "RegistrationFragment"
     private lateinit var authModel : AuthenticationModel
     private lateinit var userDetailModel : UserDetailModel
-    private lateinit var databaseModel : DatabaseModel
+    private lateinit var databaseModel : DatabaseUserModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +39,7 @@ class RegistrationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         authModel = ViewModelProvider(requireActivity())[AuthenticationModel::class.java]
         userDetailModel = ViewModelProvider(requireActivity())[UserDetailModel::class.java]
-        databaseModel = ViewModelProvider(requireActivity())[DatabaseModel::class.java]
+        databaseModel = ViewModelProvider(requireActivity())[DatabaseUserModel::class.java]
         binding.buttonLoginBottomRegister.setOnClickListener { onLoginClick() }
         binding.buttonLoginTopRegister.setOnClickListener { onLoginClick() }
         binding.buttonRegister.setOnClickListener { onRegisterClick() }

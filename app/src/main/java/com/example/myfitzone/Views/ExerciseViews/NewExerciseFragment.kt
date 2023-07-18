@@ -1,6 +1,5 @@
-package com.example.myfitzone.Views
+package com.example.myfitzone.Views.ExerciseViews
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -9,13 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.SpinnerAdapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myfitzone.DataModels.Exercise
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.FragmentNewExerciseBinding
 import com.example.myfitzone.databinding.NewExerciseFieldsLinearBinding
