@@ -3,6 +3,7 @@ package com.example.myfitzone.Models
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallback
+import com.example.myfitzone.DataModels.DatabaseExercise
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -55,5 +56,22 @@ class DatabaseExercisesModel: ViewModel() {
 
     fun clearSelectedGroup() {
         selectedGroup = ""
+    }
+
+    fun addNewExercise(exerciseDetails:DatabaseExercise){
+        val docDataMap = hashMapOf(
+            "exerciseName" to exerciseDetails.exerciseName,
+            "exerciseDescription" to exerciseDetails.exerciseDescription,
+            "exerciseFieldsList" to exerciseDetails.exerciseFieldsList,
+            "creatorName" to exerciseDetails.creatorName,
+        )
+        val docData = hashMapOf(
+            exerciseDetails.exerciseName to docDataMap
+        )
+        db.collection("workoutList")
+            .document(selectedGroup)
+            .set(docData)
+            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
+            .addOnFailureListener { e -> Log.w(TAG, "Error writing document", e) }
     }
 }

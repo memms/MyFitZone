@@ -47,6 +47,7 @@ class ExerciseSelectorFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        databaseExercisesModel.clearSelectedGroup()
     }
 
     inner class ExerciseSelectorAdapter(private val exersiceGroups : ArrayList<String>) : RecyclerView.Adapter<ExerciseSelectorAdapter.ExerciseSelectorViewHolder>() {

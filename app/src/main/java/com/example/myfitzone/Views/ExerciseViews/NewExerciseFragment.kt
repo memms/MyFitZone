@@ -11,11 +11,16 @@ import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myfitzone.DataModels.DatabaseExercise
+import com.example.myfitzone.Models.DatabaseExercisesModel
+import com.example.myfitzone.Models.UserDetailModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.FragmentNewExerciseBinding
 import com.example.myfitzone.databinding.NewExerciseFieldsLinearBinding
+import com.google.firebase.auth.ktx.auth
 
 
 class NewExerciseFragment : Fragment() {
@@ -24,6 +29,8 @@ class NewExerciseFragment : Fragment() {
     private val binding get() = _binding!!
     private val fields: MutableList<String> = mutableListOf()
     private lateinit var adapter: NewExerciseAdapter
+    private lateinit var userDetailModel: UserDetailModel
+    private lateinit var databaseExercisesModel: DatabaseExercisesModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,6 +44,8 @@ class NewExerciseFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter = NewExerciseAdapter(fields)
+        userDetailModel = ViewModelProvider(requireActivity())[UserDetailModel::class.java]
+        databaseExercisesModel = ViewModelProvider(requireActivity())[DatabaseExercisesModel::class.java]
         binding.attributesRecyclerviewNewExercise.adapter = adapter
         binding.attributesRecyclerviewNewExercise.layoutManager = LinearLayoutManager(requireContext())
 
@@ -95,7 +104,9 @@ class NewExerciseFragment : Fragment() {
         }
         val exerciseDescription = binding.descriptionNewExercise.text.toString()
         //TODO: add exercise templates to database
-
+        val finalFields = ArrayList<String>(fields)
+        val exercise = DatabaseExercise(exerciseName, exerciseDescription, finalFields, userDetailModel.getUsername())
+        databaseExercisesModel.addNewExercise(exercise)
     }
 
     //RecyclerView Adapter that has a spinner inside it with a string array as the options. Store the selected option back into an arrayList in main class.
