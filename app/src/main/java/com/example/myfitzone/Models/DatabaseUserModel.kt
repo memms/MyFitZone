@@ -3,7 +3,6 @@ package com.example.myfitzone.Models
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallback
 import com.example.myfitzone.DataModels.User
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase

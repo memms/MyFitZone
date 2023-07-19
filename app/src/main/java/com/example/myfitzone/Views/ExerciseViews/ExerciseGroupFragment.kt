@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallback
+import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.Models.DatabaseExercisesModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.ExerciseGroupLinearBinding
@@ -18,6 +18,8 @@ import com.example.myfitzone.databinding.FragmentExerciseGroupBinding
 
 
 class ExerciseGroupFragment : Fragment() {
+
+    private val TAG = "ExerciseGroupFragment"
 
     private var _binding : FragmentExerciseGroupBinding? = null
     private val binding get() = _binding!!
@@ -39,11 +41,15 @@ class ExerciseGroupFragment : Fragment() {
         binding.exerciseGroupCloseButton.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
-        databaseExercisesModel.getExerciseGroups(object: FirestoreGetCompleteCallback {
+        databaseExercisesModel.getExerciseGroups(object: FirestoreGetCompleteCallbackArrayList {
             override fun onGetComplete(result: ArrayList<String>) {
                 binding.exerciseGroupRecyclerView.adapter = ExerciseGroupAdapter(result)
                 binding.exerciseGroupRecyclerView.layoutManager = LinearLayoutManager(requireContext())
             }
+
+            override fun onGetFailure(string: String) {
+
+                }
         })
     }
 

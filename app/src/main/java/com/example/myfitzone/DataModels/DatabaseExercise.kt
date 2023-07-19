@@ -1,8 +1,10 @@
 package com.example.myfitzone.DataModels
 
+import com.google.firebase.database.PropertyName
+
 data class DatabaseExercise(
-    var exerciseName : String,
-    var exerciseDescription: String,
-    var exerciseFieldsList: ArrayList<String>,
-    var creatorName: String,
+    @PropertyName("exerciseName") var exerciseName : String,
+    @PropertyName("exerciseDescription") var exerciseDescription: String,
+    @PropertyName("exerciseFieldsList") var exerciseFieldsList: ArrayList<String>,
+    @PropertyName("creatorName") var creatorName: String,
 )

@@ -8,10 +8,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
+import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackHashMap
+import com.example.myfitzone.DataModels.DatabaseExercise
 import com.example.myfitzone.Models.DatabaseExercisesModel
 import com.example.myfitzone.R
-import com.example.myfitzone.databinding.ExerciseGroupLinearBinding
+import com.example.myfitzone.databinding.ExercisesListItemLayoutBinding
 import com.example.myfitzone.databinding.FragmentExerciseSelectorBinding
 
 class ExerciseSelectorFragment : Fragment() {
@@ -37,41 +41,55 @@ class ExerciseSelectorFragment : Fragment() {
         binding.exerciseSelectorCloseButton.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
-        databaseExercisesModel.getExercises()
+
         binding.exerciseSelectorTitle.text = "${databaseExercisesModel.getSelectedGroup()} Exercises"
         binding.exerciseSelectorAddButton.setOnClickListener {
             view.findNavController().navigate(R.id.action_exerciseSelectorFragment_to_newExerciseFragment)
         }
+        val exercisesHashMap = databaseExercisesModel.getExercises(object : FirestoreGetCompleteCallbackHashMap {
+            override fun onGetComplete(result: HashMap<String, *>) {
+                Log.d(TAG, "onGetComplete: $result")
+                binding.exerciseSelectorRecyclerView.adapter = ExerciseSelectorAdapter(result as HashMap<String, DatabaseExercise>)
+                binding.exerciseSelectorRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            }
+        })
+
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        databaseExercisesModel.clearSelectedGroup()
     }
 
-    inner class ExerciseSelectorAdapter(private val exersiceGroups : ArrayList<String>) : RecyclerView.Adapter<ExerciseSelectorAdapter.ExerciseSelectorViewHolder>() {
+    inner class ExerciseSelectorAdapter(private val exersiceGroups : HashMap<String, DatabaseExercise>) : RecyclerView.Adapter<ExerciseSelectorAdapter.ExerciseSelectorViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseSelectorViewHolder {
-            val binding = ExerciseGroupLinearBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            val binding = ExercisesListItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             return ExerciseSelectorViewHolder(binding)
         }
 
         override fun onBindViewHolder(holder: ExerciseSelectorViewHolder, position: Int) {
-            holder.bind(exersiceGroups[position])
-
+            holder.bind()
         }
 
         override fun getItemCount(): Int {
             return exersiceGroups.size
         }
 
-        inner class ExerciseSelectorViewHolder(private val binding: ExerciseGroupLinearBinding) :
+        inner class ExerciseSelectorViewHolder(private val binding: ExercisesListItemLayoutBinding) :
             RecyclerView.ViewHolder(binding.root), View.OnClickListener {
-            fun bind(item: String) {
-                binding.titleExerciseGroup.text = exersiceGroups[adapterPosition]
-                binding.titleExerciseGroup.setOnClickListener(this)
-                binding.selectFieldButtonExerciseGroup.setOnClickListener(this)
+            fun bind() {
+                binding.exerciseName.text = exersiceGroups.keys.elementAt(adapterPosition)
+                binding.exerciseDescription.text = exersiceGroups[exersiceGroups.keys.elementAt(adapterPosition)]!!.exerciseDescription
+                binding.exerciseCreatorName.text = exersiceGroups[exersiceGroups.keys.elementAt(adapterPosition)]!!.creatorName
+                if(exersiceGroups[exersiceGroups.keys.elementAt(adapterPosition)]!!.exerciseFieldsList.isNotEmpty()){
+                    binding.exerciseFields.text = exersiceGroups[exersiceGroups.keys.elementAt(adapterPosition)]!!.exerciseFieldsList.toString()
+                }
+                else{
+                    binding.exerciseFields.visibility = View.GONE
+                }
+
+
             }
 
             override fun onClick(p0: View?) {

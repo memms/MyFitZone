@@ -14,13 +14,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.DataModels.DatabaseExercise
 import com.example.myfitzone.Models.DatabaseExercisesModel
 import com.example.myfitzone.Models.UserDetailModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.FragmentNewExerciseBinding
 import com.example.myfitzone.databinding.NewExerciseFieldsLinearBinding
-import com.google.firebase.auth.ktx.auth
 
 
 class NewExerciseFragment : Fragment() {
@@ -74,22 +74,6 @@ class NewExerciseFragment : Fragment() {
     private fun saveExercise(){
         Log.d(TAG, "saveExercise:fields: ${fields.toString()}")
 
-        //fallback check if needed -TODO FIX if used
-//        val selectedItems: MutableList<String> = mutableListOf()
-//        for (i in 0 until fields.size) {
-//            val spinnerItem = binding.attributesRecyclerviewNewExercise.findViewHolderForAdapterPosition(i) as? NewExerciseAdapter.NewExerciseViewHolder
-//            val selectedItem = spinnerItem?.binding?.fieldTypeSpinnerNewExercise?.selectedItem?.toString()
-//            selectedItem?.let {
-//                selectedItems.add(selectedItem)
-//            }
-//        }
-//        Log.d("NewExerciseFragment", "saveExercise:selectedItems: ${selectedItems.toString()}")
-//        Log.d(TAG, "saveExercise:size comp: ${fields.size.toString()}, ${selectedItems.size.toString()}")
-//        if(fields.size != selectedItems.size){
-//            Toast.makeText(requireContext(), "Please select an attribute for each field", Toast.LENGTH_SHORT).show()
-//            return
-//        }
-
         //check if all fields have been filled
         for (i in 0 until fields.size) {
             if(fields[i] == ""){
@@ -106,7 +90,23 @@ class NewExerciseFragment : Fragment() {
         //TODO: add exercise templates to database
         val finalFields = ArrayList<String>(fields)
         val exercise = DatabaseExercise(exerciseName, exerciseDescription, finalFields, userDetailModel.getUsername())
-        databaseExercisesModel.addNewExercise(exercise)
+        databaseExercisesModel.addNewExercise(object : FirestoreGetCompleteCallbackArrayList{
+            override fun onGetComplete(result: ArrayList<String>) {
+                if(result.contains("exists")){
+                    Toast.makeText(requireContext(), "Exercise with name exists!", Toast.LENGTH_SHORT).show()
+                    return
+                }
+                Log.d(TAG, "saveExercise: onGetComplete")
+                Toast.makeText(requireContext(), "Exercise saved", Toast.LENGTH_SHORT).show()
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+
+            override fun onGetFailure(string: String) {
+                Log.d(TAG, "saveExercise: onGetFailure $string")
+                Toast.makeText(requireContext(), "Error saving exercise", Toast.LENGTH_SHORT).show()
+            }
+
+        }, exercise)
     }
 
     //RecyclerView Adapter that has a spinner inside it with a string array as the options. Store the selected option back into an arrayList in main class.
