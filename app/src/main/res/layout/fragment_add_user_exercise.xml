@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout7"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Views.ExerciseViews.AddUserExerciseFragment">
+
+    <TextView
+        android:id="@+id/title_add_user_exercise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="{Exercise name}"
+        android:layout_marginTop="34dp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/description_add_user_exercise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="{Exercise Description}"
+        android:gravity="center"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="5dp"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_add_user_exercise" />
+
+    <TextView
+        android:id="@+id/exercise_fields_add_user_exercise"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="10dp"
+        android:text="Default Fields:"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/description_add_user_exercise" />
+
+
+    <EditText
+        android:id="@+id/notes_add_user_exercise"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Notes"
+        android:background="@drawable/custom_button"
+        android:inputType="textCapSentences|textMultiLine"
+        android:padding="10dp"
+        android:textSize="20sp"
+        android:layout_margin="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/exercise_fields_add_user_exercise" />
+
+    <TextView
+        android:id="@+id/attributes_title_add_user_exercise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Exercise Field Attributes"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/notes_add_user_exercise"
+        app:layout_constraintEnd_toStartOf="add_attribute_add_user_exercise"
+        android:layout_margin="20dp"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <Button
+        android:id="@+id/add_attribute_add_user_exercise"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="@drawable/baseline_add_24"
+        app:layout_constraintTop_toBottomOf="@id/notes_add_user_exercise"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="20dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/attributes_recyclerview_add_user_exercise"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/attributes_title_add_user_exercise" />
+
+  
+
+    <Button
+        android:id="@+id/save_add_user_exercise"
+        android:layout_width="29dp"
+        android:layout_height="29dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/baseline_check_24"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <Button
+        android:id="@+id/exit_add_user_exercise"
+        android:layout_width="29dp"
+        android:layout_height="29dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/baseline_close_24"
+        android:padding="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

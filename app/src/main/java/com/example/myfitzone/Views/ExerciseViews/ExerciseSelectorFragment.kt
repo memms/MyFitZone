@@ -10,10 +10,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackHashMap
 import com.example.myfitzone.DataModels.DatabaseExercise
 import com.example.myfitzone.Models.DatabaseExercisesModel
+import com.example.myfitzone.Models.UserNewExercisesModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.ExercisesListItemLayoutBinding
 import com.example.myfitzone.databinding.FragmentExerciseSelectorBinding
@@ -46,7 +46,7 @@ class ExerciseSelectorFragment : Fragment() {
         binding.exerciseSelectorAddButton.setOnClickListener {
             view.findNavController().navigate(R.id.action_exerciseSelectorFragment_to_newExerciseFragment)
         }
-        val exercisesHashMap = databaseExercisesModel.getExercises(object : FirestoreGetCompleteCallbackHashMap {
+        databaseExercisesModel.getExercises(object : FirestoreGetCompleteCallbackHashMap {
             override fun onGetComplete(result: HashMap<String, *>) {
                 Log.d(TAG, "onGetComplete: $result")
                 binding.exerciseSelectorRecyclerView.adapter = ExerciseSelectorAdapter(result as HashMap<String, DatabaseExercise>)
@@ -83,19 +83,19 @@ class ExerciseSelectorFragment : Fragment() {
                 binding.exerciseDescription.text = exersiceGroups[exersiceGroups.keys.elementAt(adapterPosition)]!!.exerciseDescription
                 binding.exerciseCreatorName.text = exersiceGroups[exersiceGroups.keys.elementAt(adapterPosition)]!!.creatorName
                 if(exersiceGroups[exersiceGroups.keys.elementAt(adapterPosition)]!!.exerciseFieldsList.isNotEmpty()){
-                    binding.exerciseFields.text = exersiceGroups[exersiceGroups.keys.elementAt(adapterPosition)]!!.exerciseFieldsList.toString()
+                    binding.exerciseFields.text = exersiceGroups[exersiceGroups.keys.elementAt(adapterPosition)]!!.exerciseFieldsList.toString().trim('[', ']')
                 }
                 else{
                     binding.exerciseFields.visibility = View.GONE
                 }
-
-
             }
 
             override fun onClick(p0: View?) {
                 Log.d("TAG", "onClick: ")
+                val userExerciseModel = ViewModelProvider(requireActivity())[UserNewExercisesModel::class.java]
+                userExerciseModel.setSelectedExercise(exersiceGroups[exersiceGroups.keys.elementAt(adapterPosition)]!!)
                 view?.let {
-                    it.findNavController().navigate(R.id.action_exerciseGroupFragment_to_exerciseSelectorFragment)
+                    it.findNavController().navigate(R.id.action_exerciseSelectorFragment_to_addUserExerciseFragment)
                 }
             }
         }

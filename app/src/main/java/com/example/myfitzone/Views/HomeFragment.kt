@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myfitzone.DataModels.DashboardRecyclerData
 import com.example.myfitzone.Models.UserDetailModel
-import com.example.myfitzone.Models.UserExercisesModel
+import com.example.myfitzone.Models.UserNewExercisesModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.DashboardCardviewBinding
 import com.example.myfitzone.databinding.FragmentHomeBinding
@@ -29,7 +29,7 @@ class HomeFragment : Fragment() {
 
     private val TAG = "HomeFragment"
     private lateinit var loggedInUser : UserDetailModel
-    private lateinit var exerciseModel: UserExercisesModel
+    private lateinit var exerciseModel: UserNewExercisesModel
 
 
     override fun onCreateView(
@@ -46,7 +46,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         loggedInUser = ViewModelProvider(requireActivity())[UserDetailModel::class.java]
-        exerciseModel = ViewModelProvider(requireActivity())[UserExercisesModel::class.java]
+        exerciseModel = ViewModelProvider(requireActivity())[UserNewExercisesModel::class.java]
 
         Log.d(TAG, "onViewCreated: ${loggedInUser.getUser().toString()}")
 

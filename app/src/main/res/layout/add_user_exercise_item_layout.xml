@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:orientation="horizontal">
+
+    <Spinner
+        android:id="@+id/field_type_spinner_add_user_exercise"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@drawable/custom_button"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:hint="Enter Value"
+        android:gravity="center"
+        android:inputType="numberDecimal"
+        android:id="@+id/field_value_edit_text_add_user_exercise"
+        android:background="@drawable/custom_button"
+        android:layout_marginRight="10dp"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/remove_field_button_add_user_exercise"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center"
+        android:background="@drawable/baseline_close_24"
+        />
+
+
+</LinearLayout>

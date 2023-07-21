@@ -184,5 +184,13 @@
         <argument
             android:name="ShowNavBar"
             android:defaultValue="false"/>
+        <action
+            android:id="@+id/action_exerciseSelectorFragment_to_addUserExerciseFragment"
+            app:destination="@id/addUserExerciseFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/addUserExerciseFragment"
+        android:name="com.example.myfitzone.Views.ExerciseViews.AddUserExerciseFragment"
+        android:label="fragment_add_user_exercise"
+        tools:layout="@layout/fragment_add_user_exercise" />
 </navigation>

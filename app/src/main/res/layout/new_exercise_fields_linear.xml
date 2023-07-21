@@ -28,6 +28,7 @@
             android:id="@+id/remove_field_button_new_exercise"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_gravity="center"
             android:background="@drawable/baseline_close_24"
             />
 
