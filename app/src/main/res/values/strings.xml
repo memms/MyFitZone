@@ -25,7 +25,6 @@
     <string-array name="ExerciseFields">
         <item>Select an Exercise Field...</item>
         <item>Weight</item>
-        <item>Sets</item>
         <item>Reps</item>
         <item>Speed</item>
         <item>Distance</item>

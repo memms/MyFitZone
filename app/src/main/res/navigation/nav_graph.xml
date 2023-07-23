@@ -185,6 +185,10 @@
             android:name="ShowNavBar"
             android:defaultValue="false"/>
         <action
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_left"
             android:id="@+id/action_exerciseSelectorFragment_to_addUserExerciseFragment"
             app:destination="@id/addUserExerciseFragment" />
     </fragment>
@@ -192,5 +196,9 @@
         android:id="@+id/addUserExerciseFragment"
         android:name="com.example.myfitzone.Views.ExerciseViews.AddUserExerciseFragment"
         android:label="fragment_add_user_exercise"
-        tools:layout="@layout/fragment_add_user_exercise" />
+        tools:layout="@layout/fragment_add_user_exercise">
+        <argument
+            android:name="ShowNavBar"
+            android:defaultValue="false"/>
+    </fragment>
 </navigation>

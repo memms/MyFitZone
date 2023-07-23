@@ -1,8 +1,14 @@
 package com.example.myfitzone.Models
 
 import androidx.lifecycle.ViewModel
+import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.DataModels.DatabaseExercise
 import com.example.myfitzone.DataModels.UserExercise
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import java.util.Calendar
 
 class UserNewExercisesModel: ViewModel() {
 
@@ -21,5 +27,28 @@ class UserNewExercisesModel: ViewModel() {
 
     fun clearSelectedExercise() {
         dataBaseExerciseTemplate = null
+    }
+
+    fun saveUserExercise(userExercise: UserExercise, mycallback: FirestoreGetCompleteCallbackArrayList) {
+        val db = Firebase.firestore
+        val userUID = FirebaseAuth.getInstance().currentUser?.uid
+        val cal = Calendar.getInstance()
+        val year = cal.get(Calendar.YEAR)
+        val month = cal.get(Calendar.MONTH)
+        val docID = "$year-$month"
+        val docData = mapOf(
+            userExercise.timeAdded.toString() to userExercise,
+        )
+        db.collection("users")
+            .document(userUID!!)
+            .collection("userExerciseList")
+            .document(docID)
+            .set(docData, SetOptions.merge() )
+            .addOnSuccessListener {
+                mycallback.onGetComplete(arrayListOf("Success"))
+            }
+            .addOnFailureListener { exception ->
+                mycallback.onGetFailure(exception.toString())
+            }
     }
 }

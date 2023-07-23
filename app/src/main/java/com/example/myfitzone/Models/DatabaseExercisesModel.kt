@@ -59,11 +59,13 @@ class DatabaseExercisesModel: ViewModel() {
                     val keys = document.data?.keys
                     keys!!.forEach() { key ->
                         val exercise = document.data!![key] as HashMap<String, Any>
+                        val exerciseGroup = exercise["exerciseGroup"].toString()
                         val exerciseName = exercise["exerciseName"].toString()
                         val exerciseDescription = exercise["exerciseDescription"].toString()
                         val exerciseFieldsList = exercise["exerciseFieldsList"] as ArrayList<String>
                         val creatorName = exercise["creatorName"].toString()
                         val exerciseDetails = DatabaseExercise(
+                            exerciseGroup,
                             exerciseName,
                             exerciseDescription,
                             exerciseFieldsList,
@@ -124,6 +126,7 @@ class DatabaseExercisesModel: ViewModel() {
                 }
                 val docData = hashMapOf(
                     exerciseDetails.exerciseName to hashMapOf(
+                        "exerciseGroup" to selectedGroup,
                         "exerciseName" to exerciseDetails.exerciseName,
                         "exerciseDescription" to exerciseDetails.exerciseDescription,
                         "exerciseFieldsList" to exerciseDetails.exerciseFieldsList,
@@ -151,4 +154,5 @@ class DatabaseExercisesModel: ViewModel() {
             }
         }, exerciseDetails.exerciseName)
     }
+
 }

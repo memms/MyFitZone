@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -23,8 +24,10 @@ import androidx.viewbinding.ViewBinding
 import com.example.myfitzone.AdapterHelper.HeaderItem
 import com.example.myfitzone.AdapterHelper.ListItem
 import com.example.myfitzone.AdapterHelper.SubItem
+import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.DataModels.DatabaseExercise
 import com.example.myfitzone.DataModels.FieldUnits
+import com.example.myfitzone.DataModels.UserExercise
 import com.example.myfitzone.Models.UserNewExercisesModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.AddUserExerciseItemLayoutBinding
@@ -79,7 +82,7 @@ class AddUserExerciseFragment : Fragment() {
             addSet()
         }
         binding.saveAddUserExercise.setOnClickListener {
-            saveExercise()
+            saveToDatabase()
         }
         binding.addSetAddUserExercise.setOnClickListener {
             addSet()
@@ -111,7 +114,6 @@ class AddUserExerciseFragment : Fragment() {
                 Log.d(TAG, "saveExercise: $attributesList")
             }
         }
-
         Log.d(TAG, "saveExercise: $attributesList")
     }
 
@@ -131,6 +133,43 @@ class AddUserExerciseFragment : Fragment() {
 
     private fun addAttributesPressed() {
         TODO("Not yet implemented")
+
+    }
+
+    private fun saveToDatabase(){
+        saveExercise()
+        var userExercise: UserExercise? = null
+        val fieldMap:HashMap<String, Any> = hashMapOf()
+        fieldMap.put("sets", setNumber)
+        for(attribute in attributesList?.keys!!){
+            if(attributesList?.get(attribute)?.contains("") == true){
+                Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
+                return
+            }
+        }
+        fieldMap.putAll(attributesList as Map<String, Any>)
+        exerciseTemplate?.let {
+            userExercise = UserExercise(
+                it.exerciseGroup,
+                it.exerciseName,
+                binding.notesAddUserExercise.text.toString(),
+                fieldMap,
+                System.currentTimeMillis(),
+                )
+        }
+        userExercise?.let {
+            userExerciseModel.saveUserExercise(it, object : FirestoreGetCompleteCallbackArrayList{
+                override fun onGetComplete(result: ArrayList<String>) {
+                    Toast.makeText(requireContext(), "Exercise Saved", Toast.LENGTH_SHORT).show()
+                    requireActivity().onBackPressedDispatcher.onBackPressed()
+                }
+
+                override fun onGetFailure(string: String) {
+                    Toast.makeText(requireContext(), "Exercise Not Saved $string", Toast.LENGTH_SHORT).show()
+                }
+
+            })
+        }
 
     }
 
@@ -233,7 +272,7 @@ class AddUserExerciseFragment : Fragment() {
                     spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     holder.name.adapter = spinnerAdapter
                     holder.name.setSelection(fieldsL.indexOf(item.getName()))
-
+                    holder.units.text = FieldUnits.unitOf(item.getName())
 
                 }
 
@@ -250,6 +289,8 @@ class AddUserExerciseFragment : Fragment() {
             val name = itemView.findViewById<Spinner>(R.id.field_type_spinner_add_user_exercise)
             val measurement =
                 itemView.findViewById<EditText>(R.id.field_value_edit_text_add_user_exercise)
+            val units =
+                itemView.findViewById<TextView>(R.id.units_text_view_add_user_exercise)
             val onClickListenerEditText = measurement.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 }
@@ -276,6 +317,7 @@ class AddUserExerciseFragment : Fragment() {
                         val item = list[adapterPosition] as SubItem
                         item.setName(parent?.getItemAtPosition(position).toString())
                         list[adapterPosition] = item
+                        units.text = FieldUnits.unitOf(parent?.getItemAtPosition(position).toString())
                     }
 
                     override fun onNothingSelected(p0: AdapterView<*>?) {

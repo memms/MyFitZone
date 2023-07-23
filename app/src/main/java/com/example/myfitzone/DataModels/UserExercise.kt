@@ -12,7 +12,7 @@ data class UserExercise(
     var notes: String,
 //    var image: String,
     var fieldmap: HashMap<String, *>,
-    var timeAdded: Int   //unix time in seconds
+    var timeAdded: Long   //unix time in seconds
 )
 
 /**

@@ -87,9 +87,9 @@ class NewExerciseFragment : Fragment() {
             return
         }
         val exerciseDescription = binding.descriptionNewExercise.text.toString()
-
+        val exerciseGroup = databaseExercisesModel.getSelectedGroup()
         val finalFields = ArrayList<String>(fields)
-        val exercise = DatabaseExercise(exerciseName, exerciseDescription, finalFields, userDetailModel.getUsername())
+        val exercise = DatabaseExercise(exerciseGroup, exerciseName, exerciseDescription, finalFields, userDetailModel.getUsername())
         databaseExercisesModel.addNewExercise(object : FirestoreGetCompleteCallbackArrayList{
             override fun onGetComplete(result: ArrayList<String>) {
                 if(result.contains("exists")){
@@ -138,12 +138,6 @@ class NewExerciseFragment : Fragment() {
             RecyclerView.ViewHolder(binding.root) {
             fun bind(item: String) {
                 val fieldsL = resources.getStringArray(R.array.ExerciseFields)
-//                binding.fieldTypeSpinnerNewExercise.adapter = ArrayAdapter(
-//                    requireContext(),
-//                    android.R.layout.simple_spinner_dropdown_item,
-//                    fieldsL
-//                )
-
                 val spinnerAdapter = object: ArrayAdapter<String>(
                     requireContext(),
                     android.R.layout.simple_spinner_item,

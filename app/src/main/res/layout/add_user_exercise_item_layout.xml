@@ -25,6 +25,17 @@
         android:layout_marginRight="10dp"
         />
 
+    <TextView
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:text="units"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:layout_marginRight="15dp"
+        android:textColor="@color/black"
+        android:id="@+id/units_text_view_add_user_exercise"/>
+
+
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/remove_field_button_add_user_exercise"
         android:layout_width="24dp"

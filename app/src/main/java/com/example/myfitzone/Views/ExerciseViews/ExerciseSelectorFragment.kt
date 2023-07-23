@@ -80,7 +80,12 @@ class ExerciseSelectorFragment : Fragment() {
             RecyclerView.ViewHolder(binding.root), View.OnClickListener {
             fun bind() {
                 binding.exerciseName.text = exersiceGroups.keys.elementAt(adapterPosition)
-                binding.exerciseDescription.text = exersiceGroups[exersiceGroups.keys.elementAt(adapterPosition)]!!.exerciseDescription
+                if (exersiceGroups[exersiceGroups.keys.elementAt(adapterPosition)]!!.exerciseDescription.isEmpty()) {
+                    binding.exerciseDescription.visibility = View.GONE
+                } else {
+                    binding.exerciseDescription.visibility = View.VISIBLE
+                    binding.exerciseDescription.text = exersiceGroups[exersiceGroups.keys.elementAt(adapterPosition)]!!.exerciseDescription
+                }
                 binding.exerciseCreatorName.text = exersiceGroups[exersiceGroups.keys.elementAt(adapterPosition)]!!.creatorName
                 if(exersiceGroups[exersiceGroups.keys.elementAt(adapterPosition)]!!.exerciseFieldsList.isNotEmpty()){
                     binding.exerciseFields.text = exersiceGroups[exersiceGroups.keys.elementAt(adapterPosition)]!!.exerciseFieldsList.toString().trim('[', ']')
