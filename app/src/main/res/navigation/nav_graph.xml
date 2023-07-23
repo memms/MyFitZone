@@ -96,7 +96,7 @@
         tools:layout="@layout/fragment_profile">
         <argument
             android:name="ShowNavBar"
-            android:defaultValue="true"/>
+            android:defaultValue="false"/>
         <action
             android:id="@+id/action_profileFragment_to_editInfoFragment"
             app:destination="@id/editInfoFragment" />
@@ -142,7 +142,11 @@
         android:id="@+id/editInfoFragment"
         android:name="com.example.myfitzone.Views.EditInfoFragment"
         android:label="fragment_edit_info"
-        tools:layout="@layout/fragment_edit_info" />
+        tools:layout="@layout/fragment_edit_info" >
+        <argument
+            android:name="ShowNavBar"
+            android:defaultValue="false"/>
+    </fragment>
     <fragment
         android:id="@+id/newExerciseFragment"
         android:name="com.example.myfitzone.Views.ExerciseViews.NewExerciseFragment"
