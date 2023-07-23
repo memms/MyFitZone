@@ -88,6 +88,7 @@ class ExerciseSelectorFragment : Fragment() {
                 else{
                     binding.exerciseFields.visibility = View.GONE
                 }
+                binding.root.setOnClickListener(this)
             }
 
             override fun onClick(p0: View?) {

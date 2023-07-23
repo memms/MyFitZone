@@ -87,7 +87,7 @@ class NewExerciseFragment : Fragment() {
             return
         }
         val exerciseDescription = binding.descriptionNewExercise.text.toString()
-        //TODO: add exercise templates to database
+
         val finalFields = ArrayList<String>(fields)
         val exercise = DatabaseExercise(exerciseName, exerciseDescription, finalFields, userDetailModel.getUsername())
         databaseExercisesModel.addNewExercise(object : FirestoreGetCompleteCallbackArrayList{
