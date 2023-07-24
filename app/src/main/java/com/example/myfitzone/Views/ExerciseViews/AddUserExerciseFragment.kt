@@ -159,12 +159,17 @@ class AddUserExerciseFragment : Fragment() {
                 else if(!checkBox.isChecked
                     && attributesList?.containsKey(checkBox.text.toString()) == true
                     && !fieldstoAdd.contains(checkBox.text.toString())){
-                    attributesList?.remove(checkBox.text.toString())
                     fieldstoRemove.add(checkBox.text.toString())
+                    //TODO:
                     //Add dialog to ask if user is sure he wants to remove the field and all its values
                     //If yes, delete the field from the list and remove it from the list
                     //If no, do nothing
 
+                }
+                else if(checkBox.isChecked
+                    && attributesList?.containsKey(checkBox.text.toString()) == true
+                    && fieldstoRemove.contains(checkBox.text.toString())){
+                    fieldstoRemove.remove(checkBox.text.toString())
                 }
             }
 
@@ -225,9 +230,6 @@ class AddUserExerciseFragment : Fragment() {
                     val index = j
                     list.add(index, subItem)
                     j++
-//                    Log.d(TAG, "addToList:inside subitem $subItem")
-//                    Log.d(TAG, "addToList:inside list ${list[index] as SubItem}")
-//                    Log.d(TAG, "addToList:inside index $index")
                     adapter.notifyItemInserted(index)
                 }
                 j++
@@ -238,8 +240,6 @@ class AddUserExerciseFragment : Fragment() {
             subItem.setName(field)
             subItem.setMeasurement("")
             list.add(subItem)
-//            Log.d(TAG, "addToList:outside subitem $subItem")
-//            Log.d(TAG, "addToList:outside list ${list[list.size-1] as SubItem}")
             adapter.notifyItemInserted(list.size-1)
         }
 

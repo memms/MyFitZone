@@ -36,13 +36,13 @@
         android:id="@+id/units_text_view_add_user_exercise"/>
 
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/remove_field_button_add_user_exercise"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_gravity="center"
-        android:background="@drawable/baseline_close_24"
-        />
+<!--    <androidx.appcompat.widget.AppCompatButton-->
+<!--        android:id="@+id/remove_field_button_add_user_exercise"-->
+<!--        android:layout_width="24dp"-->
+<!--        android:layout_height="24dp"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:background="@drawable/baseline_close_24"-->
+<!--        />-->
 
 
 </LinearLayout>
