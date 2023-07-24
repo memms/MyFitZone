@@ -1,6 +1,7 @@
 package com.example.myfitzone.Views.ExerciseViews
 
-import android.content.Context
+import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
@@ -11,16 +12,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.RadioGroup
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
 import com.example.myfitzone.AdapterHelper.HeaderItem
 import com.example.myfitzone.AdapterHelper.ListItem
 import com.example.myfitzone.AdapterHelper.SubItem
@@ -30,9 +31,7 @@ import com.example.myfitzone.DataModels.FieldUnits
 import com.example.myfitzone.DataModels.UserExercise
 import com.example.myfitzone.Models.UserNewExercisesModel
 import com.example.myfitzone.R
-import com.example.myfitzone.databinding.AddUserExerciseItemLayoutBinding
 import com.example.myfitzone.databinding.FragmentAddUserExerciseBinding
-import com.example.myfitzone.databinding.HeaderItemLinearBinding
 
 
 class AddUserExerciseFragment : Fragment() {
@@ -45,18 +44,19 @@ class AddUserExerciseFragment : Fragment() {
     private var attributesList: MutableMap<String, ArrayList<String>>? = mutableMapOf()
     private var setNumber = 0
     private lateinit var adapter: AddUserExerciseAdapter
-    private val list = ArrayList<ListItem>();
+    private val list = ArrayList<ListItem>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding =
             FragmentAddUserExerciseBinding.inflate(inflater, container, false)
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userExerciseModel = ViewModelProvider(requireActivity())[UserNewExercisesModel::class.java]
@@ -77,9 +77,11 @@ class AddUserExerciseFragment : Fragment() {
         binding.exitAddUserExercise.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
-        binding.addAttributeAddUserExercise.setOnClickListener {
-//              addAttributesPressed(
-            addSet()
+//        binding.addAttributeAddUserExercise.setOnClickListener {
+//            TODO()
+//        }
+        binding.addFieldAddUserExercise.setOnClickListener {
+            addAttributesPressed()
         }
         binding.saveAddUserExercise.setOnClickListener {
             saveToDatabase()
@@ -91,14 +93,13 @@ class AddUserExerciseFragment : Fragment() {
     }
 
     private fun addSet() {
-
         setNumber++
         saveExercise()
         calculateList()
     }
 
     private fun saveExercise() {
-        for (attribute in exerciseTemplate?.exerciseFieldsList!!) {
+        for (attribute in attributesList?.keys!!) {
             attributesList?.get(attribute)?.clear()
         }
         Log.d(TAG, "saveExercise: $list")
@@ -107,7 +108,6 @@ class AddUserExerciseFragment : Fragment() {
             if (item is SubItem) {
                 val attributeName = item.getName()
                 val attributeValue = item.getMeasurement()
-
                 Log.d(TAG, "saveExercise: $attributeName $attributeValue")
                 if(attributesList?.containsKey(attributeName) == false) attributesList?.put(attributeName, arrayListOf())
                 attributesList?.get(attributeName)?.add(attributeValue)
@@ -132,15 +132,107 @@ class AddUserExerciseFragment : Fragment() {
     }
 
     private fun addAttributesPressed() {
-        TODO("Not yet implemented")
+        saveExercise()
+        val builder = AlertDialog.Builder(requireContext())
+        val mView = layoutInflater.inflate(R.layout.field_radio_group_dialog, null)
+        val fieldsL = resources.getStringArray(R.array.ExerciseFields)
+        val fieldstoAdd = ArrayList<String>()
+        val fieldstoRemove = ArrayList<String>()
+        for (i in 1 until fieldsL.size){
+            val checkBox = CheckBox(requireContext())
+            checkBox.text = fieldsL[i]
+            checkBox.setTextColor(Color.BLACK)
+            checkBox.textSize = 20f
+            if(attributesList?.contains(fieldsL[i]) == true) {
+                checkBox.isChecked = true
+            }
+            checkBox.setOnClickListener {
+                if(checkBox.isChecked && attributesList?.containsKey(checkBox.text.toString()) == false){
+                    fieldstoAdd.add(checkBox.text.toString())
+                }else if (!checkBox.isChecked
+                    && attributesList?.containsKey(checkBox.text.toString()) == false
+                    && fieldstoAdd.contains(checkBox.text.toString())){
+                    fieldstoAdd.remove(checkBox.text.toString())
+                }
+                else if(!checkBox.isChecked
+                    && attributesList?.containsKey(checkBox.text.toString()) == true
+                    && !fieldstoAdd.contains(checkBox.text.toString())){
+                    attributesList?.remove(checkBox.text.toString())
+                    fieldstoRemove.add(checkBox.text.toString())
+                    //Add dialog to ask if user is sure he wants to remove the field and all its values
+                    //If yes, delete the field from the list and remove it from the list
+                    //If no, do nothing
+                    
+                }
+            }
+
+            mView.findViewById<RadioGroup>(R.id.radio_group_field_dialog).addView(checkBox)
+        }
+        with (builder){
+            setTitle("Choose Field")
+            val dialog = create()
+            setPositiveButton("OK"){_,_ ->
+                Log.d(TAG, "addAttributesPressed:fieldstoAdd $fieldstoAdd")
+                Log.d(TAG, "addAttributesPressed:attributesList $attributesList")
+                addToList(fieldstoAdd)
+                setFields()
+            }
+            setNegativeButton("Cancel"){_,_ ->
+                dialog.cancel()
+            }
+            setView(mView)
+            show()
+        }
+
+
+
 
     }
 
+    private fun addToList(fieldstoAdd: ArrayList<String>){
+        var j: Int
+        for(field in fieldstoAdd){
+            j=1
+            attributesList?.put(field, arrayListOf())
+            while (j < list.size){
+                val subItem = SubItem()
+                subItem.setName(field)
+                subItem.setMeasurement("")
+                val listItem = list[j]
+                Log.d(TAG, "addToList: J $j")
+                if(listItem is HeaderItem){
+                    val index = j
+                    list.add(index, subItem)
+                    j++
+//                    Log.d(TAG, "addToList:inside subitem $subItem")
+//                    Log.d(TAG, "addToList:inside list ${list[index] as SubItem}")
+//                    Log.d(TAG, "addToList:inside index $index")
+                    adapter.notifyItemInserted(index)
+                }
+                j++
+            }
+        }
+        for(field in fieldstoAdd){
+            val subItem = SubItem()
+            subItem.setName(field)
+            subItem.setMeasurement("")
+            list.add(subItem)
+//            Log.d(TAG, "addToList:outside subitem $subItem")
+//            Log.d(TAG, "addToList:outside list ${list[list.size-1] as SubItem}")
+            adapter.notifyItemInserted(list.size-1)
+        }
+
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun setFields(){
+        binding.exerciseFieldsAddUserExercise.text =  "Exercise Fields: ${attributesList?.keys.toString().trim('[', ']')}"
+    }
     private fun saveToDatabase(){
         saveExercise()
         var userExercise: UserExercise? = null
         val fieldMap:HashMap<String, Any> = hashMapOf()
-        fieldMap.put("sets", setNumber)
+        fieldMap["sets"] = setNumber
         for(attribute in attributesList?.keys!!){
             if(attributesList?.get(attribute)?.contains("") == true){
                 Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
@@ -194,9 +286,7 @@ class AddUserExerciseFragment : Fragment() {
         userExerciseModel.clearSelectedExercise()
     }
 
-    inner class AddUserExerciseAdapter(
-
-    ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    inner class AddUserExerciseAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         override fun getItemViewType(position: Int): Int {
             return list[position].getType()
@@ -206,18 +296,20 @@ class AddUserExerciseFragment : Fragment() {
             return list.size
         }
 
+
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             val viewHolder: RecyclerView.ViewHolder
             val inflater = LayoutInflater.from(parent.context)
-            when (viewType) {
+            viewHolder = when (viewType) {
                 ListItem.TYPE_HEADER -> {
                     val v1 = inflater.inflate(R.layout.header_item_linear, parent, false)
-                    viewHolder = HeaderViewHolder(v1)
+                    HeaderViewHolder(v1)
                 }
 
                 ListItem.TYPE_ITEM -> {
                     val v2 = inflater.inflate(R.layout.add_user_exercise_item_layout, parent, false)
-                    viewHolder = SubItemViewHolder(v2)
+                    SubItemViewHolder(v2, OnClickListeners())
                 }
 
                 else -> throw IllegalArgumentException("Invalid view type")
@@ -238,6 +330,7 @@ class AddUserExerciseFragment : Fragment() {
                 ListItem.TYPE_ITEM -> {
                     val item = list[holder.adapterPosition] as SubItem
                     val itemViewHolder = holder as SubItemViewHolder
+                    itemViewHolder.listener.updatePosition(holder.adapterPosition)
                     itemViewHolder.measurement.setText(item.getMeasurement())
 
                     val fieldsL = resources.getStringArray(R.array.ExerciseFields)
@@ -281,30 +374,17 @@ class AddUserExerciseFragment : Fragment() {
         }
 
         inner class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val header = itemView.findViewById<TextView>(R.id.header_item_linear_text_view)
+            val header: TextView = itemView.findViewById(R.id.header_item_linear_text_view)
 
         }
 
-        inner class SubItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val name = itemView.findViewById<Spinner>(R.id.field_type_spinner_add_user_exercise)
-            val measurement =
-                itemView.findViewById<EditText>(R.id.field_value_edit_text_add_user_exercise)
-            val units =
-                itemView.findViewById<TextView>(R.id.units_text_view_add_user_exercise)
-            val onClickListenerEditText = measurement.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                }
-
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    val item = list[adapterPosition] as SubItem
-                    item.setMeasurement(p0.toString())
-                    list[adapterPosition] = item
-                }
-
-                override fun afterTextChanged(p0: Editable?) {
-                }
-
-            })
+        inner class SubItemViewHolder(itemView: View, onClickListeners: OnClickListeners) : RecyclerView.ViewHolder(itemView) {
+            val name: Spinner = itemView.findViewById(R.id.field_type_spinner_add_user_exercise)
+            val measurement: EditText =
+                itemView.findViewById(R.id.field_value_edit_text_add_user_exercise)
+            val units: TextView =
+                itemView.findViewById(R.id.units_text_view_add_user_exercise)
+            val listener = onClickListeners
 
             init {
                 name.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -321,10 +401,32 @@ class AddUserExerciseFragment : Fragment() {
                     }
 
                     override fun onNothingSelected(p0: AdapterView<*>?) {
-                        TODO("Not yet implemented")
                     }
                 }
+                measurement.addTextChangedListener(listener)
+
             }
+
+
+        }
+        inner class OnClickListeners : TextWatcher{
+            private var positionLoc: Int? = null
+
+            fun updatePosition(position: Int){
+                positionLoc = position
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val item = list[positionLoc!!] as SubItem
+                item.setMeasurement(p0.toString())
+                list[positionLoc!!] = item
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
         }
     }
 }

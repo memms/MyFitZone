@@ -33,18 +33,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_add_user_exercise" />
 
+
     <TextView
         android:id="@+id/exercise_fields_add_user_exercise"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginVertical="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="60dp"
+        android:layout_marginVertical="12dp"
+        android:layout_marginTop="20dp"
         android:text="Default Fields:"
         android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/add_field_add_user_exercise"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/description_add_user_exercise" />
 
+    <Button
+        android:id="@+id/add_field_add_user_exercise"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="10dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/ic_edit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintTop_toBottomOf="@id/description_add_user_exercise" />
 
     <EditText
         android:id="@+id/notes_add_user_exercise"
@@ -72,10 +87,11 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <Button
-        android:id="@+id/add_attribute_add_user_exercise"
-        android:layout_width="24dp"
+        android:id="@+id/add_set_add_user_exercise"
+        android:layout_width="wrap_content"
         android:layout_height="24dp"
-        android:background="@drawable/baseline_add_24"
+        android:background="@drawable/custom_button"
+        android:text="Add Set"
         app:layout_constraintTop_toBottomOf="@id/notes_add_user_exercise"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="20dp"/>
@@ -86,21 +102,13 @@
         android:layout_height="wrap_content"
         android:padding="20dp"
         app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toTopOf="@id/add_set_add_user_exercise"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/attributes_title_add_user_exercise"
         app:layout_constraintVertical_bias="0.0" />
 
-    <Button
-        android:id="@+id/add_set_add_user_exercise"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:text="Add Set"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+
 
     <Button
         android:id="@+id/save_add_user_exercise"
