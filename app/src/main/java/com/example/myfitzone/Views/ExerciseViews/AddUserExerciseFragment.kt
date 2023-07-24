@@ -2,7 +2,6 @@ package com.example.myfitzone.Views.ExerciseViews
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
@@ -13,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.RadioGroup
@@ -245,6 +245,42 @@ class AddUserExerciseFragment : Fragment() {
 
     }
 
+    fun removeSet(set: Int, position: Int){
+        val builder = AlertDialog.Builder(requireContext())
+        with(builder) {
+            val dialog = create()
+            setTitle("Delete Set")
+            setMessage("Are you sure you want to delete set $set?")
+            setPositiveButton("Yes") { _, _ ->
+                list.removeAt(position)
+                adapter.notifyItemRemoved(position)
+                var i = 0
+                while (position < list.size){
+                    if(list[position] is HeaderItem){
+                        for(j in position until list.size){
+                            if(list[j] is HeaderItem){
+                                val headerItem = list[j] as HeaderItem
+                                headerItem.setHeader("Set ${set+i}")
+                                i++
+                                adapter.notifyItemChanged(j)
+                            }
+                        }
+                        break
+                    }
+                    list.removeAt(position)
+                    adapter.notifyItemRemoved(position)
+                }
+                setNumber--
+            }
+            setNegativeButton("No") { _, _ ->
+                //Do nothing
+                dialog.cancel()
+            }
+
+            show()
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private fun setFields(){
         binding.exerciseFieldsAddUserExercise.text =  "Exercise Fields: ${attributesList?.keys.toString().trim('[', ']')}"
@@ -351,8 +387,9 @@ class AddUserExerciseFragment : Fragment() {
                 ListItem.TYPE_ITEM -> {
                     val item = list[holder.adapterPosition] as SubItem
                     val itemViewHolder = holder as SubItemViewHolder
-                    itemViewHolder.listener.updatePosition(holder.adapterPosition)
+//                    itemViewHolder.listener.updatePosition(holder.adapterPosition)
                     itemViewHolder.measurement.setText(item.getMeasurement())
+//                    itemViewHolder.measurement.addTextChangedListener(itemViewHolder.listener)
 
                     val fieldsL = resources.getStringArray(R.array.ExerciseFields)
                     val spinnerAdapter = object : ArrayAdapter<String>(
@@ -396,7 +433,15 @@ class AddUserExerciseFragment : Fragment() {
 
         inner class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val header: TextView = itemView.findViewById(R.id.header_item_linear_text_view)
-
+            val remove: Button = itemView.findViewById(R.id.remove_header_button)
+            init {
+                remove.setOnClickListener {
+                    val position = adapterPosition
+                    val headerItem = list[position] as HeaderItem
+                    val set = headerItem.getHeader().split(" ")[1].toInt()
+                    removeSet(set = set, position = position)
+                }
+            }
         }
 
         inner class SubItemViewHolder(itemView: View, onClickListeners: OnClickListeners) : RecyclerView.ViewHolder(itemView) {
@@ -405,7 +450,20 @@ class AddUserExerciseFragment : Fragment() {
                 itemView.findViewById(R.id.field_value_edit_text_add_user_exercise)
             val units: TextView =
                 itemView.findViewById(R.id.units_text_view_add_user_exercise)
-            val listener = onClickListeners
+            val listen = measurement.addTextChangedListener(object: TextWatcher{
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                }
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    val item = list[adapterPosition] as SubItem
+                    item.setMeasurement(p0.toString())
+                    list[adapterPosition] = item
+                }
+
+                override fun afterTextChanged(p0: Editable?) {
+                }
+            })
+//            val listener = onClickListeners
 
             init {
                 name.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -424,7 +482,6 @@ class AddUserExerciseFragment : Fragment() {
                     override fun onNothingSelected(p0: AdapterView<*>?) {
                     }
                 }
-                measurement.addTextChangedListener(listener)
 
             }
 
