@@ -2,6 +2,7 @@ package com.example.myfitzone.Views.ExerciseViews
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
@@ -142,6 +143,7 @@ class AddUserExerciseFragment : Fragment() {
             val checkBox = CheckBox(requireContext())
             checkBox.text = fieldsL[i]
             checkBox.setTextColor(Color.BLACK)
+//            checkBox.buttonTintList = ColorStateList.valueOf(resources.getColor(R.color.colorPrimary))
             checkBox.textSize = 20f
             if(attributesList?.contains(fieldsL[i]) == true) {
                 checkBox.isChecked = true
@@ -162,19 +164,19 @@ class AddUserExerciseFragment : Fragment() {
                     //Add dialog to ask if user is sure he wants to remove the field and all its values
                     //If yes, delete the field from the list and remove it from the list
                     //If no, do nothing
-                    
+
                 }
             }
 
             mView.findViewById<RadioGroup>(R.id.radio_group_field_dialog).addView(checkBox)
         }
         with (builder){
-            setTitle("Choose Field")
             val dialog = create()
             setPositiveButton("OK"){_,_ ->
                 Log.d(TAG, "addAttributesPressed:fieldstoAdd $fieldstoAdd")
                 Log.d(TAG, "addAttributesPressed:attributesList $attributesList")
                 addToList(fieldstoAdd)
+                deleteFromList(fieldstoRemove)
                 setFields()
             }
             setNegativeButton("Cancel"){_,_ ->
@@ -186,6 +188,25 @@ class AddUserExerciseFragment : Fragment() {
 
 
 
+
+    }
+
+    private fun deleteFromList(fieldstoRemove: ArrayList<String>) {
+        var j: Int
+        for(field in fieldstoRemove){
+            j=1
+            while (j < list.size){
+                val listItem = list[j]
+                if(listItem is SubItem){
+                    if(listItem.getName() == field){
+                        list.removeAt(j)
+                        attributesList?.remove(field)
+                        adapter.notifyItemRemoved(j)
+                    }
+                }
+                j++
+            }
+        }
 
     }
 
