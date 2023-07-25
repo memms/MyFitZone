@@ -20,4 +20,6 @@
     <color name="neongreen">#97c22c</color>
     <color name="light_black">#262626</color>
     <color name= "red">	#FF0000</color>
+
+    <color name="transparentBG">#26000000</color>
 </resources>

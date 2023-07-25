@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -30,6 +31,19 @@ class HomeFragment : Fragment() {
     private val TAG = "HomeFragment"
     private lateinit var loggedInUser : UserDetailModel
     private lateinit var exerciseModel: UserNewExercisesModel
+    private var isFabOpen = false
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            Log.d(TAG, "handleOnBackPressed: ")
+            if (isFabOpen) {
+                hideFabMenu()
+                Log.d(TAG, "handleOnBackPressed: FAB Open")
+            } else {
+                requireActivity().finish()
+                Log.d(TAG, "handleOnBackPressed: FAB Closed")
+            }
+        }
+    }
 
 
     override fun onCreateView(
@@ -84,17 +98,105 @@ class HomeFragment : Fragment() {
 
         binding.fabHome.setOnClickListener {
             Log.d(TAG, "onViewCreated: FAB Clicked")
-            onFabClicked()
+            onMainFabClicked()
         }
+
+        setFabClicks()
+
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            onBackPressedCallback
+        )
 
     }
 
-    private fun onFabClicked() {
-        Log.d(TAG, "onFabClicked: ")
+    private fun setFabClicks() {
+        binding.viewHomeFABOverlay.setOnClickListener {
+            Log.d(TAG, "onViewCreated: FAB Overlay Clicked")
+            onMainFabClicked()
+        }
+        binding.linearLayoutHomeFAB1.setOnClickListener {
+            Log.d(TAG, "onViewCreated: FAB 1 Clicked")
+            onFab1Clicked()
+        }
+        binding.linearLayoutHomeFAB2.setOnClickListener {
+            Log.d(TAG, "onViewCreated: FAB 2 Clicked")
+            onFab2Clicked()
+        }
+        binding.linearLayoutHomeFAB3.setOnClickListener {
+            Log.d(TAG, "onViewCreated: FAB 3 Clicked")
+            onFab3Clicked()
+        }
+        binding.fabHomeFAB1.setOnClickListener {
+            Log.d(TAG, "onViewCreated: FAB 1 Clicked")
+            onFab1Clicked()
+        }
+        binding.fabHomeFAB2.setOnClickListener {
+            Log.d(TAG, "onViewCreated: FAB 2 Clicked")
+            onFab2Clicked()
+        }
+        binding.fabHomeFAB3.setOnClickListener {
+            Log.d(TAG, "onViewCreated: FAB 3 Clicked")
+            onFab3Clicked()
+        }
+    }
+
+    //Start Exercise
+    private fun onFab3Clicked() {
+        Log.d(TAG, "onFab3Clicked: ")
+    }
+
+    //Add Exercise
+    private fun onFab2Clicked() {
+        Log.d(TAG, "onFab2Clicked: ")
         view?.let {
             it.findNavController().navigate(R.id.action_homeFragment_to_exerciseGroupFragment)
         }
     }
+
+    //Add Dashboard Item
+    private fun onFab1Clicked() {
+        Log.d(TAG, "onFab1Clicked: ")
+
+    }
+
+    private fun onMainFabClicked() {
+        Log.d(TAG, "onFabClicked: ")
+        if (isFabOpen) {
+            hideFabMenu()
+        } else {
+            showFabMenu()
+        }
+    }
+
+    private fun showFabMenu() {
+        isFabOpen = true
+        binding.viewHomeFABOverlay.visibility = View.VISIBLE
+        binding.linearLayoutHomeFAB1.visibility = View.VISIBLE
+        binding.linearLayoutHomeFAB2.visibility = View.VISIBLE
+        binding.linearLayoutHomeFAB3.visibility = View.VISIBLE
+        binding.fabHome.animate().rotation(135f)
+        binding.linearLayoutHomeFAB1.animate().translationY(-resources.getDimension(R.dimen.standard_75))
+        binding.linearLayoutHomeFAB2.animate().translationY(-resources.getDimension(R.dimen.standard_145))
+        binding.linearLayoutHomeFAB3.animate().translationY(-resources.getDimension(R.dimen.standard_215))
+
+    }
+
+    private fun hideFabMenu() {
+        isFabOpen = false
+        binding.viewHomeFABOverlay.visibility = View.GONE
+        binding.fabHome.animate().rotation(0f)
+        binding.linearLayoutHomeFAB1.animate().translationY(0f)
+        binding.linearLayoutHomeFAB2.animate().translationY(0f)
+        binding.linearLayoutHomeFAB3.animate().translationY(0f).withEndAction {
+            binding.linearLayoutHomeFAB1.visibility = View.GONE
+            binding.linearLayoutHomeFAB2.visibility = View.GONE
+            binding.linearLayoutHomeFAB3.visibility = View.GONE
+        }
+
+    }
+
 
 //    private fun populateCards() {
 ////        TODO("Not yet implemented")

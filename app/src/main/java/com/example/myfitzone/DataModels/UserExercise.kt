@@ -15,7 +15,7 @@ data class UserExercise(
     var timeAdded: Long   //unix time in seconds
 )
 
-/**
+/** USED
  * users    (Collection)
  *     -> UID  (Document)
  *     |        -> userExerciseList (Collection)
