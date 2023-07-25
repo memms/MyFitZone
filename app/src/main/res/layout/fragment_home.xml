@@ -20,10 +20,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-            <!-- Profile Image -->
-            <!-- Needs profile implementation -->
-
-
+    <!-- Profile Image -->
+    <!-- Needs profile implementation -->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/image_profile"
         android:layout_width="55dp"

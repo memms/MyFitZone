@@ -218,6 +218,7 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        isFabOpen = false
         _binding = null
     }
 
