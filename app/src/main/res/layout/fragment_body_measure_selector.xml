@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent">
+
+    <Button
+        android:id="@+id/close_button_body_measure"
+        android:layout_width="29dp"
+        android:layout_height="29dp"
+        android:background="@drawable/baseline_close_24"
+        android:layout_gravity="start"
+        android:layout_margin="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/title_body_measure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Body Metrics"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:id="@+id/constraint_layout_top_body_measure"
+        android:orientation="vertical"
+        tools:context=".Views.BodyMeasureSelectorFragment">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/linear_layout_top_body_measure"
+            app:layout_constraintTop_toBottomOf="@id/title_body_measure"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="20dp"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/core_metrics_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Core Metrtics"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:id="@+id/weight_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Weight"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/weight_value_body_measure"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+            </LinearLayout>
+
+            
+
+            <LinearLayout
+                android:id="@+id/body_fat_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Body Fat %"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/body_fat_value_body_measure"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/calories_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Calories"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/calories_value_body_measure"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:id="@+id/resting_heart_rate_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Resting Heart Rate"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/resting_heart_rate_value_body_measure"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:id="@+id/sleep_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sleep"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/sleep_value_body_measure"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/body_metrics_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Body Measurements"
+                android:layout_marginTop="20dp"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:id="@+id/neck_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Neck"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/neck_value_body_measure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/shoulder_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Shoulder"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/shoulder_value_body_measure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/right_arm_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Right Arm"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/right_arm_value_body_measure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/left_arm_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Left Arm"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/left_arm_value_body_measure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/right_forearm_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Right Forearm"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/right_forearm_value_body_measure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/left_forearm_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Left Forearm"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/left_forearm_value_body_measure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/upper_abs_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Upper Abs"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/upper_abs_value_body_measure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/waist_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Waist"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/waist_value_body_measure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/hips_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hips"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/hips_value_body_measure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/right_thigh_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Right Thigh"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/right_thigh_value_body_measure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/left_thigh_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Left Thigh"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/left_thigh_value_body_measure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/right_calf_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Right Calf"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/right_calf_value_body_measure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/left_calf_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Left Calf"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/left_calf_value_body_measure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+</LinearLayout>

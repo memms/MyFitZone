@@ -119,6 +119,13 @@
             app:popEnterAnim="@anim/push_down_in"
             android:id="@+id/action_homeFragment_to_exerciseGroupFragment"
             app:destination="@id/exerciseGroupFragment" />
+        <action
+            app:enterAnim="@anim/push_up_in"
+            app:exitAnim="@anim/push_up_out"
+            app:popExitAnim="@anim/push_down_out"
+            app:popEnterAnim="@anim/push_down_in"
+            android:id="@+id/action_homeFragment_to_bodyMeasureSelectorFragment"
+            app:destination="@id/bodyMeasureSelectorFragment" />
     </fragment>
     <fragment
         android:id="@+id/trackFragment"
@@ -201,6 +208,15 @@
         android:name="com.example.myfitzone.Views.ExerciseViews.AddUserExerciseFragment"
         android:label="fragment_add_user_exercise"
         tools:layout="@layout/fragment_add_user_exercise">
+        <argument
+            android:name="ShowNavBar"
+            android:defaultValue="false"/>
+    </fragment>
+    <fragment
+        android:id="@+id/bodyMeasureSelectorFragment"
+        android:name="com.example.myfitzone.Views.BodyMeasureSelectorFragment"
+        android:label="fragment_body_measure_selector"
+        tools:layout="@layout/fragment_body_measure_selector" >
         <argument
             android:name="ShowNavBar"
             android:defaultValue="false"/>

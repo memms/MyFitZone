@@ -128,6 +128,10 @@ class HomeFragment : Fragment() {
             Log.d(TAG, "onViewCreated: FAB 3 Clicked")
             onFab3Clicked()
         }
+        binding.linearLayoutHomeFAB4.setOnClickListener {
+            Log.d(TAG, "onViewCreated: FAB 4 Clicked")
+            onFab4Clicked()
+        }
         binding.fabHomeFAB1.setOnClickListener {
             Log.d(TAG, "onViewCreated: FAB 1 Clicked")
             onFab1Clicked()
@@ -140,11 +144,23 @@ class HomeFragment : Fragment() {
             Log.d(TAG, "onViewCreated: FAB 3 Clicked")
             onFab3Clicked()
         }
+        binding.fabHomeFAB4.setOnClickListener {
+            Log.d(TAG, "onViewCreated: FAB 4 Clicked")
+            onFab4Clicked()
+        }
     }
 
     //Start Exercise
+    private fun onFab4Clicked() {
+        TODO("Not yet implemented")
+    }
+
+    //Add Body Measure
     private fun onFab3Clicked() {
         Log.d(TAG, "onFab3Clicked: ")
+        view?.let {
+            it.findNavController().navigate(R.id.action_homeFragment_to_bodyMeasureSelectorFragment)
+        }
     }
 
     //Add Exercise
@@ -176,10 +192,12 @@ class HomeFragment : Fragment() {
         binding.linearLayoutHomeFAB1.visibility = View.VISIBLE
         binding.linearLayoutHomeFAB2.visibility = View.VISIBLE
         binding.linearLayoutHomeFAB3.visibility = View.VISIBLE
+        binding.linearLayoutHomeFAB4.visibility = View.VISIBLE
         binding.fabHome.animate().rotation(135f)
         binding.linearLayoutHomeFAB1.animate().translationY(-resources.getDimension(R.dimen.standard_75))
         binding.linearLayoutHomeFAB2.animate().translationY(-resources.getDimension(R.dimen.standard_145))
         binding.linearLayoutHomeFAB3.animate().translationY(-resources.getDimension(R.dimen.standard_215))
+        binding.linearLayoutHomeFAB4.animate().translationY(-resources.getDimension(R.dimen.standard_285))
 
     }
 
@@ -189,10 +207,12 @@ class HomeFragment : Fragment() {
         binding.fabHome.animate().rotation(0f)
         binding.linearLayoutHomeFAB1.animate().translationY(0f)
         binding.linearLayoutHomeFAB2.animate().translationY(0f)
-        binding.linearLayoutHomeFAB3.animate().translationY(0f).withEndAction {
+        binding.linearLayoutHomeFAB3.animate().translationY(0f)
+        binding.linearLayoutHomeFAB4.animate().translationY(0f).withEndAction {
             binding.linearLayoutHomeFAB1.visibility = View.GONE
             binding.linearLayoutHomeFAB2.visibility = View.GONE
             binding.linearLayoutHomeFAB3.visibility = View.GONE
+            binding.linearLayoutHomeFAB4.visibility = View.GONE
         }
 
     }
