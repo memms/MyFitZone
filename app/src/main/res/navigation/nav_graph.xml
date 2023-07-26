@@ -220,5 +220,17 @@
         <argument
             android:name="ShowNavBar"
             android:defaultValue="false"/>
+        <action
+            android:id="@+id/action_bodyMeasureSelectorFragment_to_bodyMeasureMetricsFragment"
+            app:destination="@id/bodyMeasureMetricsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/bodyMeasureMetricsFragment"
+        android:name="com.example.myfitzone.Views.bodyMeasureMetricsFragment"
+        android:label="fragment_body_measure_metrics"
+        tools:layout="@layout/fragment_body_measure_metrics" >
+        <argument
+            android:name="ShowNavBar"
+            android:defaultValue="false"/>
     </fragment>
 </navigation>

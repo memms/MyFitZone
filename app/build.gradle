@@ -36,7 +36,7 @@ android {
     }
     buildFeatures {
         compose true
-        viewBinding = true
+        viewBinding true
     }
     composeOptions {
         kotlinCompilerExtensionVersion '1.4.7'
@@ -86,5 +86,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx:22.0.0'
     implementation 'com.google.firebase:firebase-storage-ktx:20.2.1'
     implementation 'com.google.firebase:firebase-firestore-ktx:24.6.1'
+
+    //Graphs
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
 }

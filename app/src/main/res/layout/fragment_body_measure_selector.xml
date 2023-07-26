@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    tools:context=".Views.BodyMeasureSelectorFragment">
 
     <Button
         android:id="@+id/close_button_body_measure"
@@ -211,6 +212,27 @@
 
                 <TextView
                     android:id="@+id/shoulder_value_body_measure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="28910073"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/chest_layout_body_measure"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chest"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:id="@+id/chest_value_body_measure"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="28910073"/>
