@@ -29,4 +29,9 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+
+    <style name="RoundedCornersDialog" parent="Theme.AppCompat.Light.Dialog.MinWidth">
+        <item name="dialogCornerRadius">15dp</item>
+    </style>
+
 </resources>

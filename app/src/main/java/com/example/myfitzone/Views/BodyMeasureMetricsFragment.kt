@@ -1,10 +1,16 @@
 package com.example.myfitzone.Views
 
+import android.app.AlertDialog
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
+import androidx.compose.ui.graphics.Color
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.myfitzone.Models.UserBodyMeasureModel
@@ -49,8 +55,39 @@ class bodyMeasureMetricsFragment : Fragment() {
     }
 
     private fun addEntryOnClick() {
-        TODO("Not yet implemented")
-    }
 
+        val mView = layoutInflater.inflate(R.layout.dialog_body_measure, null)
+        val valueEditText = mView.findViewById<EditText>(R.id.value_body_measure_dialog)
+        val unitTextView = mView.findViewById<TextView>(R.id.unit_body_measure_dialog)
+        val date = mView.findViewById<TextView>(R.id.date_body_measure_dialog)
+        val builder = AlertDialog.Builder(requireContext(), R.style.RoundedCornersDialog)
+            .setTitle(selectedName)
+            .setPositiveButton("Add", null)
+            .setNeutralButton("Cancel", null)
+            .setView(mView)
+            .create()
+
+        builder.setOnShowListener {
+            builder.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setOnClickListener {
+                    if (valueEditText.text.toString().isEmpty()) {
+                        Toast.makeText(requireContext(), "Please enter a value", Toast.LENGTH_SHORT)
+                            .show()
+                    } else {
+                        Log.d(TAG, "addEntryOnClick: ${valueEditText.text.toString()}")
+                        builder.dismiss()
+                    }
+                }
+            builder.getButton(AlertDialog.BUTTON_NEUTRAL)
+                .setOnClickListener {
+                    builder.dismiss()
+                }
+        }
+        builder.window?.setLayout(
+            10, 10
+        )
+        builder.show()
+
+    }
 
 }
