@@ -1,6 +1,6 @@
 package com.example.myfitzone.DataModels
 
-class FieldUnits(){
+class FieldUnits {
     companion object {
         fun valueOf(attribute: String): Int {
             return when (table[attribute]) {
@@ -10,11 +10,24 @@ class FieldUnits(){
                 else -> -1
             }
         }
-
         fun unitOf(attribute: String): String {
             //TODO: add user settings to determine units
             return tableUnitsImperial[attribute]!!
         }
+        fun unitOfBody(attribute: String): String {
+            //TODO: add user settings to determine units
+            return when (tableBodyUnitsImperial[attribute]) {
+                null -> "in"
+                else -> tableBodyUnitsImperial[attribute]!!
+            }
+        }
+        private val tableBodyUnitsImperial: Map<String, String> = mapOf(
+            "Weight" to "lbs",
+            "Body Fat %" to "%",
+            "Calories" to "kcal",
+            "Resting Heart Rate" to "bpm",
+            "Sleep" to "hrs",
+        )
         private val tableUnitsMetrics: Map<String, String> = mapOf(
             "Weight" to "kg",
             "Reps" to "reps",

@@ -1,21 +1,26 @@
 package com.example.myfitzone.Views
 
+import android.app.ActionBar.LayoutParams
 import android.app.AlertDialog
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Density
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.myfitzone.DataModels.FieldUnits
 import com.example.myfitzone.Models.UserBodyMeasureModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.FragmentBodyMeasureMetricsBinding
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 
 class bodyMeasureMetricsFragment : Fragment() {
@@ -60,6 +65,12 @@ class bodyMeasureMetricsFragment : Fragment() {
         val valueEditText = mView.findViewById<EditText>(R.id.value_body_measure_dialog)
         val unitTextView = mView.findViewById<TextView>(R.id.unit_body_measure_dialog)
         val date = mView.findViewById<TextView>(R.id.date_body_measure_dialog)
+        val formatter = SimpleDateFormat("MM/dd/yyyy")
+        date.text = formatter.format(Calendar.getInstance().time)
+        date.setOnClickListener {
+            TODO()
+        }
+        unitTextView.text = FieldUnits.unitOfBody(selectedName)
         val builder = AlertDialog.Builder(requireContext(), R.style.RoundedCornersDialog)
             .setTitle(selectedName)
             .setPositiveButton("Add", null)
@@ -68,6 +79,7 @@ class bodyMeasureMetricsFragment : Fragment() {
             .create()
 
         builder.setOnShowListener {
+            builder.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(R.color.colorPrimary))
             builder.getButton(AlertDialog.BUTTON_POSITIVE)
                 .setOnClickListener {
                     if (valueEditText.text.toString().isEmpty()) {
@@ -78,15 +90,19 @@ class bodyMeasureMetricsFragment : Fragment() {
                         builder.dismiss()
                     }
                 }
+            builder.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(resources.getColor(R.color.colorPrimary))
             builder.getButton(AlertDialog.BUTTON_NEUTRAL)
                 .setOnClickListener {
                     builder.dismiss()
                 }
         }
-        builder.window?.setLayout(
-            10, 10
-        )
         builder.show()
+        val phoneWidth = resources.displayMetrics.widthPixels/1.3
+        builder.window!!.attributes = builder.window!!.attributes.apply {
+            width = phoneWidth.toInt()
+            height = LayoutParams.WRAP_CONTENT
+        }
+
 
     }
 

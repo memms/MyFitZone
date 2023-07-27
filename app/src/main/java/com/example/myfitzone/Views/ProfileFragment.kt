@@ -8,10 +8,8 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import com.example.myfitzone.MainActivity
 import com.example.myfitzone.Models.AuthenticationModel
 import com.example.myfitzone.R
-import com.example.myfitzone.databinding.FragmentHomeBinding
 import com.example.myfitzone.databinding.FragmentProfileBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -41,7 +39,7 @@ class ProfileFragment : Fragment() {
 
     private fun showBottomSheetDialog() {
         val bottomSheetFragment: BottomSheetDialog = BottomSheetDialog(requireContext())
-        bottomSheetFragment.setContentView(R.layout.profile_dialog)
+        bottomSheetFragment.setContentView(R.layout.dialog_profile)
         bottomSheetFragment.show()
         bottomSheetFragment.findViewById<LinearLayout>(R.id.logout_row_profile_diag)?.setOnClickListener {
             bottomSheetFragment.dismiss()

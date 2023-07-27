@@ -196,7 +196,7 @@ class UserDetailsFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     fun weightAlertBuilder(){
         val builder = AlertDialog.Builder(requireContext())
-        val mView = layoutInflater.inflate(R.layout.numberpicker_dialog, null)
+        val mView = layoutInflater.inflate(R.layout.dialog_numberpicker, null)
         val numberPicker1 = mView.findViewById<NumberPicker>(R.id.weight_int_picker)
         with(numberPicker1){
             minValue = 1
@@ -233,7 +233,7 @@ class UserDetailsFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     fun heightAlertBuilder(){
         val builder = AlertDialog.Builder(requireContext())
-        val mView = layoutInflater.inflate(R.layout.numberpicker_dialog, null)
+        val mView = layoutInflater.inflate(R.layout.dialog_numberpicker, null)
         mView.let {
             it.findViewById<TextView>(R.id.decimal).text = "ft"
             it.findViewById<TextView>(R.id.units_end).text = "in"

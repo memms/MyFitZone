@@ -30,7 +30,7 @@
         <item name="cornerSize">50%</item>
     </style>
 
-    <style name="RoundedCornersDialog" parent="Theme.AppCompat.Light.Dialog.MinWidth">
+    <style name="RoundedCornersDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="dialogCornerRadius">15dp</item>
     </style>
 
