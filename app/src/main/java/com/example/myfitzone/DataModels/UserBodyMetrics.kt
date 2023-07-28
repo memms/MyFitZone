@@ -1,12 +1,11 @@
 package com.example.myfitzone.DataModels
 
-import com.google.firebase.firestore.FieldValue
-import java.sql.Timestamp
+import com.google.firebase.firestore.PropertyName
 
 data class UserBodyMetrics(
-    val timestamp: Long,
-    val metricType: String,
-    val metricName: String,
-    val metricValue: Double,
-    val dateLastModified: Long
+    @PropertyName("timestamp")val timestamp: Long,
+    @PropertyName("metricType")val metricType: String,
+    @PropertyName("metricName")val metricName: String,
+    @PropertyName("metricValue")val metricValue: Double,
+    @PropertyName("dateLastModified")val dateLastModified: Long
 )

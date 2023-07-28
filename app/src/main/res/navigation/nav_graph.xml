@@ -221,6 +221,10 @@
             android:name="ShowNavBar"
             android:defaultValue="false"/>
         <action
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_left"
             android:id="@+id/action_bodyMeasureSelectorFragment_to_bodyMeasureMetricsFragment"
             app:destination="@id/bodyMeasureMetricsFragment" />
     </fragment>

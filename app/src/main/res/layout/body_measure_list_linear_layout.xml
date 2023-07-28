@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:orientation="horizontal"
-    android:paddingVertical="5dp"
+    android:clickable="true"
+    android:padding="10dp"
     android:layout_height="wrap_content">
 
     <TextView
@@ -12,8 +13,9 @@
         android:layout_height="match_parent"
         android:gravity="left"
         android:text="{Date}"
+        android:textStyle="bold"
         android:textColor="@color/black"
-        android:textSize="26sp"/>
+        android:textSize="20sp"/>
 
     <TextView
         android:id="@+id/time_body_measure_list"
@@ -21,7 +23,7 @@
         android:layout_height="match_parent"
         android:text="{time}"
         android:gravity="left"
-        android:textSize="26sp"
+        android:textSize="20sp"
         android:layout_marginLeft="10dp"
         android:layout_weight="1"/>
 
@@ -32,15 +34,14 @@
         android:gravity="right"
         android:text="{value}"
         android:textStyle="bold"
-        android:textSize="26sp" />
+        android:textSize="20sp" />
     <TextView
         android:id="@+id/unit_body_measure_list"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="right"
         android:text="{unit}"
-        android:textStyle="bold"
         android:layout_marginLeft="5dp"
-        android:textSize="26sp" />
+        android:textSize="20sp" />
 
 </LinearLayout>
