@@ -68,10 +68,12 @@ class bodyMeasureMetricsFragment : Fragment() {
         adapter = BodyMetricAdapter()
         binding.entriesRecyclerViewBodyMeasureMetrics.adapter = adapter
         binding.entriesRecyclerViewBodyMeasureMetrics.layoutManager = LinearLayoutManager(requireContext())
+        
         getBodyMeasurementHistory()
     }
 
     private fun getBodyMeasurementHistory() {
+        list.clear()
         userBodyMeasureModel.getSelectedBodyMeasureMetrics(object : FirestoreGetCompleteAny{
             override fun onGetComplete(result: Any) {
                 val listL = result as MutableMap<Long, UserBodyMetrics>
