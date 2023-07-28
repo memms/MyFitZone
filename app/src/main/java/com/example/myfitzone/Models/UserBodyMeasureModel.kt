@@ -6,6 +6,7 @@ import com.example.myfitzone.Callbacks.FirestoreGetCompleteAny
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.DataModels.UserBodyMetrics
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -99,8 +100,26 @@ class UserBodyMeasureModel: ViewModel() {
 
     fun deleteBodyMeasurement(
         userBodyMetrics: UserBodyMetrics,
-        param: FirestoreGetCompleteCallbackArrayList
+        callback: FirestoreGetCompleteCallbackArrayList
     ) {
+        val userID = Firebase.auth.currentUser?.uid
+        if(userID== null){
+            callback.onGetFailure("User not logged in")
+            return
+        }
+        val simpleDateFormat = SimpleDateFormat("yyyy-MM")
+        val formated = simpleDateFormat.format(userBodyMetrics.timestamp)
+        db.collection("users")
+            .document(userID)
+            .collection("userBodyMeasurements")
+            .document(formated)
+            .update("${userBodyMetrics.timestamp}", FieldValue.delete())
+            .addOnSuccessListener {
+                callback.onGetComplete(arrayListOf("Success"))
+            }
+            .addOnFailureListener { e ->
+                callback.onGetFailure(e.toString())
+            }
 
     }
 
