@@ -1,5 +1,6 @@
 package com.example.myfitzone.Models
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.DataModels.UserBodyMetrics
@@ -34,7 +35,8 @@ class UserBodyMeasureModel: ViewModel() {
             "${userBodyMetrics.timestamp}" to userBodyMetrics
         )
         val simpleDateFormat = SimpleDateFormat("yyyy-MM")
-        val formated = simpleDateFormat.format(System.currentTimeMillis())
+        val formated = simpleDateFormat.format(userBodyMetrics.timestamp)
+
 
         db.collection("users")
             .document(userID)
@@ -45,7 +47,7 @@ class UserBodyMeasureModel: ViewModel() {
                 mycallBack.onGetComplete(arrayListOf("Success"))
             }
             .addOnFailureListener { e ->
-                mycallBack.onGetFailure("Error adding new body measurement")
+                mycallBack.onGetFailure(e.toString())
             }
 
     }
