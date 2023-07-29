@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout9"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Views.DashboardTypeSelectorFragment">
+
+
+    <Button
+        android:id="@+id/close_button_dashboard_type_selector"
+        android:layout_width="29dp"
+        android:layout_height="29dp"
+        android:background="@drawable/baseline_close_24"
+        android:layout_gravity="start"
+        android:layout_margin="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/dashboard_type_selector_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:text="Select Type:"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/close_button_dashboard_type_selector"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <LinearLayout
+        android:id="@+id/dashboard_type_selector_layout_body_measurement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="20dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@+id/dashboard_type_selector_title">
+
+        <TextView
+            android:id="@+id/dashboard_type_selector_body_measurement"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Body Measurement Dashboard"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:textColor="@color/black"
+            android:textSize="18sp"/>
+
+        <Button
+            android:id="@+id/dashboard_type_selector_body_measurement_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/baseline_arrow_forward_ios_24"
+            android:layout_gravity="end"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dashboard_type_selector_layout_exercise_measurement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="20dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@+id/dashboard_type_selector_layout_body_measurement">
+
+        <TextView
+            android:id="@+id/dashboard_type_selector_exercise_measurement"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Exercise Dashboard"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:textColor="@color/black"
+            android:textSize="18sp"/>
+
+        <Button
+            android:id="@+id/dashboard_type_selector_exercise_measurement_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/baseline_arrow_forward_ios_24"
+            android:layout_gravity="end"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dashboard_type_selector_layout_sensor_measurement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="20dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@+id/dashboard_type_selector_layout_exercise_measurement">
+
+        <TextView
+            android:id="@+id/dashboard_type_selector_sensor_measurement"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sensor Dashboard"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:textColor="@color/black"
+            android:textSize="18sp"/>
+
+        <Button
+            android:id="@+id/dashboard_type_selector_sensor_measurement_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/baseline_arrow_forward_ios_24"
+            android:layout_gravity="end"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dashboard_type_selector_layout_analytics_measurement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="20dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@+id/dashboard_type_selector_layout_sensor_measurement">
+
+        <TextView
+            android:id="@+id/dashboard_type_selector_analytics_measurement"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Analytics Dashboard"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:textColor="@color/black"
+            android:textSize="18sp"/>
+
+        <Button
+            android:id="@+id/dashboard_type_selector_analytics_measurement_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:background="@drawable/baseline_arrow_forward_ios_24"
+            android:layout_gravity="end"/>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -174,7 +174,9 @@ class HomeFragment : Fragment() {
     //Add Dashboard Item
     private fun onFab1Clicked() {
         Log.d(TAG, "onFab1Clicked: ")
-
+        view?.let {
+            it.findNavController().navigate(R.id.action_homeFragment_to_dashboardTypeSelectorFragment)
+        }
     }
 
     private fun onMainFabClicked() {

@@ -126,6 +126,9 @@
             app:popEnterAnim="@anim/push_down_in"
             android:id="@+id/action_homeFragment_to_bodyMeasureSelectorFragment"
             app:destination="@id/bodyMeasureSelectorFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_dashboardTypeSelectorFragment"
+            app:destination="@id/dashboardTypeSelectorFragment" />
     </fragment>
     <fragment
         android:id="@+id/trackFragment"
@@ -237,4 +240,17 @@
             android:name="ShowNavBar"
             android:defaultValue="false"/>
     </fragment>
+    <fragment
+        android:id="@+id/dashboardTypeSelectorFragment"
+        android:name="com.example.myfitzone.Views.DashboardTypeSelectorFragment"
+        android:label="fragment_dashboard_type_selector"
+        tools:layout="@layout/fragment_dashboard_type_selector" >
+        <action
+            android:id="@+id/action_dashboardTypeSelectorFragment_to_bodyMeasureDashboardSelector"
+            app:destination="@id/bodyMeasureDashboardSelector" />
+    </fragment>
+    <fragment
+        android:id="@+id/bodyMeasureDashboardSelector"
+        android:name="com.example.myfitzone.Views.BodyMeasureDashboardSelector"
+        android:label="BodyMeasureDashboardSelector" />
 </navigation>
