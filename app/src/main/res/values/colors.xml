@@ -22,4 +22,5 @@
     <color name= "red">	#FF0000</color>
 
     <color name="transparentBG">#26000000</color>
+    <color name="lessTransparentBG">#FFFFFFFF</color>
 </resources>

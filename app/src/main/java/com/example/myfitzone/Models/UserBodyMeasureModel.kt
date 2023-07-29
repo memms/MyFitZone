@@ -6,12 +6,14 @@ import com.example.myfitzone.Callbacks.FirestoreGetCompleteAny
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.DataModels.UserBodyMetrics
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.time.Instant
+import java.util.Calendar.DAY_OF_MONTH
 
 class UserBodyMeasureModel: ViewModel() {
     private val TAG = "UserBodyMeasureModel"
@@ -29,15 +31,57 @@ class UserBodyMeasureModel: ViewModel() {
             return
         }
         val simpleDateFormat = SimpleDateFormat("yyyy-MM")
-        val formated = simpleDateFormat.format(Instant.now().toEpochMilli())
+        val range = arrayListOf(Instant.now().toEpochMilli(), Instant.now().toEpochMilli()-2592000000)
+        var formated = simpleDateFormat.format(range[0])
+        Log.d(TAG, "getSelectedBodyMeasureMetrics: formated1 $formated")
+
+
         var list = mutableMapOf<Long,UserBodyMetrics>()
-        db.collection("users")
+        val docRef = db.collection("users")
             .document(userID)
             .collection("userBodyMeasurements")
-            .document(formated)
+
+
+        docRef.document(formated)
+        .get()
+        .addOnSuccessListener { document ->
+            if(document.exists()){
+                document.data!!.forEach {
+                    val userBodyMetrics = it.value as HashMap<String, Any>
+                    val userBodyMetricsObject = UserBodyMetrics(
+                        userBodyMetrics["timestamp"] as Long,
+                        userBodyMetrics["metricType"] as String,
+                        userBodyMetrics["metricName"] as String,
+                        userBodyMetrics["metricValue"] as Double,
+                        userBodyMetrics["dateLastModified"] as Long
+                    )
+                    if(userBodyMetricsObject.metricName == selectedName){
+                        list[userBodyMetricsObject.timestamp] = userBodyMetricsObject
+                    }
+                }
+                list = list.toSortedMap()
+                Log.d(TAG, "getSelectedBodyMeasureMetrics: filteredList $list")
+                callback.onGetComplete(list)
+//                    Log.d(TAG, "getSelectedBodyMeasureMetrics: list $list")
+            }
+            else{
+                Log.d(TAG, "getSelectedBodyMeasureMetrics: No data")
+            }
+        }
+        .addOnFailureListener { exception ->
+            Log.w(TAG, "Error getting documents: ", exception)
+            callback.onGetFailure(exception.toString())
+        }
+
+        val cal = java.util.Calendar.getInstance()
+        cal.timeInMillis = range[0]
+        cal.set(DAY_OF_MONTH, -1)
+        formated = simpleDateFormat.format(cal.timeInMillis)
+        Log.d(TAG, "getSelectedBodyMeasureMetrics: formated2 $formated")
+        docRef.document(formated)
             .get()
             .addOnSuccessListener { document ->
-                Log.d(TAG, "getSelectedBodyMeasureMetrics: doc $document")
+//                Log.d(TAG, "getSelectedBodyMeasureMetrics: doc $document")
                 if(document.exists()){
                     document.data!!.forEach {
                         val userBodyMetrics = it.value as HashMap<String, Any>
@@ -48,7 +92,7 @@ class UserBodyMeasureModel: ViewModel() {
                             userBodyMetrics["metricValue"] as Double,
                             userBodyMetrics["dateLastModified"] as Long
                         )
-                        if(userBodyMetricsObject.metricName == selectedName){
+                        if(userBodyMetricsObject.metricName == selectedName && userBodyMetricsObject.timestamp > range[1] && userBodyMetricsObject.timestamp < range[0]){
                             list[userBodyMetricsObject.timestamp] = userBodyMetricsObject
                         }
                     }
