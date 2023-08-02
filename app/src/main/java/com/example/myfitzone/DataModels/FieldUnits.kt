@@ -20,7 +20,18 @@ class FieldUnits {
                 null -> "in"
                 else -> tableBodyUnitsImperial[attribute]!!
             }
+//            return when (tableBodyUnitsMetric[attribute]){
+//                null -> "m"
+//                else -> tableBodyUnitsMetric[attribute]!!
+//            }
         }
+        private val tableBodyUnitsMetric: Map<String, String> = mapOf(
+            "Weight" to "kg",
+            "Body Fat %" to "%",
+            "Calories" to "kcal",
+            "Resting Heart Rate" to "bpm",
+            "Sleep" to "hrs",
+        )
         private val tableBodyUnitsImperial: Map<String, String> = mapOf(
             "Weight" to "lbs",
             "Body Fat %" to "%",

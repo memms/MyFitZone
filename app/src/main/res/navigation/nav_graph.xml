@@ -82,7 +82,7 @@
 
     <fragment
         android:id="@+id/preferencesFragment"
-        android:name="com.example.myfitzone.Views.PreferencesFragment"
+        android:name="com.example.myfitzone.Views.MainViews.PreferencesFragment"
         android:label="fragment_preferences"
         tools:layout="@layout/fragment_preferences">
         <argument
@@ -103,7 +103,7 @@
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.myfitzone.Views.HomeFragment"
+        android:name="com.example.myfitzone.Views.MainViews.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
         <argument
@@ -132,7 +132,7 @@
     </fragment>
     <fragment
         android:id="@+id/trackFragment"
-        android:name="com.example.myfitzone.Views.TrackFragment"
+        android:name="com.example.myfitzone.Views.MainViews.TrackFragment"
         android:label="fragment_track"
         tools:layout="@layout/fragment_track">
         <argument
@@ -141,7 +141,7 @@
     </fragment>
     <fragment
         android:id="@+id/friendsFragment"
-        android:name="com.example.myfitzone.Views.FriendsFragment"
+        android:name="com.example.myfitzone.Views.MainViews.FriendsFragment"
         android:label="fragment_friends"
         tools:layout="@layout/fragment_friends">
         <argument
@@ -242,7 +242,7 @@
     </fragment>
     <fragment
         android:id="@+id/dashboardTypeSelectorFragment"
-        android:name="com.example.myfitzone.Views.DashboardTypeSelectorFragment"
+        android:name="com.example.myfitzone.Views.DashboardViews.DashboardTypeSelectorFragment"
         android:label="fragment_dashboard_type_selector"
         tools:layout="@layout/fragment_dashboard_type_selector" >
         <action
@@ -251,6 +251,8 @@
     </fragment>
     <fragment
         android:id="@+id/bodyMeasureDashboardSelector"
-        android:name="com.example.myfitzone.Views.BodyMeasureDashboardSelector"
-        android:label="BodyMeasureDashboardSelector" />
+        android:name="com.example.myfitzone.Views.DashboardViews.BodyMeasureDashboardSelector"
+        android:label="BodyMeasureDashboardSelector" >
+    </fragment>
+
 </navigation>

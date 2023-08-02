@@ -1,4 +1,4 @@
-package com.example.myfitzone.Views
+package com.example.myfitzone.Views.MainViews
 
 import android.os.Bundle
 import android.util.Log
@@ -13,13 +13,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myfitzone.DataModels.DashboardRecyclerData
 import com.example.myfitzone.Models.UserDetailModel
-import com.example.myfitzone.Models.UserNewExercisesModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.DashboardCardviewBinding
 import com.example.myfitzone.databinding.FragmentHomeBinding
 
 
 class HomeFragment : Fragment() {
+
+
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -30,7 +31,6 @@ class HomeFragment : Fragment() {
 
     private val TAG = "HomeFragment"
     private lateinit var loggedInUser : UserDetailModel
-    private lateinit var exerciseModel: UserNewExercisesModel
     private var isFabOpen = false
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -60,7 +60,6 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         loggedInUser = ViewModelProvider(requireActivity())[UserDetailModel::class.java]
-        exerciseModel = ViewModelProvider(requireActivity())[UserNewExercisesModel::class.java]
 
         Log.d(TAG, "onViewCreated: ${loggedInUser.getUser().toString()}")
 
@@ -220,15 +219,7 @@ class HomeFragment : Fragment() {
     }
 
 
-//    private fun populateCards() {
-////        TODO("Not yet implemented")
-//        val exercises = exerciseModel.getUserExercises()
-//        for (exercise in exercises) {
-////            dataList.add(DashboardRecyclerData(exercise.name, exercise.image, exercise.map["value"].toString(),
-////                exercise.map["unit"].toString(), "Updated: "))
-//        }
-//
-//    }
+
 
     private fun onProfileImageClicked() {
 //        TODO("Not yet implemented")

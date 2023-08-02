@@ -3,7 +3,6 @@ package com.example.myfitzone.Models
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.myfitzone.DataModels.User
-import java.util.Calendar
 
 class UserDetailModel : ViewModel() {
     private val TAG = "UserDetailModel"

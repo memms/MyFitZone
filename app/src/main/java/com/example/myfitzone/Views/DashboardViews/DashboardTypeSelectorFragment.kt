@@ -1,4 +1,4 @@
-package com.example.myfitzone.Views
+package com.example.myfitzone.Views.DashboardViews
 
 import android.os.Bundle
 import android.view.LayoutInflater
