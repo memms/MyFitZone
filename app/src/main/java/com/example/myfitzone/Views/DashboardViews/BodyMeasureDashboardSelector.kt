@@ -14,7 +14,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackHashMap
+import com.example.myfitzone.DataModels.DashboardRecyclerData
 import com.example.myfitzone.DataModels.DashboardTemplateData
 import com.example.myfitzone.Models.DashboardModel
 import com.example.myfitzone.R
@@ -279,11 +281,23 @@ class BodyMeasureDashboardSelector: Fragment(), View.OnClickListener {
                     if (finalValueType != "") {
                         Log.d(TAG, "onClick: $finalValueType")
                         //TODO: Add dashboard to list
-//                        dashboardModel.setDashboardAddType("bodyMeasure")
-//                        dashboardModel.setValueAddType(finalValueType)
-//                        dashboardModel.setDashboardTemplate(map[dashboardModel.getValueAddName()]!!)
-//                        dashboardModel.addDashboard()
-                        builder.dismiss()
+                        val itemAdd = DashboardRecyclerData(
+                            "${dashboardModel.getValueAddName()} ($finalValueType)",
+                            "", //TODO: Make a logo selector.
+                            "",
+                            map[dashboardModel.getValueAddName()]!!.unit,
+                            0,
+                            0
+                        )
+                        dashboardModel.startAddBodyMeasureDashBoard(itemAdd, callback = object: FirestoreGetCompleteCallbackArrayList{
+                            override fun onGetComplete(result: ArrayList<String>) {
+                                builder.dismiss()
+                            }
+
+                            override fun onGetFailure(string: String) {
+                                Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+                            }
+                        })
                     } else {
                         Toast.makeText(
                             requireContext(),
