@@ -12,10 +12,13 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myfitzone.DataModels.DashboardRecyclerData
+import com.example.myfitzone.Models.DashboardModel
 import com.example.myfitzone.Models.UserDetailModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.DashboardCardviewBinding
 import com.example.myfitzone.databinding.FragmentHomeBinding
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 
 class HomeFragment : Fragment() {
@@ -28,6 +31,7 @@ class HomeFragment : Fragment() {
     private lateinit var dashboardCardAdapter: DashCardRecyclerAdapter
     private lateinit var recyclerView: RecyclerView
     private var dataList = mutableListOf<DashboardRecyclerData>()
+    private lateinit var dashboardModel: DashboardModel
 
     private val TAG = "HomeFragment"
     private lateinit var loggedInUser : UserDetailModel
@@ -83,7 +87,14 @@ class HomeFragment : Fragment() {
 //        dataList.add(DashboardRecyclerData("Body Temperature", "", "98.6", "°F", 0, 0))
 //        dataList.add(DashboardRecyclerData("Oxygen Saturation", "", "98", "%", 0, 0))
 //        dataList.add(DashboardRecyclerData("Respiratory Rate", "", "16", "breaths/min", 0, 0))
-
+        dashboardModel = ViewModelProvider(requireActivity())[DashboardModel::class.java]
+        dashboardModel.getDashLiveData().observe(viewLifecycleOwner, {
+            Log.d(TAG, "onViewCreated: ${it.toString()}")
+            dataList.clear()
+            dataList.addAll(it)
+            dashboardCardAdapter.setDashCardList(dataList)
+            dashboardCardAdapter.notifyDataSetChanged()
+        })
         recyclerView = binding.recyclerViewHome
         recyclerView.layoutManager = GridLayoutManager(context, 2)
         dashboardCardAdapter = DashCardRecyclerAdapter()
@@ -263,7 +274,10 @@ class HomeFragment : Fragment() {
             holder.view.cardName.text = dashCardList[position].cardName
             holder.view.cardValue.text = dashCardList[position].cardValue
             holder.view.cardUnit.text = dashCardList[position].cardUnit
-            holder.view.cardUpdated.text = dashCardList[position].cardUpdated.toString()
+            val calendar = Calendar.getInstance()
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss a")
+            calendar.timeInMillis = dashCardList[position].cardUpdated
+            holder.view.cardUpdated.text = dateFormat.format(calendar.time)
 //            TODO: Uncomment this when the images are added to the project
 //            holder.view.cardLogo.setImageResource(dashCardList[position].cardLogo.toInt())
 

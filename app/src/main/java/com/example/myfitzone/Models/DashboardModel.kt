@@ -27,6 +27,10 @@ class DashboardModel: ViewModel() {
     private var dashboardItems = mutableListOf<DashboardRecyclerData>()
     private var liveData = MutableLiveData<List<DashboardRecyclerData>>()
 
+    fun getDashLiveData(): MutableLiveData<List<DashboardRecyclerData>>{
+        return liveData
+    }
+
     fun getDashboardTemplate(callback: FirestoreGetCompleteCallbackHashMap){
         if(dashboardAddType == ""|| valueAddName == ""){
             return
@@ -92,6 +96,7 @@ class DashboardModel: ViewModel() {
             .addOnSuccessListener {
                 Log.d(TAG, "DocumentSnapshot successfully written!")
                 dashboardItems.add(realDashboardRecyclerData)
+                liveData.value = dashboardItems
                 callback.onGetComplete(arrayListOf("success"))
                 Log.d(TAG, "addBodyMeasureDashBoard: $dashboardItems")
             }
