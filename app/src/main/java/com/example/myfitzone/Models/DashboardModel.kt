@@ -11,6 +11,7 @@ import com.example.myfitzone.DataModels.DashboardTemplateData
 import com.example.myfitzone.DataModels.UserBodyMetrics
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.time.Instant
@@ -30,6 +31,51 @@ class DashboardModel: ViewModel() {
     fun getDashLiveData(): MutableLiveData<List<DashboardRecyclerData>>{
         return liveData
     }
+
+    fun getHomePageDashboard(callback: FirestoreGetCompleteCallbackArrayList){
+        //get the dashboard from the database
+        if(dashboardItems.size > 0){
+            Log.d(TAG, "getHomePageDashboard: returned $dashboardItems")
+            return
+        }
+        val userID = Firebase.auth.currentUser?.uid ?: return
+        val colRef  = db.collection("users")
+            .document(userID)
+            .collection("dashboard")
+
+        colRef.get(Source.CACHE)
+            .addOnSuccessListener {
+                val tempList = hashMapOf<String, DashboardRecyclerData>()
+                for(document in it){
+                    val temp = document.data as HashMap<String, Any>
+                    Log.d(TAG, "getHomePageDashboard: $temp")
+                    temp.keys.forEach { key ->
+                        val temp2 = temp[key] as HashMap<String, Any>
+                        Log.d(TAG, "getHomePageDashboard: $temp2")
+                        val temp3 = DashboardRecyclerData(
+                            cardName = temp2["cardName"] as String,
+                            cardLogo = temp2["cardLogo"] as String,
+                            cardValue = temp2["cardValue"] as String,
+                            cardUnit = temp2["cardUnit"] as String,
+                            cardUpdated = temp2["cardUpdated"] as Long,
+                            recyclerPosition = temp2["recyclerPosition"].toString().toInt()
+                        )
+                        tempList[key] = temp3
+                    }
+                }
+                Log.d(TAG, "getHomePageDashboard: $tempList")
+                dashboardItems.addAll(tempList.values)
+                dashboardItems.sortBy { it.recyclerPosition }
+                liveData.value = dashboardItems
+                callback.onGetComplete(arrayListOf("success"))
+            }
+            .addOnFailureListener { e ->
+                callback.onGetFailure(e.toString())
+            }
+
+    }
+
+
 
     fun getDashboardTemplate(callback: FirestoreGetCompleteCallbackHashMap){
         if(dashboardAddType == ""|| valueAddName == ""){
@@ -65,11 +111,17 @@ class DashboardModel: ViewModel() {
         userBodyMeasureModel.setSelectedName(valueAddName)
         userBodyMeasureModel.getSelectedBodyMeasureMetrics(object: FirestoreGetCompleteAny{
             override fun onGetComplete(result: Any) {
+                //TODO if the result is empty, then add a dashboard with N/A
                 val listL = result as MutableMap<Long, UserBodyMetrics>
                 val list = mutableListOf<UserBodyMetrics>()
                 list.addAll(listL.values)
-                list.sortByDescending { it.timestamp }
-                realDashboardRecyclerData.cardValue = list[0].metricValue.toString()
+                if(list.size == 0){
+                    realDashboardRecyclerData.cardValue = "N/A"
+                }
+                else{
+                    list.sortByDescending { it.timestamp }
+                    realDashboardRecyclerData.cardValue = list[0].metricValue.toString()
+                }
                 realDashboardRecyclerData.cardUpdated = Instant.now().toEpochMilli()
                 realDashboardRecyclerData.recyclerPosition = dashboardItems.size
                 addBodyMeasureDashBoard(realDashboardRecyclerData, callback)
@@ -84,7 +136,7 @@ class DashboardModel: ViewModel() {
     private fun addBodyMeasureDashBoard(realDashboardRecyclerData: DashboardRecyclerData, callback: FirestoreGetCompleteCallbackArrayList) {
         val userID = Firebase.auth.currentUser?.uid ?: return
         val docData = mapOf(
-            valueAddName to realDashboardRecyclerData
+            realDashboardRecyclerData.cardName to realDashboardRecyclerData
         )
 
         val docRef = db.collection("users")

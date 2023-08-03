@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.DataModels.DashboardRecyclerData
 import com.example.myfitzone.Models.DashboardModel
 import com.example.myfitzone.Models.UserDetailModel
@@ -100,7 +101,15 @@ class HomeFragment : Fragment() {
         dashboardCardAdapter = DashCardRecyclerAdapter()
         dashboardCardAdapter.setDashCardList(dataList)
         recyclerView.adapter = dashboardCardAdapter
+        dashboardModel.getHomePageDashboard(callback = object: FirestoreGetCompleteCallbackArrayList{
+            override fun onGetComplete(result: ArrayList<String>) {
+            }
 
+            override fun onGetFailure(string: String) {
+
+            }
+
+        })
         binding.imageProfile.setOnClickListener {
             Log.d(TAG, "onViewCreated: Profile Image Clicked")
             onProfileImageClicked()
@@ -274,10 +283,19 @@ class HomeFragment : Fragment() {
             holder.view.cardName.text = dashCardList[position].cardName
             holder.view.cardValue.text = dashCardList[position].cardValue
             holder.view.cardUnit.text = dashCardList[position].cardUnit
-            val calendar = Calendar.getInstance()
-            val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss a")
-            calendar.timeInMillis = dashCardList[position].cardUpdated
-            holder.view.cardUpdated.text = dateFormat.format(calendar.time)
+            val calendarNow = Calendar.getInstance()
+            val diff = calendarNow.timeInMillis - dashCardList[position].cardUpdated
+            val days = diff / (24 * 60 * 60 * 1000)
+            val hours = diff / (60 * 60 * 1000) % 24
+            val minutes = diff / (60 * 1000) % 60
+            val seconds = diff / 1000 % 60
+            holder.view.cardUpdated.text = when {
+                days > 0 ->  "Updated: $days days ago"
+                hours > 0 ->  "Updated: $hours hours ago"
+                minutes > 0 ->  "Updated: $minutes minutes ago"
+                seconds > 0 -> "Updated: $seconds seconds ago"
+                else -> "Updated: Just now"
+            }
 //            TODO: Uncomment this when the images are added to the project
 //            holder.view.cardLogo.setImageResource(dashCardList[position].cardLogo.toInt())
 
