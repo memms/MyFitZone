@@ -132,9 +132,9 @@
     </fragment>
     <fragment
         android:id="@+id/trackFragment"
-        android:name="com.example.myfitzone.Views.MainViews.TrackFragment"
+        android:name="com.example.myfitzone.Views.MainViews.JournalFragment"
         android:label="fragment_track"
-        tools:layout="@layout/fragment_track">
+        tools:layout="@layout/fragment_journal">
         <argument
             android:name="ShowNavBar"
             android:defaultValue="true"/>
@@ -248,11 +248,20 @@
         <action
             android:id="@+id/action_dashboardTypeSelectorFragment_to_bodyMeasureDashboardSelector"
             app:destination="@id/bodyMeasureDashboardSelector" />
+        <action
+            android:id="@+id/action_dashboardTypeSelectorFragment_to_exerciseDashboardGroupSelector"
+            app:destination="@id/exerciseDashboardGroupSelector" />
     </fragment>
     <fragment
         android:id="@+id/bodyMeasureDashboardSelector"
         android:name="com.example.myfitzone.Views.DashboardViews.BodyMeasureDashboardSelector"
-        android:label="BodyMeasureDashboardSelector" >
+        android:label="BodyMeasureDashboardSelector"
+        tools:layout="@layout/fragment_body_measure_selector">
     </fragment>
+    <fragment
+        android:id="@+id/exerciseDashboardGroupSelector"
+        android:name="com.example.myfitzone.Views.DashboardViews.ExerciseDashboardGroupSelector"
+        android:label="ExerciseDashboardGroupSelector"
+        tools:layout="@layout/fragment_exercise_group"/>
 
 </navigation>

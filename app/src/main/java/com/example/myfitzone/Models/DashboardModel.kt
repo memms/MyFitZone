@@ -103,6 +103,38 @@ class DashboardModel: ViewModel() {
             }
     }
 
+    fun startAddExerciseMeasureDashBoard(tempDashboardRecyclerData: DashboardRecyclerData, callback: FirestoreGetCompleteCallbackArrayList){
+
+    }
+    private fun addExerciseMeasureDashBoard(realDashboardRecyclerData: DashboardRecyclerData, callback: FirestoreGetCompleteCallbackArrayList){
+        val userID = Firebase.auth.currentUser?.uid ?: return
+        val docData = mapOf(
+            realDashboardRecyclerData.cardName to mapOf(
+                "cardName" to realDashboardRecyclerData.cardName,
+                "cardLogo" to realDashboardRecyclerData.cardLogo,
+                "cardValue" to realDashboardRecyclerData.cardValue,
+                "cardUnit" to realDashboardRecyclerData.cardUnit,
+                "cardUpdated" to realDashboardRecyclerData.cardUpdated,
+                "recyclerPosition" to realDashboardRecyclerData.recyclerPosition
+            )
+        )
+        db.collection("users")
+            .document(userID)
+            .collection("dashboard")
+            .document("exercise")
+            .set(docData, SetOptions.merge())
+            .addOnSuccessListener {
+
+                dashboardItems.add(realDashboardRecyclerData)
+                liveData.value = dashboardItems
+                callback.onGetComplete(arrayListOf("success"))
+            }
+            .addOnFailureListener { e ->
+                Log.d(TAG, "addExerciseMeasureDashBoard: $e")
+                callback.onGetFailure(e.toString())
+            }
+    }
+
     fun startAddBodyMeasureDashBoard(tempDashboardRecyclerData: DashboardRecyclerData, callback: FirestoreGetCompleteCallbackArrayList){
         //add a body measure dashboard
         val realDashboardRecyclerData = tempDashboardRecyclerData
@@ -111,7 +143,6 @@ class DashboardModel: ViewModel() {
         userBodyMeasureModel.setSelectedName(valueAddName)
         userBodyMeasureModel.getSelectedBodyMeasureMetrics(object: FirestoreGetCompleteAny{
             override fun onGetComplete(result: Any) {
-                //TODO if the result is empty, then add a dashboard with N/A
                 val listL = result as MutableMap<Long, UserBodyMetrics>
                 val list = mutableListOf<UserBodyMetrics>()
                 list.addAll(listL.values)

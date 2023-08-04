@@ -38,13 +38,18 @@ class DashboardTypeSelectorFragment : Fragment() {
             }
         }
         binding.dashboardTypeSelectorLayoutExerciseMeasurement.setOnClickListener {
-
+            view?.let{
+                it.findNavController().navigate(R.id.action_dashboardTypeSelectorFragment_to_exerciseDashboardGroupSelector)
+            }
         }
         binding.dashboardTypeSelectorLayoutSensorMeasurement.setOnClickListener {
 
         }
         binding.dashboardTypeSelectorLayoutAnalyticsMeasurement.setOnClickListener {
 
+        }
+        binding.closeButtonDashboardTypeSelector.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
 
     }

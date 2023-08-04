@@ -32,10 +32,12 @@ class UserNewExercisesModel: ViewModel() {
     fun saveUserExercise(userExercise: UserExercise, mycallback: FirestoreGetCompleteCallbackArrayList) {
         val db = Firebase.firestore
         val userUID = FirebaseAuth.getInstance().currentUser?.uid
-        val cal = Calendar.getInstance()
-        val year = cal.get(Calendar.YEAR)
-        val month = cal.get(Calendar.MONTH)
-        val docID = "$year-$month"
+        if(userUID == null){
+            mycallback.onGetFailure("User not logged in")
+            return
+        }
+        val simpleDateFormat = java.text.SimpleDateFormat("yyyy-M")
+        val docID = simpleDateFormat.format(userExercise.timeAdded)
         val docData = mapOf(
             userExercise.timeAdded.toString() to userExercise,
         )

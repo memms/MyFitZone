@@ -287,6 +287,14 @@ class AddUserExerciseFragment : Fragment() {
     }
     private fun saveToDatabase(){
         saveExercise()
+        if(setNumber == 0){
+            Toast.makeText(requireContext(), "Please add at least one set", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if(attributesList?.keys?.size == 0){
+            Toast.makeText(requireContext(), "Please add at least one field", Toast.LENGTH_SHORT).show()
+            return
+        }
         var userExercise: UserExercise? = null
         val fieldMap:HashMap<String, Any> = hashMapOf()
         fieldMap["sets"] = setNumber
@@ -296,6 +304,8 @@ class AddUserExerciseFragment : Fragment() {
                 return
             }
         }
+
+
         fieldMap.putAll(attributesList as Map<String, Any>)
         exerciseTemplate?.let {
             userExercise = UserExercise(
