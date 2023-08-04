@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteAny
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
+import com.example.myfitzone.DataModels.CalenderEventData
 import com.example.myfitzone.DataModels.UserBodyMetrics
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldPath
@@ -13,6 +14,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.time.Instant
+import java.time.LocalDate
 import java.util.Calendar.DAY_OF_MONTH
 
 class UserBodyMeasureModel: ViewModel() {
@@ -20,6 +22,12 @@ class UserBodyMeasureModel: ViewModel() {
     private val db = Firebase.firestore
     private var selectedType = ""
     private var selectedName = ""
+    private val eventsList = mutableMapOf<String, MutableMap<LocalDate, CalenderEventData>>()
+
+    fun getUserBodyMeasureYearMonth(yearMonth: String, callback: FirestoreGetCompleteAny){
+        Log.d(TAG, "getUserBodyMeasureYearMonth: $yearMonth")
+
+    }
 
     fun getAllLastBodyMeasureMetrics() {
 

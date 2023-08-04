@@ -36,7 +36,7 @@ class UserNewExercisesModel: ViewModel() {
             mycallback.onGetFailure("User not logged in")
             return
         }
-        val simpleDateFormat = java.text.SimpleDateFormat("yyyy-M")
+        val simpleDateFormat = java.text.SimpleDateFormat("yyyy-MM")
         val docID = simpleDateFormat.format(userExercise.timeAdded)
         val docData = mapOf(
             userExercise.timeAdded.toString() to userExercise,

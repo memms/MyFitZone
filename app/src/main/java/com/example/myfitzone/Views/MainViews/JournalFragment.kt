@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteAny
 import com.example.myfitzone.DataModels.CalenderEventData
-import com.example.myfitzone.Models.UserExerciseModel
+import com.example.myfitzone.Models.JournalCalendarModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.CalendarDayLayoutBinding
 import com.example.myfitzone.databinding.CalendarEventItemViewBinding
@@ -45,7 +45,7 @@ class JournalFragment : Fragment() {
     private val today = LocalDate.now()
 
     private val events = mutableMapOf<LocalDate, List<CalenderEventData>>()
-    private lateinit var userExerciseModel: UserExerciseModel
+    private lateinit var journalCalendarModel: JournalCalendarModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,19 +63,26 @@ class JournalFragment : Fragment() {
             adapter = journalAdapter
             addItemDecoration(DividerItemDecoration(context, RecyclerView.VERTICAL))
         }
-        userExerciseModel = ViewModelProvider(requireActivity())[UserExerciseModel::class.java]
+        journalCalendarModel = ViewModelProvider(requireActivity())[JournalCalendarModel::class.java]
         binding.journalCalendarView.monthScrollListener = {it ->
             binding.journalYear.text = it.yearMonth.year.toString()
             binding.journalMonth.text = it.yearMonth.month.name
-            val yearMonth = "${it.yearMonth.year}-${it.yearMonth.month.value}"
+            //need month to be 03 instead of 3
+            val month = if(it.yearMonth.month.value < 10){
+                "0${it.yearMonth.month.value}"
+            }else{
+                it.yearMonth.month.value.toString()
+            }
+            val yearMonth = "${it.yearMonth.year}-${month}"
             Log.d("JournalFragment", "onViewCreated: $yearMonth")
-            userExerciseModel.getUserExercises(yearMonth, callback = object : FirestoreGetCompleteAny{
+            journalCalendarModel.getUserCalendar(yearMonth, callback = object : FirestoreGetCompleteAny{
                 override fun onGetComplete(result: Any) {
-                    val list = result as MutableMap<LocalDate, CalenderEventData>
+                    val list = result as MutableMap<LocalDate, List<CalenderEventData>>
+                    Log.d("JournalFragment", "onGetComplete: list $list")
                     list.forEach{event ->
-                        events.putIfAbsent(event.key, listOf(event.value))
+                        events.putIfAbsent(event.key, event.value)
                     }
-                    Log.d("JournalFragment", "onGetComplete: $events")
+                    Log.d("JournalFragment", "onGetComplete: events $events")
                     binding.journalCalendarView.notifyCalendarChanged()
                     selectedDate?.let { it1 -> updateAdapterForDate(it1) }
                 }
