@@ -70,6 +70,10 @@ class HomeFragment : Fragment() {
         loggedInUser = ViewModelProvider(requireActivity())[UserDetailModel::class.java]
 
         Log.d(TAG, "onViewCreated: ${loggedInUser.getUser().toString()}")
+        binding.DprofileName.text = "Welcome ${loggedInUser.getUser().name["first"]}"
+        val calendar = Calendar.getInstance()
+        val dateFormat = SimpleDateFormat("MMMM dd, yyyy hh:mm a")
+        binding.datetime.text = dateFormat.format(calendar.time)
 
         //TODO: Remove Test Data
         //default
@@ -91,13 +95,13 @@ class HomeFragment : Fragment() {
 //        dataList.add(DashboardRecyclerData("Oxygen Saturation", "", "98", "%", 0, 0))
 //        dataList.add(DashboardRecyclerData("Respiratory Rate", "", "16", "breaths/min", 0, 0))
         dashboardModel = ViewModelProvider(requireActivity())[DashboardModel::class.java]
-        dashboardModel.getDashLiveData().observe(viewLifecycleOwner, {
+        dashboardModel.getDashLiveData().observe(viewLifecycleOwner) {
             Log.d(TAG, "onViewCreated: ${it.toString()}")
             dataList.clear()
             dataList.addAll(it)
             dashboardCardAdapter.setDashCardList(dataList)
             dashboardCardAdapter.notifyDataSetChanged()
-        })
+        }
         recyclerView = binding.recyclerViewHome
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         dashboardCardAdapter = DashCardRecyclerAdapter()

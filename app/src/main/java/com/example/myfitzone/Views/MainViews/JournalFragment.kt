@@ -165,7 +165,7 @@ class JournalFragment : Fragment() {
                                         exercise = true
                                     }
                                     if(bodyMeasure && exercise){
-                                        return
+                                        return@let
                                     }
                                 }
                             }

@@ -54,7 +54,9 @@ class JournalCalendarModel: ViewModel() {
                                 timeAdded = userExercise["timeAdded"] as Long
                             )
                             Log.d(TAG, "getUserCalendar: userExercise $userExercise")
-                            val localDate = ZonedDateTime.ofInstant(Instant.ofEpochMilli(userExerciseObject.timeAdded), UTC).toLocalDate()
+                            val calendar = java.util.Calendar.getInstance()
+                            calendar.timeInMillis = userExerciseObject.timeAdded
+                            val localDate = LocalDate.of(calendar.get(java.util.Calendar.YEAR), calendar.get(java.util.Calendar.MONTH)+1, calendar.get(java.util.Calendar.DAY_OF_MONTH))
                             Log.d(TAG, "getUserCalendar: localDate $localDate $userExerciseObject")
                             val title = "${userExerciseObject.exerciseGroup}: ${userExerciseObject.name}"
                             val desc = "${userExerciseObject.fieldmap["sets"]} sets"

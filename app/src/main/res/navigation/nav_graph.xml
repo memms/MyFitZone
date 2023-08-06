@@ -251,12 +251,18 @@
         <action
             android:id="@+id/action_dashboardTypeSelectorFragment_to_exerciseDashboardGroupSelector"
             app:destination="@id/exerciseDashboardGroupSelector" />
+        <argument
+            android:name="ShowNavBar"
+            android:defaultValue="false"/>
     </fragment>
     <fragment
         android:id="@+id/bodyMeasureDashboardSelector"
         android:name="com.example.myfitzone.Views.DashboardViews.BodyMeasureDashboardSelector"
         android:label="BodyMeasureDashboardSelector"
         tools:layout="@layout/fragment_body_measure_selector">
+        <argument
+            android:name="ShowNavBar"
+            android:defaultValue="false"/>
     </fragment>
     <fragment
         android:id="@+id/exerciseDashboardGroupSelector"
@@ -266,11 +272,18 @@
         <action
             android:id="@+id/action_exerciseDashboardGroupSelector_to_exerciseDashboardSelector"
             app:destination="@id/exerciseDashboardSelector" />
+        <argument
+            android:name="ShowNavBar"
+            android:defaultValue="false"/>
     </fragment>
     <fragment
         android:id="@+id/exerciseDashboardSelector"
         android:name="com.example.myfitzone.Views.DashboardViews.ExerciseDashboardSelector"
         android:label="ExerciseDashboardSelector"
-        tools:layout="@layout/fragment_exercise_selector"/>
+        tools:layout="@layout/fragment_exercise_selector">
+        <argument
+            android:name="ShowNavBar"
+            android:defaultValue="false"/>
+    </fragment>
 
 </navigation>

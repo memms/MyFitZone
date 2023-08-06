@@ -1,6 +1,7 @@
 package com.example.myfitzone.Models
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteAny
@@ -8,12 +9,14 @@ import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackHashMap
 import com.example.myfitzone.DataModels.DashboardRecyclerData
 import com.example.myfitzone.DataModels.DashboardTemplateData
+import com.example.myfitzone.DataModels.User
 import com.example.myfitzone.DataModels.UserBodyMetrics
 import com.example.myfitzone.DataModels.UserExercise
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.time.Instant
