@@ -43,7 +43,9 @@ class DashboardTypeSelectorFragment : Fragment() {
             }
         }
         binding.dashboardTypeSelectorLayoutSensorMeasurement.setOnClickListener {
-
+            view?.let{
+                it.findNavController().navigate(R.id.action_dashboardTypeSelectorFragment_to_sensorDashboardSelector)
+            }
         }
         binding.dashboardTypeSelectorLayoutAnalyticsMeasurement.setOnClickListener {
 

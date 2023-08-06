@@ -146,18 +146,30 @@ class HomeFragment : Fragment() {
             })
         }
         else{
+            var completed = 0
+            Log.d(TAG, "getDashboards: HOMEPAGE completed = $completed")
+            dashboardModel.updateDashboardValuesSensors(object : FirestoreGetCompleteCallbackArrayList {
+                override fun onGetComplete(result: ArrayList<String>) {
+                    Log.d(TAG, "onGetComplete: HOMEPAGE updateDashboardValuesSensors")
+                    completed++
+                    if(completed>=3){
+                        getupdatedDashboard()
+                    }
+                }
+
+                override fun onGetFailure(string: String) {
+                    Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+                }
+
+            })
             dashboardModel.updateDashboardValuesBodyMeasure(object : FirestoreGetCompleteCallbackArrayList {
                 override fun onGetComplete(result: ArrayList<String>) {
-                    dashboardModel.getHomePageDashboardFromServer(object : FirestoreGetCompleteCallbackArrayList {
-                        override fun onGetComplete(result: ArrayList<String>) {
-                            Log.d(TAG, "onGetComplete: $result")
-                        }
-
-                        override fun onGetFailure(string: String) {
-                            Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
-                        }
-
-                    })
+                    //TODO PROBLEM CHILD RETURNS 3 TIMES
+                    Log.d(TAG, "onGetComplete: HOMEPAGE updateDashboardValuesBodyMeasure")
+                    completed++
+                    if(completed>=3){
+                        getupdatedDashboard()
+                    }
                 }
 
                 override fun onGetFailure(string: String) {
@@ -167,16 +179,11 @@ class HomeFragment : Fragment() {
             })
             dashboardModel.updateDashboardValuesExercise(object : FirestoreGetCompleteCallbackArrayList {
                 override fun onGetComplete(result: ArrayList<String>) {
-                    dashboardModel.getHomePageDashboardFromServer(object : FirestoreGetCompleteCallbackArrayList {
-                        override fun onGetComplete(result: ArrayList<String>) {
-                            Log.d(TAG, "onGetComplete: $result")
-                        }
-
-                        override fun onGetFailure(string: String) {
-                            Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
-                        }
-
-                    })
+                    Log.d(TAG, "onGetComplete: HOMEPAGE updateDashboardValuesExercise")
+                    completed++
+                    if(completed>=3){
+                        getupdatedDashboard()
+                    }
                 }
 
                 override fun onGetFailure(string: String) {
@@ -185,6 +192,19 @@ class HomeFragment : Fragment() {
 
             })
         }
+    }
+
+    private fun getupdatedDashboard(){
+        dashboardModel.getHomePageDashboardFromServer(object : FirestoreGetCompleteCallbackArrayList {
+            override fun onGetComplete(result: ArrayList<String>) {
+                Log.d(TAG, "onGetComplete: $result")
+            }
+
+            override fun onGetFailure(string: String) {
+                Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+            }
+
+        })
     }
 
     private fun setFabClicks() {

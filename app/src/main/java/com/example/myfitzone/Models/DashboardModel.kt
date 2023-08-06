@@ -1,7 +1,6 @@
 package com.example.myfitzone.Models
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteAny
@@ -9,17 +8,16 @@ import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackHashMap
 import com.example.myfitzone.DataModels.DashboardRecyclerData
 import com.example.myfitzone.DataModels.DashboardTemplateData
-import com.example.myfitzone.DataModels.User
 import com.example.myfitzone.DataModels.UserBodyMetrics
 import com.example.myfitzone.DataModels.UserExercise
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.time.Instant
+import java.time.LocalDate
 import java.util.Calendar
 
 class DashboardModel: ViewModel() {
@@ -44,6 +42,30 @@ class DashboardModel: ViewModel() {
 
     fun getDashLiveData(): MutableLiveData<List<DashboardRecyclerData>>{
         return liveData
+    }
+
+    fun getSensorTemplates(callback: FirestoreGetCompleteAny){
+        val hashMap = hashMapOf<String, DashboardTemplateData>()
+        db.collection("dashboardTypes")
+            .document("sensor")
+            .get()
+            .addOnSuccessListener {document ->
+                document.data?.let {
+                    it.forEach {
+                        val template = it.value as HashMap<String, Any>
+                        val temp = DashboardTemplateData(
+                            template["unit"] as String,
+                            template["valueType"] as ArrayList<String>
+                        )
+                        hashMap[it.key] = temp
+                    }
+                }
+                callback.onGetComplete(hashMap)
+            }
+            .addOnFailureListener{e->
+                callback.onGetFailure(e.toString())
+            }
+
     }
 
     fun getHomePageDashboard(callback: FirestoreGetCompleteCallbackArrayList){
@@ -194,7 +216,6 @@ class DashboardModel: ViewModel() {
     }
 
     fun startAddExerciseMeasureDashBoard(tempDashboardRecyclerData: DashboardRecyclerData, callback: FirestoreGetCompleteCallbackArrayList){
-
         getExercises("30d" , object: FirestoreGetCompleteAny{
             override fun onGetComplete(result: Any) {
                 Log.d(TAG, "onGetComplete: startAddExerciseMeasureDashBoard $result")
@@ -374,10 +395,6 @@ class DashboardModel: ViewModel() {
         this.valueAddName = valueAddName
     }
 
-    fun getDashboardAddType(): String{
-        return dashboardAddType
-    }
-
     fun getValueAddName(): String{
         return valueAddName
     }
@@ -388,6 +405,7 @@ class DashboardModel: ViewModel() {
     }
 
     fun getHomePageDashboardFromServer(callback: FirestoreGetCompleteCallbackArrayList) {
+        Log.d(TAG, "getHomePageDashboardFromServer: CALLED")
         dashboardItems.clear()
         val userID = Firebase.auth.currentUser?.uid ?: return
         val colRef  = db.collection("users")
@@ -427,6 +445,51 @@ class DashboardModel: ViewModel() {
             }
     }
 
+    fun updateDashboardValuesSensors(callback: FirestoreGetCompleteCallbackArrayList){
+        dashboardItems.clear()
+        val userID = Firebase.auth.currentUser?.uid ?: return
+        val colRef  = db.collection("users")
+            .document(userID)
+            .collection("dashboard")
+            .document("sensor")
+
+        colRef.get(Source.SERVER)
+            .addOnSuccessListener { document ->
+                if(document.exists()){
+                    val temp = document.data as HashMap<String, Any>
+                    Log.d(TAG, "updateDashboardValuesBodyMeasure: document.data/temp $temp")
+
+                    temp.keys.forEach { key ->
+                        val temp2 = temp[key] as HashMap<String, Any>
+                        Log.d(TAG, "updateDashboardValuesBodyMeasure: temp2 = temp[key] $temp2")
+                        val temp3 = DashboardRecyclerData(
+                            cardName = temp2["cardName"] as String,
+                            cardLogo = temp2["cardLogo"] as String,
+                            cardValue = temp2["cardValue"] as String,
+                            cardUnit = temp2["cardUnit"] as String,
+                            cardUpdated = temp2["cardUpdated"] as Long,
+                            recyclerPosition = temp2["recyclerPosition"].toString().toInt()
+                        )
+                        setDashboardAddType("bodyMeasure")
+                        startAddSensorDashBoard(temp3, object : FirestoreGetCompleteCallbackArrayList{
+                            override fun onGetComplete(string: ArrayList<String>) {
+                                Log.d(TAG, "updateDashboardValuesBodyMeasure: $string")
+                                callback.onGetComplete(string)
+                            }
+
+                            override fun onGetFailure(string: String) {
+                                Log.d(TAG, "onGetFailure: $string")
+                            }
+                        })
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "getHomePageDashboardFromServer: $exception")
+
+            }
+    }
+
     fun updateDashboardValuesBodyMeasure(callback: FirestoreGetCompleteCallbackArrayList) {
         dashboardItems.clear()
         val userID = Firebase.auth.currentUser?.uid ?: return
@@ -440,6 +503,10 @@ class DashboardModel: ViewModel() {
                 if(document.exists()){
                     val temp = document.data as HashMap<String, Any>
                     Log.d(TAG, "updateDashboardValuesBodyMeasure: document.data/temp $temp")
+                    //TODO: CHANGE THIS CUZ IT CAUSES TOO MUCH NESTED CALLBACKS
+                    //TODO: CHANGE THIS TO GET ALL THE VALUES AT ONCE
+                    //TODO: THEN DEPENDING ON KEY, ADD TO DASHBOARD APPROPRIATELY.
+                    //TODO: example, get all bodymeasure values for the past 30 days. Then Sort it by the key (weight, height, etc). Then add it to the dashboard depending on the valueType (Last, Highest, Lowest, etc.).
                     temp.keys.forEach { key ->
                         val temp2 = temp[key] as HashMap<String, Any>
                         Log.d(TAG, "updateDashboardValuesBodyMeasure: temp2 = temp[key] $temp2")
@@ -484,6 +551,7 @@ class DashboardModel: ViewModel() {
             .addOnSuccessListener { document ->
                 if(document.exists()){
                     val temp = document.data as HashMap<String, Any>
+                    //TODO: Same for exercises. Get all exercises for the past 30 days. Then sort it by the key (calories, duration, etc). Then add it to the dashboard depending on the valueType (Last, Highest, Lowest, etc.).
                     temp.keys.forEach { key ->
                         val temp2 = temp[key] as HashMap<String, Any>
                         val temp3 = DashboardRecyclerData(
@@ -516,7 +584,136 @@ class DashboardModel: ViewModel() {
             }
     }
 
+    fun startAddSensorDashBoard(
+        itemAdd: DashboardRecyclerData,
+        callback: FirestoreGetCompleteCallbackArrayList
+    ) {
+        Log.d(TAG, "startAddSensorDashBoard: itemAdd $itemAdd")
+        val sensorName = itemAdd.cardName.split('(')[0].trim()
+        val selectedType = itemAdd.cardName.split('(')[1].split(')')[0].trim()
+        Log.d(TAG, "startAddSensorDashBoard: sensorName $sensorName")
+        Log.d(TAG, "startAddSensorDashBoard: selectedType $selectedType")
+        when(selectedType){
+            "Today" -> {
+                Log.d(TAG, "startAddSensorDashBoard: Today")
+                getSensorData("1d", sensorName, object : FirestoreGetCompleteAny{
+                    override fun onGetComplete(result: Any) {
+                        try {
+                            itemAdd.cardValue = result.toString()
+                        }
+                        catch (e: Exception){
+                            itemAdd.cardValue = "0"
+                        }
+                        Log.d(TAG, "onGetComplete: result $result")
+                        itemAdd.cardUpdated = Calendar.getInstance().timeInMillis
+                        itemAdd.recyclerPosition = dashboardItems.size
+                        addSensorDashboard(itemAdd, object : FirestoreGetCompleteAny{
+                            override fun onGetComplete(result: Any) {
+                                callback.onGetComplete(arrayListOf("success"))
+                            }
 
+                            override fun onGetFailure(string: String) {
+                                callback.onGetFailure(string)
+                                Log.d(TAG, "onGetFailure: $string")
+                            }
+
+                        })
+                    }
+
+                    override fun onGetFailure(string: String) {
+                        callback.onGetFailure(string)
+                    }
+
+                })
+            }
+        }
+    }
+
+    private fun addSensorDashboard(
+        itemAdd: DashboardRecyclerData,
+        callback: FirestoreGetCompleteAny
+    ) {
+        val userID = Firebase.auth.currentUser?.uid ?: return
+        val docData = mapOf(
+            itemAdd.cardName to itemAdd
+        )
+
+        val docRef = db.collection("users")
+            .document(userID)
+            .collection("dashboard")
+            .document("sensor")
+
+        docRef.set(docData, SetOptions.merge())
+            .addOnSuccessListener {
+                Log.d(TAG, "DocumentSnapshot successfully written!")
+                dashboardItems.add(itemAdd)
+                liveData.value = dashboardItems
+                callback.onGetComplete(arrayListOf("success"))
+                Log.d(TAG, "addSensorDashboard: $dashboardItems")
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error writing document", e)
+                callback.onGetFailure(e.toString())
+            }
+    }
+
+    private fun getYear() : String{
+        val cal = Calendar.getInstance()
+        val sdf = SimpleDateFormat("yyyy")
+        return sdf.format(cal.timeInMillis)
+    }
+
+    private fun getMonth() : String{
+        val cal = Calendar.getInstance()
+        val sdf = SimpleDateFormat("MM")
+        return sdf.format(cal.timeInMillis)
+    }
+
+    private fun getSensorData(range: String, sensorName: String, callback: FirestoreGetCompleteAny){
+        val userID = Firebase.auth.currentUser?.uid ?: return
+        var ref  = db.collection("users")
+            .document(userID)
+            .collection("sensorsData")
+            .document(sensorName)
+            .collection(getYear())
+            .document(getMonth())
+        Log.d(TAG, "getSensorData: ${getYear()} ${getMonth()}")
+
+        ref.get()
+            .addOnSuccessListener { document ->
+                Log.d(TAG, "getSensorData: $document")
+                if(document.exists()){
+                    Log.d(TAG, "getSensorData: ${document.data}")
+                    if(range == "1d"){
+                        Log.d(TAG, "getSensorData: ${LocalDate.now()}.currentStepCount")
+                        document.getLong("${LocalDate.now()}.currentStepCount").let { currentStepCount ->
+                            Log.d(TAG, "getSensorData: currentStepCount $currentStepCount")
+                            if (currentStepCount != null) {
+                                callback.onGetComplete(currentStepCount)
+                            }
+                            else{
+                                callback.onGetComplete("0")
+                            }
+                            return@addOnSuccessListener
+                        }
+                    }
+                    else {
+                        document.data?.let {
+                            val hashMap = it as HashMap<String, Any>
+                            it.forEach { map ->
+                                val temp = map.value as HashMap<String, Any>
+                                hashMap[map.key] = temp
+                            }
+                            callback.onGetComplete(hashMap)
+                        }
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "getSensorData: $exception")
+                callback.onGetFailure(exception.toString())
+            }
+    }
 
 
 }

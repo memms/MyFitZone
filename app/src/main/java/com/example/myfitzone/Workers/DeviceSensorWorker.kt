@@ -200,6 +200,8 @@ class DeviceSensorWorker(context: Context, workerParams: WorkerParameters) : Cor
                         .document(UID)
                         .collection("sensorsData")
                         .document("distanceTravelled")
+                        .collection(getYear())
+                        .document(getMonth())
                         .set(mapOf("${LocalDate.now()}.distanceTravelled" to distanceTravelled,
                             "timestamp" to FieldValue.serverTimestamp()), SetOptions.merge())
                         .addOnSuccessListener {
@@ -213,42 +215,54 @@ class DeviceSensorWorker(context: Context, workerParams: WorkerParameters) : Cor
 
     }
 
+    private fun getYear() : String{
+        val cal = Calendar.getInstance()
+        val sdf = SimpleDateFormat("yyyy")
+        return sdf.format(cal.timeInMillis)
+    }
+
+    private fun getMonth() : String{
+        val cal = Calendar.getInstance()
+        val sdf = SimpleDateFormat("MM")
+        return sdf.format(cal.timeInMillis)
+    }
+
     private fun loadStepCount() {
 //        val db = Firebase.firestore
 //        val firebaseAuth = FirebaseAuth.getInstance()
 //        val UID = firebaseAuth.currentUser?.uid
-        if (UID != null) {
-            db.collection("users")
-                .document(UID)
-                .collection("sensorsData")
-                .document("steps")
-                .get()
-                .addOnSuccessListener {
-                    if (it.exists()){
-                        it.getLong("${LocalDate.now()}.currentStepCount")?.let {
-                                it1 -> currentStepCount = it1.toInt() }
+        db.collection("users")
+            .document(UID)
+            .collection("sensorsData")
+            .document("steps")
+            .collection(getYear())
+            .document(getMonth())
+            .get()
+            .addOnSuccessListener {
+                if (it.exists()){
+                    it.getLong("${LocalDate.now()}.currentStepCount")?.let {
+                            it1 -> currentStepCount = it1.toInt() }
 
-                        it.getLong("${LocalDate.now()}.oldStepCount")?.let {
-                                it1 -> oldStepCount = it1.toInt() }
+                    it.getLong("${LocalDate.now()}.oldStepCount")?.let {
+                            it1 -> oldStepCount = it1.toInt() }
 
-                        it.getTimestamp("timestamp")?.let {
-                               it1 -> timestamp = it1
-                        }
-                        it.getLong("${LocalDate.now().minusDays(1).toString()}.oldStepCount")?.let {
-                                it1 -> lastsensorStepCount = it1.toInt() }
-                        Log.d(TAG, "loadCurrentStepCount: $currentStepCount")
-                        Log.d(TAG, "loadOldStepCount: $oldStepCount")
-                        Log.d(TAG, "loadtimestamp: $timestamp")
-                        Log.d(TAG, "loadLastSensorStepCount: $lastsensorStepCount")
+                    it.getTimestamp("timestamp")?.let {
+                           it1 -> timestamp = it1
                     }
-                    else{
-                        currentStepCount = 0
-                        oldStepCount = 0
-                        timestamp = null
-                        lastsensorStepCount = 0
-                    }
+                    it.getLong("${LocalDate.now().minusDays(1).toString()}.oldStepCount")?.let {
+                            it1 -> lastsensorStepCount = it1.toInt() }
+                    Log.d(TAG, "loadCurrentStepCount: $currentStepCount")
+                    Log.d(TAG, "loadOldStepCount: $oldStepCount")
+                    Log.d(TAG, "loadtimestamp: $timestamp")
+                    Log.d(TAG, "loadLastSensorStepCount: $lastsensorStepCount")
                 }
-        }
+                else{
+                    currentStepCount = 0
+                    oldStepCount = 0
+                    timestamp = null
+                    lastsensorStepCount = 0
+                }
+            }
     }
 
     private fun saveCurrentStepCount() {
@@ -267,16 +281,16 @@ class DeviceSensorWorker(context: Context, workerParams: WorkerParameters) : Cor
                         "oldStepCount" to oldStepCount),
             "timestamp" to FieldValue.serverTimestamp()
         )
-        if (UID != null) {
-            db.collection("users")
-                .document(UID)
-                .collection("sensorsData")
-                .document("steps")
-                .set(data, SetOptions.merge())
-                .addOnSuccessListener {
-                    Log.d(TAG, "saveCurrentStepCount: Success")
-                }
-        }
+        db.collection("users")
+            .document(UID)
+            .collection("sensorsData")
+            .document("steps")
+            .collection(getYear())
+            .document(getMonth())
+            .set(data, SetOptions.merge())
+            .addOnSuccessListener {
+                Log.d(TAG, "saveCurrentStepCount: Success")
+            }
     }
 
     private fun saveOldStepCount(){
@@ -292,6 +306,8 @@ class DeviceSensorWorker(context: Context, workerParams: WorkerParameters) : Cor
                 .document(UID)
                 .collection("sensorsData")
                 .document("steps")
+                .collection(getYear())
+                .document(getMonth())
                 .set(mapOf("${LocalDate.now()}.oldStepCount" to oldStepCount), SetOptions.merge())
                 .addOnSuccessListener {
                     Log.d(TAG, "saveOldStepCount: Success")

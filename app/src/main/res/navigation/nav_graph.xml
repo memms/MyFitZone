@@ -127,6 +127,10 @@
             android:id="@+id/action_homeFragment_to_bodyMeasureSelectorFragment"
             app:destination="@id/bodyMeasureSelectorFragment" />
         <action
+            app:enterAnim="@anim/push_up_in"
+            app:exitAnim="@anim/push_up_out"
+            app:popExitAnim="@anim/push_down_out"
+            app:popEnterAnim="@anim/push_down_in"
             android:id="@+id/action_homeFragment_to_dashboardTypeSelectorFragment"
             app:destination="@id/dashboardTypeSelectorFragment" />
     </fragment>
@@ -246,14 +250,25 @@
         android:label="fragment_dashboard_type_selector"
         tools:layout="@layout/fragment_dashboard_type_selector" >
         <action
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_left"
             android:id="@+id/action_dashboardTypeSelectorFragment_to_bodyMeasureDashboardSelector"
             app:destination="@id/bodyMeasureDashboardSelector" />
         <action
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_left"
             android:id="@+id/action_dashboardTypeSelectorFragment_to_exerciseDashboardGroupSelector"
             app:destination="@id/exerciseDashboardGroupSelector" />
         <argument
             android:name="ShowNavBar"
             android:defaultValue="false"/>
+        <action
+            android:id="@+id/action_dashboardTypeSelectorFragment_to_sensorDashboardSelector"
+            app:destination="@id/sensorDashboardSelector" />
     </fragment>
     <fragment
         android:id="@+id/bodyMeasureDashboardSelector"
@@ -270,6 +285,10 @@
         android:label="ExerciseDashboardGroupSelector"
         tools:layout="@layout/fragment_exercise_group">
         <action
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_left"
             android:id="@+id/action_exerciseDashboardGroupSelector_to_exerciseDashboardSelector"
             app:destination="@id/exerciseDashboardSelector" />
         <argument
@@ -280,6 +299,15 @@
         android:id="@+id/exerciseDashboardSelector"
         android:name="com.example.myfitzone.Views.DashboardViews.ExerciseDashboardSelector"
         android:label="ExerciseDashboardSelector"
+        tools:layout="@layout/fragment_exercise_selector">
+        <argument
+            android:name="ShowNavBar"
+            android:defaultValue="false"/>
+    </fragment>
+    <fragment
+        android:id="@+id/sensorDashboardSelector"
+        android:name="com.example.myfitzone.Views.DashboardViews.SensorDashboardSelector"
+        android:label="SensorDashboardSelector"
         tools:layout="@layout/fragment_exercise_selector">
         <argument
             android:name="ShowNavBar"

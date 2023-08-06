@@ -6,12 +6,18 @@ import com.example.myfitzone.Callbacks.FirestoreGetCompleteAny
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.DataModels.CalenderEventData
 import com.example.myfitzone.DataModels.UserBodyMetrics
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
+import com.google.android.gms.tasks.Tasks.whenAllComplete
+import com.google.android.gms.tasks.Tasks.whenAllSuccess
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.tasks.await
+import java.lang.Thread.sleep
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -48,7 +54,7 @@ class UserBodyMeasureModel: ViewModel() {
             .document(userID)
             .collection("userBodyMeasurements")
 
-        docRef.document(formated)
+        val task1 = docRef.document(formated)
         .get()
         .addOnSuccessListener { document ->
             if(document.exists()){
@@ -67,9 +73,8 @@ class UserBodyMeasureModel: ViewModel() {
                 }
                 list = list.toSortedMap()
                 Log.d(TAG, "getSelectedBodyMeasureMetrics: filteredList $list")
-                callback.onGetComplete(list)
-//                    Log.d(TAG, "getSelectedBodyMeasureMetrics: list $list")
             }
+
             else{
                 Log.d(TAG, "getSelectedBodyMeasureMetrics: No data")
             }
@@ -84,7 +89,7 @@ class UserBodyMeasureModel: ViewModel() {
         cal.set(DAY_OF_MONTH, -1)
         formated = simpleDateFormat.format(cal.timeInMillis)
         Log.d(TAG, "getSelectedBodyMeasureMetrics: formated2 $formated")
-        docRef.document(formated)
+        val task2 = docRef.document(formated)
             .get()
             .addOnSuccessListener { document ->
 //                Log.d(TAG, "getSelectedBodyMeasureMetrics: doc $document")
@@ -107,8 +112,6 @@ class UserBodyMeasureModel: ViewModel() {
                     }
                     list = list.toSortedMap()
                     Log.d(TAG, "getSelectedBodyMeasureMetrics: filteredList $list")
-                    callback.onGetComplete(list)
-//                    Log.d(TAG, "getSelectedBodyMeasureMetrics: list $list")
                 }
                 else{
                     Log.d(TAG, "getSelectedBodyMeasureMetrics: No data")
@@ -118,6 +121,12 @@ class UserBodyMeasureModel: ViewModel() {
                 Log.w(TAG, "Error getting documents: ", exception)
                 callback.onGetFailure(exception.toString())
             }
+        //TODO Switch the gets to TASKS with .await() to make sure they are done before the success listener
+
+        whenAllComplete(task1, task2).addOnSuccessListener {
+            callback.onGetComplete(list)
+        }
+
     }
 
     fun getSpecificBodyMeasureMetrics() {
