@@ -6,11 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.DataModels.DashboardRecyclerData
 import com.example.myfitzone.Models.DashboardModel
@@ -18,6 +20,7 @@ import com.example.myfitzone.Models.UserDetailModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.DashboardCardviewBinding
 import com.example.myfitzone.databinding.FragmentHomeBinding
+import com.google.firebase.firestore.Source
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
@@ -68,7 +71,6 @@ class HomeFragment : Fragment() {
 
         Log.d(TAG, "onViewCreated: ${loggedInUser.getUser().toString()}")
 
-//        populateCards()
         //TODO: Remove Test Data
         //default
 //        dataList.add(DashboardRecyclerData("Weight", "", "00", "kg", 0, 0))
@@ -97,19 +99,11 @@ class HomeFragment : Fragment() {
             dashboardCardAdapter.notifyDataSetChanged()
         })
         recyclerView = binding.recyclerViewHome
-        recyclerView.layoutManager = GridLayoutManager(context, 2)
+        recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         dashboardCardAdapter = DashCardRecyclerAdapter()
         dashboardCardAdapter.setDashCardList(dataList)
         recyclerView.adapter = dashboardCardAdapter
-        dashboardModel.getHomePageDashboard(callback = object: FirestoreGetCompleteCallbackArrayList{
-            override fun onGetComplete(result: ArrayList<String>) {
-            }
-
-            override fun onGetFailure(string: String) {
-
-            }
-
-        })
+        getDashboards(Source.CACHE)
         binding.imageProfile.setOnClickListener {
             Log.d(TAG, "onViewCreated: Profile Image Clicked")
             onProfileImageClicked()
@@ -120,14 +114,73 @@ class HomeFragment : Fragment() {
             onMainFabClicked()
         }
 
-        setFabClicks()
+        binding.reloadDashboardButtonHome.setOnClickListener {
+            Log.d(TAG, "onViewCreated: Reload Dashboard Button Clicked")
+            getDashboards(Source.SERVER)
+        }
 
+        setFabClicks()
 
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             onBackPressedCallback
         )
 
+    }
+
+    private fun getDashboards(source: Source){
+        if(source == Source.CACHE) {
+            dashboardModel.getHomePageDashboard(callback = object :
+                FirestoreGetCompleteCallbackArrayList {
+                override fun onGetComplete(result: ArrayList<String>) {
+                }
+
+                override fun onGetFailure(string: String) {
+                    Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+                }
+
+            })
+        }
+        else{
+            dashboardModel.updateDashboardValuesBodyMeasure(object : FirestoreGetCompleteCallbackArrayList {
+                override fun onGetComplete(result: ArrayList<String>) {
+                    dashboardModel.getHomePageDashboardFromServer(object : FirestoreGetCompleteCallbackArrayList {
+                        override fun onGetComplete(result: ArrayList<String>) {
+                            Log.d(TAG, "onGetComplete: $result")
+                        }
+
+                        override fun onGetFailure(string: String) {
+                            Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+                        }
+
+                    })
+                }
+
+                override fun onGetFailure(string: String) {
+                    Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+                }
+
+            })
+            dashboardModel.updateDashboardValuesExercise(object : FirestoreGetCompleteCallbackArrayList {
+                override fun onGetComplete(result: ArrayList<String>) {
+                    dashboardModel.getHomePageDashboardFromServer(object : FirestoreGetCompleteCallbackArrayList {
+                        override fun onGetComplete(result: ArrayList<String>) {
+                            Log.d(TAG, "onGetComplete: $result")
+                        }
+
+                        override fun onGetFailure(string: String) {
+                            Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+                        }
+
+                    })
+                }
+
+                override fun onGetFailure(string: String) {
+                    Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+                }
+
+            })
+        }
     }
 
     private fun setFabClicks() {

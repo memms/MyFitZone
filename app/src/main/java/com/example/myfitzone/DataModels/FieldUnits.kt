@@ -2,6 +2,15 @@ package com.example.myfitzone.DataModels
 
 class FieldUnits {
     companion object {
+
+        fun unitOfDashboard(listOfFields: List<String>): String {
+            val stringBuilder = StringBuilder()
+            for(field in listOfFields){
+                stringBuilder.append(tableUnitsMetrics[field] ?: field)
+                stringBuilder.append("\n")
+            }
+            return stringBuilder.toString()
+        }
         fun valueOf(attribute: String): Int {
             return when (table[attribute]) {
                 Int -> 0

@@ -9,9 +9,14 @@
     android:background="@color/white"
     android:layout_margin="10dp">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="left">
 
@@ -27,16 +32,18 @@
 
         </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
             <ImageView
+
                 android:id="@+id/card_logo"
                 android:layout_width="27dp"
                 android:layout_height="27dp"
+                android:layout_gravity="center"
                 android:src="@drawable/placeholder_banner"
-                android:layout_marginTop="43.5dp"
                 android:layout_marginLeft="19dp"/>
 
             <!-- Needs Rest Rate Implementation-->
@@ -45,27 +52,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="25dp"
+                android:gravity="end"
                 android:textColor="@color/black"
                 android:text="--"
-                android:textStyle="bold"
-                android:layout_marginTop="37dp"
-                android:layout_marginLeft="51dp"/>
+                android:layout_marginLeft="5dp"
+                android:textStyle="bold"/>
             <TextView
                 android:id="@+id/card_unit"
                 android:layout_toRightOf="@id/card_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16dp"
+                android:lineSpacingMultiplier="1.5"
                 android:textColor="@color/black"
                 android:text="BPM"
-                android:layout_marginTop="44dp"
                 android:layout_marginLeft="5dp"/>
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
 
             <TextView
                 android:id="@+id/card_updated"
@@ -76,11 +84,14 @@
 
                 android:layout_gravity="top"
                 android:textColor="@color/grey"
-                android:layout_marginTop="98dp"
                 android:layout_marginLeft="17dp"
                 android:layout_marginBottom="20dp"/>
 
         </LinearLayout>
+
+    </LinearLayout>
+
+
 
 
 </androidx.cardview.widget.CardView>

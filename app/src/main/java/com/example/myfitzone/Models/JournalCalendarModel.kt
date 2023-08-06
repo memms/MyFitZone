@@ -13,13 +13,15 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.time.ZoneOffset.UTC
 import java.time.ZonedDateTime
 
 class JournalCalendarModel: ViewModel() {
 
     private var userExercise: UserExercise? = null
-    private val TAG = "UserExerciseModel"
+    private val TAG = "JournalCalendarModel"
     private val db = Firebase.firestore
     private val eventsList : MutableMap<String, MutableMap<LocalDate, MutableList<CalenderEventData>>> = mutableMapOf<String, MutableMap<LocalDate ,MutableList<CalenderEventData>>>()
 
@@ -53,6 +55,7 @@ class JournalCalendarModel: ViewModel() {
                             )
                             Log.d(TAG, "getUserCalendar: userExercise $userExercise")
                             val localDate = ZonedDateTime.ofInstant(Instant.ofEpochMilli(userExerciseObject.timeAdded), UTC).toLocalDate()
+                            Log.d(TAG, "getUserCalendar: localDate $localDate $userExerciseObject")
                             val title = "${userExerciseObject.exerciseGroup}: ${userExerciseObject.name}"
                             val desc = "${userExerciseObject.fieldmap["sets"]} sets"
                             if (eventsList[yearMonth]!![localDate] == null){
@@ -88,7 +91,9 @@ class JournalCalendarModel: ViewModel() {
                                 metricValue = userBodyMetrics["metricValue"] as Double,
                                 dateLastModified = userBodyMetrics["dateLastModified"] as Long
                             )
-                            val localDate = ZonedDateTime.ofInstant(Instant.ofEpochMilli(userBodyMetricsObject.timestamp), UTC).toLocalDate()
+                            val calendar = java.util.Calendar.getInstance()
+                            calendar.timeInMillis = userBodyMetricsObject.timestamp
+                            val localDate = LocalDate.of(calendar.get(java.util.Calendar.YEAR), calendar.get(java.util.Calendar.MONTH)+1, calendar.get(java.util.Calendar.DAY_OF_MONTH))
                             val title = userBodyMetricsObject.metricName
                             val desc = "${userBodyMetricsObject.metricValue} ${FieldUnits.unitOfBody(userBodyMetricsObject.metricName)}"
                             if (eventsList[yearMonth]!![localDate] == null){
@@ -96,6 +101,7 @@ class JournalCalendarModel: ViewModel() {
                             }
                             eventsList[yearMonth]!![localDate]?.add(CalenderEventData(type = "bodyMeasure", title = title,
                                 description = desc, timeMillis = userBodyMetricsObject.timestamp))
+                            Log.d(TAG, "getUserCalendar: eventlist ${eventsList[yearMonth]!![localDate]}")
                         }
                     }
                 }

@@ -43,12 +43,10 @@ class UserBodyMeasureModel: ViewModel() {
         var formated = simpleDateFormat.format(range[0])
         Log.d(TAG, "getSelectedBodyMeasureMetrics: formated1 $formated")
 
-
         var list = mutableMapOf<Long,UserBodyMetrics>()
         val docRef = db.collection("users")
             .document(userID)
             .collection("userBodyMeasurements")
-
 
         docRef.document(formated)
         .get()
@@ -63,7 +61,7 @@ class UserBodyMeasureModel: ViewModel() {
                         userBodyMetrics["metricValue"] as Double,
                         userBodyMetrics["dateLastModified"] as Long
                     )
-                    if(userBodyMetricsObject.metricName == selectedName){
+                    if(userBodyMetricsObject.metricName == selectedName && !list.containsKey(userBodyMetricsObject.timestamp)){
                         list[userBodyMetricsObject.timestamp] = userBodyMetricsObject
                     }
                 }
@@ -100,7 +98,10 @@ class UserBodyMeasureModel: ViewModel() {
                             userBodyMetrics["metricValue"] as Double,
                             userBodyMetrics["dateLastModified"] as Long
                         )
-                        if(userBodyMetricsObject.metricName == selectedName && userBodyMetricsObject.timestamp > range[1] && userBodyMetricsObject.timestamp < range[0]){
+                        if(userBodyMetricsObject.metricName == selectedName
+                            && userBodyMetricsObject.timestamp > range[1]
+                            && userBodyMetricsObject.timestamp < range[0]
+                            && !list.containsKey(userBodyMetricsObject.timestamp)){
                             list[userBodyMetricsObject.timestamp] = userBodyMetricsObject
                         }
                     }

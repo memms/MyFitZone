@@ -8,9 +8,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
+import com.example.myfitzone.Models.DashboardModel
 import com.example.myfitzone.Models.DatabaseExercisesModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.ExerciseGroupLinearBinding
@@ -83,8 +85,10 @@ class ExerciseDashboardGroupSelector: Fragment() {
 
             override fun onClick(p0: View?) {
                 Log.d("TAG", "onClick: ")
+                val dashboardModel = ViewModelProvider(requireActivity())[DashboardModel::class.java]
+                dashboardModel.setTempExerciseGroup(exersiceGroups[bindingAdapterPosition])
                 view?.let {
-                    TODO()
+                    findNavController().navigate(R.id.action_exerciseDashboardGroupSelector_to_exerciseDashboardSelector)
                 }
             }
         }

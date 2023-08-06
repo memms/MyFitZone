@@ -262,6 +262,15 @@
         android:id="@+id/exerciseDashboardGroupSelector"
         android:name="com.example.myfitzone.Views.DashboardViews.ExerciseDashboardGroupSelector"
         android:label="ExerciseDashboardGroupSelector"
-        tools:layout="@layout/fragment_exercise_group"/>
+        tools:layout="@layout/fragment_exercise_group">
+        <action
+            android:id="@+id/action_exerciseDashboardGroupSelector_to_exerciseDashboardSelector"
+            app:destination="@id/exerciseDashboardSelector" />
+    </fragment>
+    <fragment
+        android:id="@+id/exerciseDashboardSelector"
+        android:name="com.example.myfitzone.Views.DashboardViews.ExerciseDashboardSelector"
+        android:label="ExerciseDashboardSelector"
+        tools:layout="@layout/fragment_exercise_selector"/>
 
 </navigation>
