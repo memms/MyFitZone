@@ -218,7 +218,8 @@ class ExerciseDashboardSelector:Fragment() {
                             "",
                             map[dashboardModel.getValueAddName()]!!.unit.trim('\n'),
                             0,
-                            0
+                            0,
+                            "exercise"
                         )
                         dashboardModel.startAddExerciseMeasureDashBoard(itemAdd, callback = object:
                             FirestoreGetCompleteCallbackArrayList {

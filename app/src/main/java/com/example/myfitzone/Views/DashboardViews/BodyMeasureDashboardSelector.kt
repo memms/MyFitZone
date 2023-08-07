@@ -287,7 +287,8 @@ class BodyMeasureDashboardSelector: Fragment(), View.OnClickListener {
                             "",
                             map[dashboardModel.getValueAddName()]!!.unit,
                             0,
-                            0
+                            0,
+                            "bodyMeasure"
                         )
                         dashboardModel.startAddBodyMeasureDashBoard(itemAdd, callback = object: FirestoreGetCompleteCallbackArrayList{
                             override fun onGetComplete(result: ArrayList<String>) {

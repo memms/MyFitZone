@@ -203,7 +203,8 @@ class SensorDashboardSelector:Fragment() {
                             "",
                             map[dashboardModel.getValueAddName()]!!.unit.trim('\n'),
                             0,
-                            0
+                            0,
+                            "sensor"
                         )
                         dashboardModel.startAddSensorDashBoard(itemAdd, callback = object:
                             FirestoreGetCompleteCallbackArrayList {

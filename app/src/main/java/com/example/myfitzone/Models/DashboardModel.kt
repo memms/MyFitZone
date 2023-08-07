@@ -12,6 +12,7 @@ import com.example.myfitzone.DataModels.UserBodyMetrics
 import com.example.myfitzone.DataModels.UserExercise
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
@@ -99,7 +100,8 @@ class DashboardModel: ViewModel() {
                             cardValue = temp2["cardValue"] as String,
                             cardUnit = temp2["cardUnit"] as String,
                             cardUpdated = temp2["cardUpdated"] as Long,
-                            recyclerPosition = temp2["recyclerPosition"].toString().toInt()
+                            recyclerPosition = temp2["recyclerPosition"].toString().toInt(),
+                            cardType = temp2["cardType"] as String
                         )
                         tempList[key] = temp3
 
@@ -280,14 +282,7 @@ class DashboardModel: ViewModel() {
     private fun addExerciseMeasureDashBoard(realDashboardRecyclerData: DashboardRecyclerData, callback: FirestoreGetCompleteCallbackArrayList){
         val userID = Firebase.auth.currentUser?.uid ?: return
         val docData = mapOf(
-            realDashboardRecyclerData.cardName to mapOf(
-                "cardName" to realDashboardRecyclerData.cardName,
-                "cardLogo" to realDashboardRecyclerData.cardLogo,
-                "cardValue" to realDashboardRecyclerData.cardValue,
-                "cardUnit" to realDashboardRecyclerData.cardUnit,
-                "cardUpdated" to realDashboardRecyclerData.cardUpdated,
-                "recyclerPosition" to realDashboardRecyclerData.recyclerPosition
-            )
+            realDashboardRecyclerData.cardName to realDashboardRecyclerData
         )
         db.collection("users")
             .document(userID)
@@ -295,6 +290,7 @@ class DashboardModel: ViewModel() {
             .document("exercise")
             .set(docData, SetOptions.merge())
             .addOnSuccessListener {
+                dashboardItems.removeIf { it.cardName == realDashboardRecyclerData.cardName }
                 dashboardItems.add(realDashboardRecyclerData)
                 liveData.value = dashboardItems
                 callback.onGetComplete(arrayListOf("success"))
@@ -376,6 +372,7 @@ class DashboardModel: ViewModel() {
         docRef.set(docData, SetOptions.merge())
             .addOnSuccessListener {
                 Log.d(TAG, "DocumentSnapshot successfully written!")
+                dashboardItems.removeIf { it.cardName == realDashboardRecyclerData.cardName }
                 dashboardItems.add(realDashboardRecyclerData)
                 liveData.value = dashboardItems
                 callback.onGetComplete(arrayListOf("success"))
@@ -428,7 +425,8 @@ class DashboardModel: ViewModel() {
                             cardValue = temp2["cardValue"] as String,
                             cardUnit = temp2["cardUnit"] as String,
                             cardUpdated = temp2["cardUpdated"] as Long,
-                            recyclerPosition = temp2["recyclerPosition"].toString().toInt()
+                            recyclerPosition = temp2["recyclerPosition"].toString().toInt(),
+                            cardType = temp2["cardType"] as String
                         )
                         tempList[key] = temp3
                     }
@@ -468,7 +466,8 @@ class DashboardModel: ViewModel() {
                             cardValue = temp2["cardValue"] as String,
                             cardUnit = temp2["cardUnit"] as String,
                             cardUpdated = temp2["cardUpdated"] as Long,
-                            recyclerPosition = temp2["recyclerPosition"].toString().toInt()
+                            recyclerPosition = temp2["recyclerPosition"].toString().toInt(),
+                            cardType = temp2["cardType"] as String
                         )
                         setDashboardAddType("bodyMeasure")
                         startAddSensorDashBoard(temp3, object : FirestoreGetCompleteCallbackArrayList{
@@ -594,7 +593,8 @@ class DashboardModel: ViewModel() {
                                     cardValue = temp2["cardValue"] as String,
                                     cardUnit = temp2["cardUnit"] as String,
                                     cardUpdated = temp2["cardUpdated"] as Long,
-                                    recyclerPosition = temp2["recyclerPosition"].toString().toInt()
+                                    recyclerPosition = temp2["recyclerPosition"].toString().toInt(),
+                                    cardType = temp2["cardType"] as String
                                 )
                                 val measureName = getBodyMeasureName(tempDashboardRecyclerData.cardName)
                                 var list = mainList.filter { it.value.metricName == measureName }.values.toMutableList()
@@ -618,7 +618,8 @@ class DashboardModel: ViewModel() {
                                     "cardValue" to it.cardValue,
                                     "cardUnit" to it.cardUnit,
                                     "cardUpdated" to it.cardUpdated,
-                                    "recyclerPosition" to it.recyclerPosition
+                                    "recyclerPosition" to it.recyclerPosition,
+                                    "cardType" to it.cardType
                                 )
                             }
                             colRef.set(docData, SetOptions.merge())
@@ -671,7 +672,8 @@ class DashboardModel: ViewModel() {
                                     cardValue = temp2["cardValue"] as String,
                                     cardUnit = temp2["cardUnit"] as String,
                                     cardUpdated = temp2["cardUpdated"] as Long,
-                                    recyclerPosition = temp2["recyclerPosition"].toString().toInt()
+                                    recyclerPosition = temp2["recyclerPosition"].toString().toInt(),
+                                    cardType = temp2["cardType"] as String
                                 )
                                 val exerciseName = tempDashboardRecyclerData.cardName.split('(')[0].trim()
                                 val list = mainList.filter { it.name == exerciseName }
@@ -720,7 +722,8 @@ class DashboardModel: ViewModel() {
                                     "cardValue" to it.cardValue,
                                     "cardUnit" to it.cardUnit,
                                     "cardUpdated" to it.cardUpdated,
-                                    "recyclerPosition" to it.recyclerPosition
+                                    "recyclerPosition" to it.recyclerPosition,
+                                    "cardType" to it.cardType
                                 )
                             }
                             colRef.set(docData, SetOptions.merge())
@@ -792,12 +795,12 @@ class DashboardModel: ViewModel() {
     }
 
     private fun addSensorDashboard(
-        itemAdd: DashboardRecyclerData,
+        realDashboardRecyclerData: DashboardRecyclerData,
         callback: FirestoreGetCompleteAny
     ) {
         val userID = Firebase.auth.currentUser?.uid ?: return
         val docData = mapOf(
-            itemAdd.cardName to itemAdd
+            realDashboardRecyclerData.cardName to realDashboardRecyclerData
         )
 
         val docRef = db.collection("users")
@@ -808,7 +811,8 @@ class DashboardModel: ViewModel() {
         docRef.set(docData, SetOptions.merge())
             .addOnSuccessListener {
                 Log.d(TAG, "DocumentSnapshot successfully written!")
-                dashboardItems.add(itemAdd)
+                dashboardItems.removeIf { it.cardName == realDashboardRecyclerData.cardName }
+                dashboardItems.add(realDashboardRecyclerData)
                 liveData.value = dashboardItems
                 callback.onGetComplete(arrayListOf("success"))
                 Log.d(TAG, "addSensorDashboard: $dashboardItems")
@@ -875,6 +879,27 @@ class DashboardModel: ViewModel() {
                 Log.d(TAG, "getSensorData: $exception")
                 callback.onGetFailure(exception.toString())
             }
+    }
+
+    fun deleteDashboard(itemDelete: DashboardRecyclerData, callback: FirestoreGetCompleteAny){
+        val userID = Firebase.auth.currentUser?.uid ?: return
+        db.collection("users")
+            .document(userID)
+            .collection("dashboard")
+            .document(itemDelete.cardType)
+            .update(itemDelete.cardName, FieldValue.delete())
+            .addOnSuccessListener {
+                Log.d(TAG, "deleteDashboard: success")
+                callback.onGetComplete(arrayListOf("success"))
+                dashboardItems.removeIf { it.cardName == itemDelete.cardName }
+                liveData.value = dashboardItems
+            }
+            .addOnFailureListener {
+                Log.d(TAG, "deleteDashboard: failure")
+                callback.onGetFailure(it.toString())
+            }
+
+
     }
 
 

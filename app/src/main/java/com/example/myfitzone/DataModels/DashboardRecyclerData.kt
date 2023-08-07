@@ -6,5 +6,6 @@ data class DashboardRecyclerData(
     var cardValue: String,
     var cardUnit: String,
     var cardUpdated: Long,
-    var recyclerPosition: Int
+    var recyclerPosition: Int,
+    var cardType: String
 )

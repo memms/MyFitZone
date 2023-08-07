@@ -10,16 +10,18 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.myfitzone.Callbacks.FirestoreGetCompleteAny
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.DataModels.DashboardRecyclerData
 import com.example.myfitzone.Models.DashboardModel
 import com.example.myfitzone.Models.UserDetailModel
 import com.example.myfitzone.R
-import com.example.myfitzone.databinding.DashboardCardviewBinding
+import com.example.myfitzone.databinding.DashboardCardItemViewBinding
+import com.example.myfitzone.databinding.DialogDashboardMoreBinding
 import com.example.myfitzone.databinding.FragmentHomeBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.Source
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -347,9 +349,9 @@ class HomeFragment : Fragment() {
             viewType: Int
         ): DashCardViewHolder {
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.dashboard_cardview, parent, false)
+                .inflate(R.layout.dashboard_card_item_view, parent, false)
             val binding =
-                DashboardCardviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                DashboardCardItemViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             return DashCardViewHolder(binding)
         }
 
@@ -357,6 +359,7 @@ class HomeFragment : Fragment() {
             holder: DashCardViewHolder,
             position: Int
         ) {
+
             holder.view.cardName.text = dashCardList[position].cardName
             holder.view.cardValue.text = dashCardList[position].cardValue
             holder.view.cardUnit.text = dashCardList[position].cardUnit
@@ -376,10 +379,7 @@ class HomeFragment : Fragment() {
 //            TODO: Uncomment this when the images are added to the project
 //            holder.view.cardLogo.setImageResource(dashCardList[position].cardLogo.toInt())
 
-            holder.itemView.setOnClickListener {
-                Log.d("DashCardViewHolder: onBindViewHolder", "onClick: position ${holder.adapterPosition}")
-                //TODO("Not yet implemented")
-            }
+
         }
 
         override fun getItemCount(): Int {
@@ -388,13 +388,48 @@ class HomeFragment : Fragment() {
 //            TODO("Not yet implemented")
         }
 
-        inner class DashCardViewHolder(val view: DashboardCardviewBinding) :
+        inner class DashCardViewHolder(val view: DashboardCardItemViewBinding) :
             RecyclerView.ViewHolder(view.root), View.OnClickListener {
+            init {
+                view.cardViewDashboard.setOnClickListener(this)
+                view.cardMore.setOnClickListener(this)
+            }
             override fun onClick(view: View?) {
-                Log.d("DashCardViewHolder", "onClick: ")
-
+                when (view?.id) {
+                    R.id.card_more -> {
+                        Log.d("DashCardViewHolder", "onClick: More")
+                        inflateMoreDialog(dashCardList[bindingAdapterPosition])
+                    }
+                    R.id.cardView_dashboard -> {
+                        Log.d("DashCardViewHolder", "onClick: Card")
+                    }
+                }
             }
 
         }
+    }
+
+    private fun inflateMoreDialog(dashboardRecyclerData: DashboardRecyclerData){
+        val bottomSheetFragment: BottomSheetDialog = BottomSheetDialog(requireContext())
+        val moreView = DialogDashboardMoreBinding.inflate(layoutInflater)
+        bottomSheetFragment.setContentView(moreView.root)
+        bottomSheetFragment.show()
+        moreView.deleteRowDashMoreDiag.setOnClickListener {
+            dashboardModel.deleteDashboard(dashboardRecyclerData, callback = object : FirestoreGetCompleteAny{
+                override fun onGetComplete(result: Any) {
+                    Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show()
+                    bottomSheetFragment.dismiss()
+                }
+
+                override fun onGetFailure(string: String) {
+                    Toast.makeText(requireContext(), "Error: $string", Toast.LENGTH_SHORT).show()
+                }
+
+            })
+        }
+//        bottomSheetFragment.findViewById<LinearLayout>(R.id.first_row_profile_diag)?.setOnClickListener {
+//            bottomSheetFragment.dismiss()
+//
+//        }
     }
 }
