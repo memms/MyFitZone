@@ -10,6 +10,7 @@ import com.example.myfitzone.DataModels.DashboardRecyclerData
 import com.example.myfitzone.DataModels.DashboardTemplateData
 import com.example.myfitzone.DataModels.UserBodyMetrics
 import com.example.myfitzone.DataModels.UserExercise
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.Source
@@ -458,7 +459,6 @@ class DashboardModel: ViewModel() {
                 if(document.exists()){
                     val temp = document.data as HashMap<String, Any>
                     Log.d(TAG, "updateDashboardValuesBodyMeasure: document.data/temp $temp")
-
                     temp.keys.forEach { key ->
                         val temp2 = temp[key] as HashMap<String, Any>
                         Log.d(TAG, "updateDashboardValuesBodyMeasure: temp2 = temp[key] $temp2")
@@ -490,6 +490,83 @@ class DashboardModel: ViewModel() {
             }
     }
 
+    private fun getBodyMeasures(timeRange: String, callback: FirestoreGetCompleteAny){
+        val userID = Firebase.auth.currentUser?.uid ?: return
+        val simpleDateFormat = SimpleDateFormat("yyyy-MM")
+        val range = arrayListOf(Instant.now().toEpochMilli(), Instant.now().toEpochMilli()-2592000000)
+        var formated = simpleDateFormat.format(range[0])
+
+        var list = mutableMapOf<Long,UserBodyMetrics>()
+        val docRef = db.collection("users")
+            .document(userID)
+            .collection("userBodyMeasurements")
+
+        val task1 = docRef.document(formated)
+            .get()
+            .addOnSuccessListener { document ->
+                if(document.exists()){
+                    document.data!!.forEach {
+                        val userBodyMetrics = it.value as HashMap<String, Any>
+                        val userBodyMetricsObject = UserBodyMetrics(
+                            userBodyMetrics["timestamp"] as Long,
+                            userBodyMetrics["metricType"] as String,
+                            userBodyMetrics["metricName"] as String,
+                            userBodyMetrics["metricValue"] as Double,
+                            userBodyMetrics["dateLastModified"] as Long
+                        )
+                        list[userBodyMetricsObject.timestamp] = userBodyMetricsObject
+                    }
+                }
+                else{
+                    Log.d(TAG, "getBodyMeasures: No data 1")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents: ", exception)
+                callback.onGetFailure(exception.toString())
+            }
+
+            val cal = java.util.Calendar.getInstance()
+            cal.timeInMillis = range[0]
+            cal.set(Calendar.DAY_OF_MONTH, -1)
+            formated = simpleDateFormat.format(cal.timeInMillis)
+            val task2 = docRef.document(formated)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        document.data!!.forEach {
+                            val userBodyMetrics = it.value as HashMap<String, Any>
+                            val userBodyMetricsObject = UserBodyMetrics(
+                                userBodyMetrics["timestamp"] as Long,
+                                userBodyMetrics["metricType"] as String,
+                                userBodyMetrics["metricName"] as String,
+                                userBodyMetrics["metricValue"] as Double,
+                                userBodyMetrics["dateLastModified"] as Long
+                            )
+                            if (userBodyMetricsObject.timestamp > range[1]
+                                && userBodyMetricsObject.timestamp < range[0]
+                                && !list.containsKey(userBodyMetricsObject.timestamp)
+                            ) {
+                                list[userBodyMetricsObject.timestamp] = userBodyMetricsObject
+                            }
+                        }
+                    } else {
+                        Log.d(TAG, "getBodyMeasures: No data 2")
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.w(TAG, "Error getting documents: ", exception)
+                    callback.onGetFailure(exception.toString())
+                }
+
+
+            Tasks.whenAllComplete(task1, task2).addOnSuccessListener {
+                callback.onGetComplete(list)
+            }
+
+
+    }
+
     fun updateDashboardValuesBodyMeasure(callback: FirestoreGetCompleteCallbackArrayList) {
         dashboardItems.clear()
         val userID = Firebase.auth.currentUser?.uid ?: return
@@ -503,38 +580,69 @@ class DashboardModel: ViewModel() {
                 if(document.exists()){
                     val temp = document.data as HashMap<String, Any>
                     Log.d(TAG, "updateDashboardValuesBodyMeasure: document.data/temp $temp")
-                    //TODO: CHANGE THIS CUZ IT CAUSES TOO MUCH NESTED CALLBACKS
-                    //TODO: CHANGE THIS TO GET ALL THE VALUES AT ONCE
-                    //TODO: THEN DEPENDING ON KEY, ADD TO DASHBOARD APPROPRIATELY.
-                    //TODO: example, get all bodymeasure values for the past 30 days. Then Sort it by the key (weight, height, etc). Then add it to the dashboard depending on the valueType (Last, Highest, Lowest, etc.).
-                    temp.keys.forEach { key ->
-                        val temp2 = temp[key] as HashMap<String, Any>
-                        Log.d(TAG, "updateDashboardValuesBodyMeasure: temp2 = temp[key] $temp2")
-                        val temp3 = DashboardRecyclerData(
-                            cardName = temp2["cardName"] as String,
-                            cardLogo = temp2["cardLogo"] as String,
-                            cardValue = temp2["cardValue"] as String,
-                            cardUnit = temp2["cardUnit"] as String,
-                            cardUpdated = temp2["cardUpdated"] as Long,
-                            recyclerPosition = temp2["recyclerPosition"].toString().toInt()
-                        )
-                        setDashboardAddType("bodyMeasure")
-                        startAddBodyMeasureDashBoard(temp3, object : FirestoreGetCompleteCallbackArrayList{
-                            override fun onGetComplete(string: ArrayList<String>) {
-                                Log.d(TAG, "updateDashboardValuesBodyMeasure: $string")
-                                callback.onGetComplete(string)
+                    val listUpdatedDashboards = arrayListOf<DashboardRecyclerData>()
+                    getBodyMeasures("30d", callback = object : FirestoreGetCompleteAny{
+                        override fun onGetComplete(result: Any) {
+                            val mainList = result as MutableMap<Long, UserBodyMetrics>
+                            Log.d(TAG, "updateDashboardValuesBodyMeasure: mainList $mainList")
+                            temp.keys.forEach {key ->
+                                val temp2 = temp[key] as HashMap<String, Any>
+                                Log.d(TAG, "updateDashboardValuesBodyMeasure: temp2 = temp[key] $temp2")
+                                val tempDashboardRecyclerData = DashboardRecyclerData(
+                                    cardName = temp2["cardName"] as String,
+                                    cardLogo = temp2["cardLogo"] as String,
+                                    cardValue = temp2["cardValue"] as String,
+                                    cardUnit = temp2["cardUnit"] as String,
+                                    cardUpdated = temp2["cardUpdated"] as Long,
+                                    recyclerPosition = temp2["recyclerPosition"].toString().toInt()
+                                )
+                                val measureName = getBodyMeasureName(tempDashboardRecyclerData.cardName)
+                                var list = mainList.filter { it.value.metricName == measureName }.values.toMutableList()
+                                Log.d(TAG, "updateDashboardValuesBodyMeasure: list for ${key} $list")
+                                if(list.isEmpty()){
+                                    tempDashboardRecyclerData.cardValue = "N/A"
+                                }
+                                else{   //get Last value
+                                    list.sortByDescending { it.timestamp }
+                                    Log.d(TAG, "updateDashboardValuesBodyMeasure: list[0] descending ${list[0]}")
+                                    tempDashboardRecyclerData.cardValue = list[0].metricValue.toString()
+                                }
+                                tempDashboardRecyclerData.cardUpdated = Calendar.getInstance().timeInMillis
+                                listUpdatedDashboards.add(tempDashboardRecyclerData)
                             }
+                            val docData = mutableMapOf<String, Any>()
+                            listUpdatedDashboards.forEach {
+                                docData[it.cardName] = mapOf(
+                                    "cardName" to it.cardName,
+                                    "cardLogo" to it.cardLogo,
+                                    "cardValue" to it.cardValue,
+                                    "cardUnit" to it.cardUnit,
+                                    "cardUpdated" to it.cardUpdated,
+                                    "recyclerPosition" to it.recyclerPosition
+                                )
+                            }
+                            colRef.set(docData, SetOptions.merge())
+                                .addOnSuccessListener {
+                                    Log.d(TAG, "updateDashboardValuesExercise: success")
+                                    callback.onGetComplete(arrayListOf("success"))
+                                }.addOnFailureListener { e ->
+                                    Log.d(TAG, "updateDashboardValuesExercise: failure")
+                                    callback.onGetFailure(e.toString())
+                                }
+                        }
 
-                            override fun onGetFailure(string: String) {
-                                Log.d(TAG, "onGetFailure: $string")
-                            }
-                        })
-                    }
+                        override fun onGetFailure(string: String) {
+                            Log.d(TAG, "updateDashboardValuesExercise: failure")
+                            callback.onGetFailure(string)
+                        }
+
+                    })
+
                 }
             }
             .addOnFailureListener { exception ->
                 Log.d(TAG, "getHomePageDashboardFromServer: $exception")
-
+                callback.onGetFailure(exception.toString())
             }
     }
 
@@ -551,36 +659,90 @@ class DashboardModel: ViewModel() {
             .addOnSuccessListener { document ->
                 if(document.exists()){
                     val temp = document.data as HashMap<String, Any>
-                    //TODO: Same for exercises. Get all exercises for the past 30 days. Then sort it by the key (calories, duration, etc). Then add it to the dashboard depending on the valueType (Last, Highest, Lowest, etc.).
-                    temp.keys.forEach { key ->
-                        val temp2 = temp[key] as HashMap<String, Any>
-                        val temp3 = DashboardRecyclerData(
-                            cardName = temp2["cardName"] as String,
-                            cardLogo = temp2["cardLogo"] as String,
-                            cardValue = temp2["cardValue"] as String,
-                            cardUnit = temp2["cardUnit"] as String,
-                            cardUpdated = temp2["cardUpdated"] as Long,
-                            recyclerPosition = temp2["recyclerPosition"].toString().toInt()
-                        )
-                        setDashboardAddType("exercise")
-                        val exerciseName = temp3.cardName.split('(')[0].trim()
-                        valueAddName = exerciseName
-                        startAddExerciseMeasureDashBoard(temp3, object : FirestoreGetCompleteCallbackArrayList{
-                            override fun onGetComplete(string: ArrayList<String>) {
-                                Log.d(TAG, "updateDashboardValuesExercise: $string")
-                                callback.onGetComplete(string)
+                    val listUpdatedDashboards = arrayListOf<DashboardRecyclerData>()
+                    getExercises("30d", callback = object : FirestoreGetCompleteAny{
+                        override fun onGetComplete(result: Any) {
+                            val mainList = result as ArrayList<UserExercise>
+                            temp.keys.forEach{key ->
+                                val temp2 = temp[key] as HashMap<String, Any>
+                                val tempDashboardRecyclerData = DashboardRecyclerData(
+                                    cardName = temp2["cardName"] as String,
+                                    cardLogo = temp2["cardLogo"] as String,
+                                    cardValue = temp2["cardValue"] as String,
+                                    cardUnit = temp2["cardUnit"] as String,
+                                    cardUpdated = temp2["cardUpdated"] as Long,
+                                    recyclerPosition = temp2["recyclerPosition"].toString().toInt()
+                                )
+                                val exerciseName = tempDashboardRecyclerData.cardName.split('(')[0].trim()
+                                val list = mainList.filter { it.name == exerciseName }
+                                if(list.isEmpty()){
+                                    tempDashboardRecyclerData.cardValue = "N/A"
+                                }
+                                else {
+                                    with(tempDashboardRecyclerData.cardName) {
+                                        when {
+                                            contains("Last") -> {
+                                                list.sortedByDescending { it.timeAdded }
+                                                val stringBuilder = StringBuilder()
+                                                for (field in list[0].fieldmap) {
+                                                    //average it out
+                                                    if (field.key != "sets") {
+                                                        stringBuilder.append(findAverage(field.value as List<*>))
+                                                        stringBuilder.append("\n")
+                                                    } else {
+                                                        stringBuilder.append(field.value)
+                                                        stringBuilder.append("\n")
+                                                    }
+                                                }
+                                                tempDashboardRecyclerData.cardValue =
+                                                    stringBuilder.toString().trim('\n')
+                                                Log.d(TAG, "startAddExerciseMeasureDashBoard: $stringBuilder")
+                                            }
+                                            contains("High") -> ""
+                                            contains("Low") -> ""
+                                            contains("1RM") -> ""
+                                            contains("Avg") -> ""
+                                            else -> ""
+                                        }
+                                    }
+                                }
+                                tempDashboardRecyclerData.cardUpdated = Calendar.getInstance().timeInMillis
+                                Log.d(TAG, "startAddExerciseMeasureDashBoard: $tempDashboardRecyclerData")
+//                                addExerciseMeasureDashBoard(tempDashboardRecyclerData, callback)
+                                listUpdatedDashboards.add(tempDashboardRecyclerData)
                             }
+                            //add all the updated dashboards at once for 1 read
+                            val docData = mutableMapOf<String, Any>()
+                            listUpdatedDashboards.forEach {
+                                docData[it.cardName] = mapOf(
+                                    "cardName" to it.cardName,
+                                    "cardLogo" to it.cardLogo,
+                                    "cardValue" to it.cardValue,
+                                    "cardUnit" to it.cardUnit,
+                                    "cardUpdated" to it.cardUpdated,
+                                    "recyclerPosition" to it.recyclerPosition
+                                )
+                            }
+                            colRef.set(docData, SetOptions.merge())
+                                .addOnSuccessListener {
+                                Log.d(TAG, "updateDashboardValuesExercise: success")
+                                callback.onGetComplete(arrayListOf("success"))
+                            }.addOnFailureListener {e ->
+                                Log.d(TAG, "updateDashboardValuesExercise: failure")
+                                callback.onGetFailure(e.toString())
+                            }
+                        }
+                        override fun onGetFailure(string: String) {
+                            Log.d(TAG, "updateDashboardValuesExercise: failure")
+                            callback.onGetFailure(string)
+                        }
 
-                            override fun onGetFailure(string: String) {
-                                Log.d(TAG, "updateDashboardValuesExercise: $string")
-                            }
-                        })
-                    }
+                    })
                 }
             }
             .addOnFailureListener { exception ->
                 Log.d(TAG, "getHomePageDashboardFromServer: $exception")
-
+                callback.onGetFailure(exception.toString())
             }
     }
 
