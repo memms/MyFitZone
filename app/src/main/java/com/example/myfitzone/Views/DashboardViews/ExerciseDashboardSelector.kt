@@ -63,8 +63,9 @@ class ExerciseDashboardSelector:Fragment() {
                 val exercises = result as ArrayList<UserExercise>
                 Log.d(TAG, "onGetComplete: $exercises")
                 exercises.sortByDescending { it.timeAdded }
+                exercises.removeIf { it.exerciseGroup != dashboardModel.getTempExerciseGroup() }
                 binding.exerciseSelectorRecyclerView.apply {
-                    adapter = ExerciseSelectorAdapter(exercises)
+                    adapter = ExerciseSelectorAdapter(ArrayList(exercises.distinctBy { it.name }))
                     layoutManager = LinearLayoutManager(requireContext())
                 }
             }
