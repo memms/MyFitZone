@@ -148,30 +148,22 @@ class HomeFragment : Fragment() {
             })
         }
         else{
-            var completed = 0
-            Log.d(TAG, "getDashboards: HOMEPAGE completed = $completed")
             dashboardModel.updateDashboardValuesSensors(object : FirestoreGetCompleteCallbackArrayList {
                 override fun onGetComplete(result: ArrayList<String>) {
                     Log.d(TAG, "onGetComplete: HOMEPAGE updateDashboardValuesSensors")
-                    completed++
-                    if(completed>=3){
-                        getupdatedDashboard()
-                    }
+
                 }
 
                 override fun onGetFailure(string: String) {
                     Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "onGetFailure: HOMEPAGE updateDashboardValuesSensors")
                 }
 
             })
             dashboardModel.updateDashboardValuesBodyMeasure(object : FirestoreGetCompleteCallbackArrayList {
                 override fun onGetComplete(result: ArrayList<String>) {
-                    //TODO PROBLEM CHILD RETURNS 3 TIMES
                     Log.d(TAG, "onGetComplete: HOMEPAGE updateDashboardValuesBodyMeasure")
-                    completed++
-                    if(completed>=3){
-                        getupdatedDashboard()
-                    }
+                    getupdatedDashboard()
                 }
 
                 override fun onGetFailure(string: String) {
@@ -182,10 +174,7 @@ class HomeFragment : Fragment() {
             dashboardModel.updateDashboardValuesExercise(object : FirestoreGetCompleteCallbackArrayList {
                 override fun onGetComplete(result: ArrayList<String>) {
                     Log.d(TAG, "onGetComplete: HOMEPAGE updateDashboardValuesExercise")
-                    completed++
-                    if(completed>=3){
-                        getupdatedDashboard()
-                    }
+                    getupdatedDashboard()
                 }
 
                 override fun onGetFailure(string: String) {
