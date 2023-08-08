@@ -3,7 +3,7 @@ package com.example.myfitzone.DataModels
 data class Friend(
     var name: String,
     var username: String,
-    var UID: String,
+    var uid: String,
     var profilePic: String,
     var dateAdded: Long,
     var status: String

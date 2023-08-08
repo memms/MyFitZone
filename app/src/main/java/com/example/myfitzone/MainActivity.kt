@@ -61,7 +61,6 @@ class MainActivity : AppCompatActivity(), NetworkConectivityReceiver.NetworkConn
         auth.currentUser?.let { it.reload() }
         val controller = Navigation.findNavController(this, R.id.fragment)
 
-
         auth.addAuthStateListener {
             Log.i(TAG, "AuthState changed to ${it.currentUser?.uid}")
             if (it.currentUser != null) {
