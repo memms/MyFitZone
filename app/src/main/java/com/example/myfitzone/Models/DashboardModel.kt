@@ -8,6 +8,7 @@ import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackHashMap
 import com.example.myfitzone.DataModels.DashboardRecyclerData
 import com.example.myfitzone.DataModels.DashboardTemplateData
+import com.example.myfitzone.DataModels.Friend
 import com.example.myfitzone.DataModels.UserBodyMetrics
 import com.example.myfitzone.DataModels.UserExercise
 import com.google.android.gms.tasks.Tasks
@@ -34,6 +35,69 @@ class DashboardModel: ViewModel() {
     private var dashboardItems = mutableListOf<DashboardRecyclerData>()
     private var liveData = MutableLiveData<List<DashboardRecyclerData>>()
     private var tempExerciseGroup = ""
+    private var notificationsOpened = false
+    private var friendRequestList = MutableLiveData<ArrayList<Friend>>()
+
+    init {
+        friendRequestList.value = arrayListOf()
+        friendRequestListener()
+    }
+
+    fun setNotificationsOpened(value: Boolean){
+        notificationsOpened = value
+    }
+
+    fun getNotificationsOpened(): Boolean{
+        return notificationsOpened
+    }
+
+    fun getFriendRequestLiveList(): MutableLiveData<ArrayList<Friend>>{
+        return friendRequestList
+    }
+
+    private fun friendRequestListener(){
+        val userId = Firebase.auth.currentUser?.uid
+        val docRef = db.collection("friends").document(userId.toString())
+
+        docRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e)
+                return@addSnapshotListener
+            }
+            if (snapshot != null && snapshot.exists()) {
+                Log.d(TAG, "Current data: ${snapshot.data}")
+                snapshot.data?.let {
+                    try {
+                        val friendRequests = it["friendRequests"] as HashMap<String, Any>
+                        val arrayList = arrayListOf<Friend>()
+                        friendRequests.let {map ->
+                            map.forEach {friendData ->
+                                val friend = friendData.value as HashMap<String, Any>
+                                val friendData = Friend(
+                                    name = friend["name"] as String,
+                                    username = friend["username"] as String,
+                                    uid = friend["uid"] as String,
+                                    profilePic = friend["profilePic"] as String,
+                                    dateAdded = friend["dateAdded"] as Long,
+                                    status = friend["status"] as String
+                                )
+                                arrayList.add(friendData)
+                            }
+                            friendRequestList.value = arrayList
+                            notificationsOpened = false
+                        }
+
+                    }
+                    catch (e: Exception){
+                        Log.d(TAG, "friendRequestListener: $e")
+                    }
+                }
+            } else {
+                Log.d(TAG, "Current data: null")
+            }
+        }
+    }
+
 
     fun setTempExerciseGroup(group: String){
         tempExerciseGroup = group

@@ -135,54 +135,90 @@ class FriendsModel : ViewModel() {
             }
     }
 
+    private fun alreadyFriends(friendUID: String,callback: FirestoreGetCompleteAny){
+        val userID = getUserID()?: return
+        db.collection("friends")
+            .document(userID)
+            .get()
+            .addOnSuccessListener {
+                if(it.exists()){
+                    val friends = it.get("allFriends") as HashMap<String, Any>
+                    val friendList = friends.keys.toMutableList()
+                    if(friendList.contains(friendUID)){
+                        callback.onGetComplete(true)
+                    }
+                    else{
+                        callback.onGetComplete(false)
+                    }
+                }
+            }
+            .addOnFailureListener {
+                callback.onGetFailure(it.toString())
+            }
+    }
+
     fun sendFriendRequest(friendToAdd: Friend, callback: FirestoreGetCompleteAny){
         val userID = getUserID()?: return
         friendToAdd.dateAdded = Calendar.getInstance().timeInMillis
         friendToAdd.status = "pendingTO"
 
-        val ownRequest = mapOf(
-            "ownRequests" to mapOf(
-                friendToAdd.uid to friendToAdd
-            )
-        )
-
-        val task1 = db.collection("friends")
-            .document(userID)
-            .set(ownRequest, SetOptions.merge())
-
-        getCurrentUserData(object: FirestoreGetCompleteAny{
+        alreadyFriends(friendToAdd.uid, object: FirestoreGetCompleteAny{
             override fun onGetComplete(result: Any) {
-                val currentUser = result as User
-                currentUser.let {
-                    val friendRequest = mapOf(
-                        "friendRequests" to mapOf(
-                            userID to Friend(
-                                uid = userID,
-                                name = currentUser.name["first"] + " " + currentUser.name["last"],
-                                username = currentUser.username,
-                                profilePic = "",
-                                dateAdded = Calendar.getInstance().timeInMillis,
-                                status = "pendingFROM"
-                            )
+                if(result as Boolean){
+                    callback.onGetComplete("alreadyFriends")
+                    return
+                }
+                else{
+                    val ownRequest = mapOf(
+                        "ownRequests" to mapOf(
+                            friendToAdd.uid to friendToAdd
                         )
                     )
-                    val task2 = db.collection("friends")
-                        .document(friendToAdd.uid)
-                        .set(friendRequest, SetOptions.merge())
 
-                    Tasks.whenAllSuccess<Tasks>(Tasks.forResult(task1), Tasks.forResult(task2))
-                        .addOnSuccessListener {
-                            callback.onGetComplete(true)
+                    val task1 = db.collection("friends")
+                        .document(userID)
+                        .set(ownRequest, SetOptions.merge())
+
+                    getCurrentUserData(object: FirestoreGetCompleteAny{
+                        override fun onGetComplete(result: Any) {
+                            val currentUser = result as User
+                            currentUser.let {
+                                val friendRequest = mapOf(
+                                    "friendRequests" to mapOf(
+                                        userID to Friend(
+                                            uid = userID,
+                                            name = currentUser.name["first"] + " " + currentUser.name["last"],
+                                            username = currentUser.username,
+                                            profilePic = "",
+                                            dateAdded = Calendar.getInstance().timeInMillis,
+                                            status = "pendingFROM"
+                                        )
+                                    )
+                                )
+                                val task2 = db.collection("friends")
+                                    .document(friendToAdd.uid)
+                                    .set(friendRequest, SetOptions.merge())
+
+                                Tasks.whenAllSuccess<Tasks>(Tasks.forResult(task1), Tasks.forResult(task2))
+                                    .addOnSuccessListener {
+                                        callback.onGetComplete(true)
+                                    }
+                                    .addOnFailureListener {e ->
+                                        callback.onGetFailure(e.toString())
+                                    }
+                            }
                         }
-                        .addOnFailureListener {e ->
-                            callback.onGetFailure(e.toString())
+                        override fun onGetFailure(string: String) {
+                            callback.onGetFailure(string)
                         }
+
+                    })
                 }
             }
+
             override fun onGetFailure(string: String) {
                 callback.onGetFailure(string)
             }
-
         })
     }
     fun acceptFriendRequest(friendToAccept: Friend, callback: FirestoreGetCompleteAny){
@@ -218,7 +254,16 @@ class FriendsModel : ViewModel() {
                         .document(friendToAccept.uid)
                         .set(friendFriends, SetOptions.merge())
 
-                    Tasks.whenAllSuccess<Tasks>(Tasks.forResult(task1), Tasks.forResult(task2))
+                    val task3 = db.collection("friends")
+                        .document(userID)
+                        .update("friendRequests.${friendToAccept.uid}", FieldValue.delete())
+
+                    val task4 = db.collection("friends")
+                        .document(friendToAccept.uid)
+                        .update("ownRequests.${userID}", FieldValue.delete())
+
+                    Tasks.whenAllSuccess<Tasks>(Tasks.forResult(task1), Tasks.forResult(task2),
+                        Tasks.forResult(task3), Tasks.forResult(task4))
                         .addOnSuccessListener {
                             callback.onGetComplete(true)
                         }

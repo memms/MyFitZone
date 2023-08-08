@@ -133,6 +133,9 @@
             app:popEnterAnim="@anim/push_down_in"
             android:id="@+id/action_homeFragment_to_dashboardTypeSelectorFragment"
             app:destination="@id/dashboardTypeSelectorFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_friendRequestsFragment"
+            app:destination="@id/friendRequestsFragment" />
     </fragment>
     <fragment
         android:id="@+id/trackFragment"
@@ -313,5 +316,10 @@
             android:name="ShowNavBar"
             android:defaultValue="false"/>
     </fragment>
+    <fragment
+        android:id="@+id/friendRequestsFragment"
+        android:name="com.example.myfitzone.Views.FriendRequestsFragment"
+        android:label="FriendRequestsFragment"
+        tools:layout="@layout/fragment_friends"/>
 
 </navigation>

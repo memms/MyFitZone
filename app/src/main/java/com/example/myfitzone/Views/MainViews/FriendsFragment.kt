@@ -217,9 +217,21 @@ class FriendsFragment : Fragment() {
             private fun sendFriendRequest(){
                 friendsModel.sendFriendRequest(friend[bindingAdapterPosition], object : FirestoreGetCompleteAny{
                     override fun onGetComplete(result: Any) {
-                        Toast.makeText(requireContext(), "Friend Request Sent", Toast.LENGTH_SHORT).show()
-                        friend[bindingAdapterPosition].status = "pendingTO"
-                        notifyItemChanged(bindingAdapterPosition)
+                        if (result == "alreadyFriends") {
+                            Toast.makeText(requireContext(), "Already Friends", Toast.LENGTH_SHORT)
+                                .show()
+                            friend[bindingAdapterPosition].status = "accepted"
+                            notifyItemChanged(bindingAdapterPosition)
+                            return
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                "Friend Request Sent",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            friend[bindingAdapterPosition].status = "pendingTO"
+                            notifyItemChanged(bindingAdapterPosition)
+                        }
                     }
 
                     override fun onGetFailure(string: String) {

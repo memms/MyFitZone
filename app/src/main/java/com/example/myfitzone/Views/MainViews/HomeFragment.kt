@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -38,7 +39,6 @@ class HomeFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private var dataList = mutableListOf<DashboardRecyclerData>()
     private lateinit var dashboardModel: DashboardModel
-
     private val TAG = "HomeFragment"
     private lateinit var loggedInUser : UserDetailModel
     private var isFabOpen = false
@@ -104,6 +104,24 @@ class HomeFragment : Fragment() {
             dashboardCardAdapter.setDashCardList(dataList)
             dashboardCardAdapter.notifyDataSetChanged()
         }
+        dashboardModel.getFriendRequestLiveList().observe(viewLifecycleOwner) {
+            Log.d(TAG, "onViewCreated: ${it.toString()}")
+            if (it.isNotEmpty()) {
+                binding.notificationsButtonHome.background =
+                    ResourcesCompat.getDrawable(resources, R.drawable.baseline_notifications_active_24, null)
+            }
+            else{
+                binding.notificationsButtonHome.background =
+                    ResourcesCompat.getDrawable(resources, R.drawable.baseline_notifications_none_24, null)
+            }
+        }
+        binding.notificationsButtonHome.setOnClickListener {
+            Log.d(TAG, "onViewCreated: Notifications Button Clicked")
+            onNotificationsButtonClicked()
+            dashboardModel.setNotificationsOpened(value = true)
+            binding.notificationsButtonHome.background =
+                ResourcesCompat.getDrawable(resources, R.drawable.baseline_notifications_24, null)
+        }
         recyclerView = binding.recyclerViewHome
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         dashboardCardAdapter = DashCardRecyclerAdapter()
@@ -132,6 +150,12 @@ class HomeFragment : Fragment() {
             onBackPressedCallback
         )
 
+    }
+
+    private fun onNotificationsButtonClicked() {
+        view?.let {
+            it.findNavController().navigate(R.id.action_homeFragment_to_friendRequestsFragment)
+        }
     }
 
     private fun getDashboards(source: Source){
