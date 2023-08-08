@@ -9,6 +9,8 @@ class UserDetailModel : ViewModel() {
 
     private var TempRegistrationUser = User()
 
+    //TODO: Add a change listener to always keep updated user data
+
     fun getUser(): User {
         return TempRegistrationUser
     }
