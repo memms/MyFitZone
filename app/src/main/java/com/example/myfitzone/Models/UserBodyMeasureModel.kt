@@ -5,19 +5,15 @@ import androidx.lifecycle.ViewModel
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteAny
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.DataModels.CalenderEventData
+import com.example.myfitzone.DataModels.PublicSocialData
 import com.example.myfitzone.DataModels.UserBodyMetrics
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
+import com.example.myfitzone.Utils.toPublicSocialData
 import com.google.android.gms.tasks.Tasks.whenAllComplete
-import com.google.android.gms.tasks.Tasks.whenAllSuccess
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.tasks.await
-import java.lang.Thread.sleep
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -28,16 +24,8 @@ class UserBodyMeasureModel: ViewModel() {
     private val db = Firebase.firestore
     private var selectedType = ""
     private var selectedName = ""
-    private val eventsList = mutableMapOf<String, MutableMap<LocalDate, CalenderEventData>>()
 
-    fun getUserBodyMeasureYearMonth(yearMonth: String, callback: FirestoreGetCompleteAny){
-        Log.d(TAG, "getUserBodyMeasureYearMonth: $yearMonth")
 
-    }
-
-    fun getAllLastBodyMeasureMetrics() {
-
-    }
 
     fun getSelectedBodyMeasureMetrics(callback: FirestoreGetCompleteAny) {
         val userID = Firebase.auth.currentUser?.uid
@@ -129,10 +117,6 @@ class UserBodyMeasureModel: ViewModel() {
 
     }
 
-    fun getSpecificBodyMeasureMetrics() {
-
-    }
-
     fun newBodyMeasurement(userBodyMetrics: UserBodyMetrics, mycallBack: FirestoreGetCompleteCallbackArrayList) {
         val userID = Firebase.auth.currentUser?.uid
         if(userID== null){
@@ -145,14 +129,13 @@ class UserBodyMeasureModel: ViewModel() {
         val simpleDateFormat = SimpleDateFormat("yyyy-MM")
         val formated = simpleDateFormat.format(userBodyMetrics.timestamp)
 
-
         db.collection("users")
             .document(userID)
             .collection("userBodyMeasurements")
             .document(formated)
             .set(docData, SetOptions.merge())
             .addOnSuccessListener {
-                mycallBack.onGetComplete(arrayListOf("Success"))
+                updateLeaderBoards(userBodyMetrics, callback = mycallBack)
             }
             .addOnFailureListener { e ->
                 mycallBack.onGetFailure(e.toString())
@@ -177,12 +160,48 @@ class UserBodyMeasureModel: ViewModel() {
             .document(formated)
             .update("${userBodyMetrics.timestamp}", FieldValue.delete())
             .addOnSuccessListener {
-                callback.onGetComplete(arrayListOf("Success"))
+                updateLeaderboardsDelete(userBodyMetrics, callback = callback)
             }
             .addOnFailureListener { e ->
                 callback.onGetFailure(e.toString())
             }
 
+    }
+
+    private fun updateLeaderboardsDelete(
+        userBodyMetrics: UserBodyMetrics,
+        callback: FirestoreGetCompleteCallbackArrayList
+    ){
+        val userID = Firebase.auth.currentUser?.uid
+        if(userID== null){
+            callback.onGetFailure("User not logged in")
+            return
+        }
+
+        getLeaderBoards(userBodyMetrics.metricName, object : FirestoreGetCompleteAny{
+            override fun onGetComplete(result: Any) {
+                if(result is String){
+                    callback.onGetComplete(arrayListOf("Success"))
+                    return
+                }
+                val currentLeaderVal = result as PublicSocialData
+                if(userBodyMetrics.timestamp == currentLeaderVal.updated){
+                    db.collection("leaderboards")
+                        .document(userID)
+                        .update(userBodyMetrics.metricName, FieldValue.delete())
+                        .addOnSuccessListener {
+                            callback.onGetComplete(arrayListOf("Success"))
+                        }
+                        .addOnFailureListener {
+                            callback.onGetFailure(it.toString())
+                        }
+                }
+            }
+
+            override fun onGetFailure(string: String) {
+                callback.onGetFailure(string)
+            }
+        })
     }
 
     fun updateBodyMeasurement(
@@ -206,11 +225,92 @@ class UserBodyMeasureModel: ViewModel() {
             .document(formated)
             .set(docData, SetOptions.merge())
             .addOnSuccessListener {
-                callback.onGetComplete(arrayListOf("Success"))
+                updateLeaderBoards(userBodyMetric, callback)
             }
             .addOnFailureListener { e ->
                 callback.onGetFailure(e.toString())
             }
+    }
+
+    private fun getLeaderBoards(bodyMetricName: String, callback: FirestoreGetCompleteAny){
+        val userID = Firebase.auth.currentUser?.uid
+        if(userID== null){
+            callback.onGetFailure("User not logged in")
+            return
+        }
+        db.collection("leaderboards")
+            .document(userID)
+            .get()
+            .addOnSuccessListener { document ->
+                document.get(bodyMetricName).let {currentLeaderVal ->
+                    if (currentLeaderVal != null) {
+                        val currentLeaderValDouble = currentLeaderVal as HashMap<String, Any>
+                        val publicDataObject = PublicSocialData(
+                            logo = currentLeaderValDouble["logo"] as String,
+                            name = currentLeaderValDouble["name"] as String,
+                            value = currentLeaderValDouble["value"] as String,
+                            unit = currentLeaderValDouble["unit"] as String,
+                            updated = currentLeaderValDouble["updated"] as Long,
+                            type = currentLeaderValDouble["type"] as String
+                        )
+                        callback.onGetComplete(publicDataObject)
+                        return@addOnSuccessListener
+                    }
+                }
+                callback.onGetComplete("No data")
+            }
+            .addOnFailureListener {
+                callback.onGetFailure(it.toString())
+            }
+    }
+
+
+    private fun updateLeaderBoards(userBodyMetrics: UserBodyMetrics, callback: FirestoreGetCompleteCallbackArrayList){
+        val userID = Firebase.auth.currentUser?.uid
+        if(userID== null){
+            callback.onGetFailure("User not logged in")
+            return
+        }
+
+        getLeaderBoards(userBodyMetrics.metricName, object : FirestoreGetCompleteAny{
+            override fun onGetComplete(result: Any) {
+                if(result == "No data"){
+                    val docData = mapOf(
+                        userBodyMetrics.metricName to userBodyMetrics.toPublicSocialData()
+                    )
+                    db.collection("leaderboards")
+                        .document(userID)
+                        .set(docData, SetOptions.merge())
+                        .addOnSuccessListener {
+                            callback.onGetComplete(arrayListOf("Success"))
+                        }
+                        .addOnFailureListener {
+                            callback.onGetFailure(it.toString())
+                        }
+                    return
+                }
+                val currentLeaderVal = result as PublicSocialData
+                if(userBodyMetrics.timestamp >= currentLeaderVal.updated){
+                    val docData = mapOf(
+                        userBodyMetrics.metricName to userBodyMetrics.toPublicSocialData()
+                    )
+                    db.collection("leaderboards")
+                        .document(userID)
+                        .set(docData, SetOptions.merge())
+                        .addOnSuccessListener {
+                            callback.onGetComplete(arrayListOf("Success"))
+                        }
+                        .addOnFailureListener {
+                            callback.onGetFailure(it.toString())
+                        }
+                }
+            }
+
+            override fun onGetFailure(string: String) {
+                callback.onGetFailure(string)
+            }
+        })
+
     }
 
     fun setSelectedType(type: String) {

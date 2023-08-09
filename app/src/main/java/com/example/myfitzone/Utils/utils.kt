@@ -3,6 +3,7 @@ package com.example.myfitzone.Utils
 import android.util.Log
 import com.example.myfitzone.DataModels.FieldUnits
 import com.example.myfitzone.DataModels.PublicSocialData
+import com.example.myfitzone.DataModels.UserBodyMetrics
 import com.example.myfitzone.DataModels.UserExercise
 import java.util.TimeZone
 
@@ -50,4 +51,15 @@ private fun findAverage(list: List<*>): String{
     }
     val average = String.format("%.1f", sum/list.size)
     return average
+}
+
+fun UserBodyMetrics.toPublicSocialData(): PublicSocialData{
+    return PublicSocialData(
+        name = this.metricName,
+        value = this.metricValue.toString(),
+        unit = FieldUnits.unitOfBody(this.metricName),
+        updated = this.timestamp,
+        type = "bodyMeasure",
+        logo = ""
+    )
 }
