@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteAny
 import com.example.myfitzone.DataModels.Friend
+import com.example.myfitzone.Models.DashboardModel
 import com.example.myfitzone.Models.FriendsModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.FragmentFriendsBinding
@@ -24,6 +25,7 @@ class FriendsFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var friendsModel: FriendsModel
     private lateinit var adapter: FriendsAdapter
+    private lateinit var dashboardModel: DashboardModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,31 +39,41 @@ class FriendsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         friendsModel = ViewModelProvider(requireActivity())[FriendsModel::class.java]
+        dashboardModel = ViewModelProvider(requireActivity())[DashboardModel::class.java]
+
         binding.searchViewFriends.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
                     friendsModel.getFriendSearchResult(it, object : FirestoreGetCompleteAny{
                         override fun onGetComplete(result: Any) {
+                            binding.backSearchButton.visibility = View.VISIBLE
                             if(result == false){
                                 Toast.makeText(requireContext(), "No user found", Toast.LENGTH_SHORT).show()
                                 Log.d("FriendsFragment", "No user found")
+                                binding.recyclerViewFriends.visibility = View.GONE
+                                binding.noFriendsTextFriends.visibility = View.VISIBLE
+                                binding.noFriendsTextFriends.text = "No user found"
+                                binding.searchViewFriends.clearFocus()
                             }
                             else{
                                 Log.d("FriendsFragment", "User found $result")
                                 result as Friend
+                                binding.noFriendsTextFriends.visibility = View.GONE
                                 adapter = FriendsAdapter(arrayListOf(result))
                                 binding.recyclerViewFriends.apply {
+                                    visibility = View.VISIBLE
                                     adapter = this@FriendsFragment.adapter
                                     layoutManager = LinearLayoutManager(requireContext())
                                 }
                                 adapter.notifyDataSetChanged()
+                                binding.searchViewFriends.clearFocus()
                             }
-
                         }
 
                         override fun onGetFailure(string: String) {
                             Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
                             Log.d("FriendsFragment", "onGetFailure: $string")
+                            binding.searchViewFriends.clearFocus()
                         }
                     })
                 }
@@ -73,6 +85,34 @@ class FriendsFragment : Fragment() {
             }
 
         })
+        binding.backSearchButton.setOnClickListener {
+            binding.searchViewFriends.clearFocus()
+            getMyFriendsList()
+            binding.backSearchButton.visibility = View.GONE
+        }
+        getMyFriendsList()
+    }
+
+    private fun getMyFriendsList(){
+
+        val arrayList = dashboardModel.getAllFriendsList()
+        if(arrayList.isEmpty()){
+            Toast.makeText(requireContext(), "No user found", Toast.LENGTH_SHORT).show()
+            Log.d("FriendsFragment", "No user found")
+            binding.recyclerViewFriends.visibility = View.GONE
+            binding.noFriendsTextFriends.visibility = View.VISIBLE
+        }
+        else{
+            Log.d("FriendsFragment", "User found $arrayList")
+            binding.noFriendsTextFriends.visibility = View.GONE
+            adapter = FriendsAdapter(arrayList)
+            binding.recyclerViewFriends.apply {
+                visibility = View.VISIBLE
+                adapter = this@FriendsFragment.adapter
+                layoutManager = LinearLayoutManager(requireContext())
+            }
+            adapter.notifyDataSetChanged()
+        }
     }
 
     override fun onDestroyView() {

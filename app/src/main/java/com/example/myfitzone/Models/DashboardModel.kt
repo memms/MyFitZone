@@ -37,6 +37,7 @@ class DashboardModel: ViewModel() {
     private var tempExerciseGroup = ""
     private var notificationsOpened = false
     private var friendRequestList = MutableLiveData<ArrayList<Friend>>()
+    private var allFriends = ArrayList<Friend>()
 
     init {
         friendRequestList.value = arrayListOf()
@@ -53,6 +54,10 @@ class DashboardModel: ViewModel() {
 
     fun getFriendRequestLiveList(): MutableLiveData<ArrayList<Friend>>{
         return friendRequestList
+    }
+
+    fun getAllFriendsList(): ArrayList<Friend>{
+        return allFriends
     }
 
     private fun friendRequestListener(){
@@ -85,6 +90,23 @@ class DashboardModel: ViewModel() {
                             }
                             friendRequestList.value = arrayList
                             notificationsOpened = false
+                        }
+                        val friends = it["allFriends"] as HashMap<String, Any>
+                        val arrayList2 = arrayListOf<Friend>()
+                        friends.let {map ->
+                            map.forEach{friendData ->
+                                val friend = friendData.value as HashMap<String, Any>
+                                val friendData = Friend(
+                                    name = friend["name"] as String,
+                                    username = friend["username"] as String,
+                                    uid = friend["uid"] as String,
+                                    profilePic = friend["profilePic"] as String,
+                                    dateAdded = friend["dateAdded"] as Long,
+                                    status = friend["status"] as String
+                                )
+                                arrayList2.add(friendData)
+                            }
+                            allFriends = arrayList2
                         }
 
                     }
