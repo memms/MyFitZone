@@ -305,7 +305,6 @@ class AddUserExerciseFragment : Fragment() {
             }
         }
 
-
         fieldMap.putAll(attributesList as Map<String, Any>)
         exerciseTemplate?.let {
             userExercise = UserExercise(
@@ -316,13 +315,23 @@ class AddUserExerciseFragment : Fragment() {
                 System.currentTimeMillis(),
                 )
         }
-        userExercise?.let {
-            userExerciseModel.saveUserExercise(it, object : FirestoreGetCompleteCallbackArrayList{
-                override fun onGetComplete(result: ArrayList<String>) {
-                    Toast.makeText(requireContext(), "Exercise Saved", Toast.LENGTH_SHORT).show()
-                    requireActivity().onBackPressedDispatcher.onBackPressed()
-                }
 
+
+        userExercise?.let {
+            userExerciseModel.saveUserExercise(it, template = exerciseTemplate!!, object : FirestoreGetCompleteCallbackArrayList{
+                override fun onGetComplete(result: ArrayList<String>) {
+                    if(result[0] == "noLeaderBoard"){
+                        Toast.makeText(requireContext(), "Data Added but leaderboard not updated due to mismatch in fields", Toast.LENGTH_SHORT).show()
+                    }
+                    else {
+                        Toast.makeText(
+                            requireContext(),
+                            "Exercise and Leaderboards Updated",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
+                    }
+                }
                 override fun onGetFailure(string: String) {
                     Toast.makeText(requireContext(), "Exercise Not Saved $string", Toast.LENGTH_SHORT).show()
                 }
