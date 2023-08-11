@@ -319,6 +319,7 @@ class DashboardModel: ViewModel() {
                         when {
                             contains("Last") -> {
                                 list.sortByDescending { it.timeAdded }
+                                Log.d(TAG, "startAddExerciseMeasureDashBoard: DESCENDING $list")
                                 val stringBuilder = StringBuilder()
                                 for (field in list[0].fieldmap) {
                                     //average it out
@@ -762,7 +763,7 @@ class DashboardModel: ViewModel() {
                                     cardType = temp2["cardType"] as String
                                 )
                                 val exerciseName = tempDashboardRecyclerData.cardName.split('(')[0].trim()
-                                val list = mainList.filter { it.name == exerciseName }
+                                val list = mainList.filter { it.name == exerciseName }.toMutableList()
                                 if(list.isEmpty()){
                                     tempDashboardRecyclerData.cardValue = "N/A"
                                 }
@@ -770,7 +771,7 @@ class DashboardModel: ViewModel() {
                                     with(tempDashboardRecyclerData.cardName) {
                                         when {
                                             contains("Last") -> {
-                                                list.sortedByDescending { it.timeAdded }
+                                                list.sortByDescending { it.timeAdded }
                                                 val stringBuilder = StringBuilder()
                                                 for (field in list[0].fieldmap) {
                                                     //average it out

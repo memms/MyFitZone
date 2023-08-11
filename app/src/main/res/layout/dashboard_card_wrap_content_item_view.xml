@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cardView_dashboard"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="5dp"
+    android:background="@color/white"
+    android:layout_margin="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="10dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="left">
+
+            <TextView
+                android:id="@+id/card_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Card Name"
+                android:textSize="11sp"
+                android:layout_weight="1"
+                android:textColor="@color/black"
+                android:layout_marginTop="18dp"
+                android:layout_marginStart="17dp"/>
+
+            <Button
+                android:id="@+id/card_more"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginEnd="17dp"
+                android:background="@drawable/baseline_more_horiz_24"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+            <ImageView
+
+                android:id="@+id/card_logo"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:layout_gravity="center"
+                android:src="@drawable/placeholder_banner"
+                android:layout_marginLeft="19dp"/>
+
+            <!-- Needs Rest Rate Implementation-->
+            <TextView
+                android:id="@+id/card_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="25dp"
+                android:gravity="end"
+                android:textColor="@color/black"
+                android:text="--"
+                android:layout_marginLeft="5dp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/card_unit"
+                android:layout_toRightOf="@id/card_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:lineSpacingMultiplier="1.5"
+                android:textColor="@color/black"
+                android:text="BPM"
+                android:layout_marginLeft="5dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+            <TextView
+                android:id="@+id/card_updated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Updated: "
+                android:textSize="10dp"
+
+                android:layout_gravity="top"
+                android:textColor="@color/grey"
+                android:layout_marginLeft="17dp"
+                android:layout_marginBottom="20dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
+</androidx.cardview.widget.CardView>

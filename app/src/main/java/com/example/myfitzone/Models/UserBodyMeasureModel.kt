@@ -180,7 +180,7 @@ class UserBodyMeasureModel: ViewModel() {
 
         getLeaderBoards(userBodyMetrics.metricName, object : FirestoreGetCompleteAny{
             override fun onGetComplete(result: Any) {
-                if(result is String){
+                if(result == "No data"){
                     callback.onGetComplete(arrayListOf("Success"))
                     return
                 }
@@ -190,9 +190,11 @@ class UserBodyMeasureModel: ViewModel() {
                         .document(userID)
                         .update(userBodyMetrics.metricName, FieldValue.delete())
                         .addOnSuccessListener {
+                            Log.d(TAG, "updateLeaderboardsDelete: Success")
                             callback.onGetComplete(arrayListOf("Success"))
                         }
                         .addOnFailureListener {
+                            Log.d(TAG, "updateLeaderboardsDelete: Failure")
                             callback.onGetFailure(it.toString())
                         }
                 }
