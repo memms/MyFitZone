@@ -7,7 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteAny
@@ -188,6 +190,11 @@ class FriendsFragment : Fragment() {
                                     removeFriend()
                                 }
                             }
+                            binding.root.setOnClickListener {
+                                view?.let {
+                                    it.findNavController().navigate(R.id.action_friendsFragment_to_userProfileFragment, bundleOf("userID" to friend[bindingAdapterPosition].uid))
+                                }
+                            }
                         }
                     }
                 }
@@ -289,7 +296,6 @@ class FriendsFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: FriendsViewHolder, position: Int) {
-
             holder.bind()
         }
 

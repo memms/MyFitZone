@@ -154,6 +154,9 @@
         <argument
             android:name="ShowNavBar"
             android:defaultValue="true"/>
+        <action
+            android:id="@+id/action_friendsFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/editInfoFragment"
@@ -321,5 +324,10 @@
         android:name="com.example.myfitzone.Views.FriendRequestsFragment"
         android:label="FriendRequestsFragment"
         tools:layout="@layout/fragment_friends"/>
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="com.example.myfitzone.Views.UserProfileFragment"
+        android:label="UserProfileFragment"
+        tools:layout="@layout/fragment_profile"/>
 
 </navigation>

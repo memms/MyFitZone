@@ -29,7 +29,7 @@
                 android:orientation="horizontal"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="60dp"
                 android:layout_marginBottom="40dp">
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/image_profile"
@@ -81,6 +81,14 @@
                 app:layout_collapseMode="pin"
                 app:layout_scrollFlags="scroll|enterAlways"
                 >
+                    <Button
+                        android:id="@+id/backButton_profile"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="20dp"
+                        android:background="@drawable/baseline_arrow_back_24"
+                        android:layout_gravity="start|top"
+                        android:padding="10dp" />
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/editButton_profile"
                         android:layout_width="30dp"
@@ -106,6 +114,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey_dark"/>
+
             <TextView
                 android:id="@+id/myCards_body_profile"
                 android:layout_width="match_parent"

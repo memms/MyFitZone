@@ -34,15 +34,15 @@ class SocialDataModel: ViewModel() {
                     }
                 }
                 else {
-                    callback.onGetFailure("User not found")
+                    callback.onGetFailure("User data not found")
                 }
             }
             .addOnFailureListener {
-
+                callback.onGetFailure(it.message.toString())
             }
     }
 
-    private fun getUserSocialData(uid: String, callback: FirestoreGetCompleteAny) {
+    fun getUserSocialData(uid: String, callback: FirestoreGetCompleteAny) {
 
         db.collection("leaderboards")
             .document(uid)
@@ -66,7 +66,7 @@ class SocialDataModel: ViewModel() {
                 callback.onGetComplete(socialData)
             }
             else {
-                callback.onGetFailure("User not found")
+                callback.onGetFailure("User data not found")
             }
         }.addOnFailureListener {
             callback.onGetFailure(it.message.toString())

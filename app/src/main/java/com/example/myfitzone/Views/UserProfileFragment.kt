@@ -14,11 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteAny
-import com.example.myfitzone.DataModels.DashboardRecyclerData
 import com.example.myfitzone.DataModels.PublicSocialData
 import com.example.myfitzone.DataModels.User
 import com.example.myfitzone.Models.AuthenticationModel
-import com.example.myfitzone.Models.FriendsModel
 import com.example.myfitzone.Models.SocialDataModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.DashboardCardItemViewBinding
@@ -27,7 +25,7 @@ import com.example.myfitzone.databinding.FragmentProfileBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.util.Calendar
 
-class ProfileFragment : Fragment() {
+class UserProfileFragment:Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
@@ -48,7 +46,18 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         socialDataModel = ViewModelProvider(requireActivity())[SocialDataModel::class.java]
         authmodel = ViewModelProvider(requireActivity())[AuthenticationModel::class.java]
-        socialDataModel.getMyUserInfo(callback = object: FirestoreGetCompleteAny{
+        val uid = arguments?.getString("userID")
+        if(uid == null) {
+            Log.d("ProfileFragment", "onViewCreated: User not found $uid"   )
+            Toast.makeText(requireContext(), "Error: User not found", Toast.LENGTH_SHORT).show()
+            view.findNavController().navigate(R.id.homeFragment)
+            return
+        }
+        binding.editButtonProfile.visibility = View.GONE
+        binding.backButtonProfile.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+        socialDataModel.getUserInfo(uid = uid, callback = object: FirestoreGetCompleteAny {
             override fun onGetComplete(result: Any) {
                 Log.d("ProfileFragment", "onGetComplete: $result")
                 result.let { data ->
@@ -56,6 +65,8 @@ class ProfileFragment : Fragment() {
                     binding.nameProfile.text = "${userData.name["first"]} ${userData.name["last"]}"
                     binding.usernameProfile.text = userData.username
                     binding.bioProfile.text = ""
+                    binding.myCardsBodyProfile.text = "${userData.name["first"]}'s Body Measure Cards"
+                    binding.myCardsExerciseProfile.text = "${userData.name["first"]}'s Exercise Cards"
                 }
             }
 
@@ -64,14 +75,8 @@ class ProfileFragment : Fragment() {
             }
 
         })
-        binding.editButtonProfile.setOnClickListener {
-            showBottomSheetDialog()
-        }
-        binding.backButtonProfile.setOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
-        }
         val hzLayoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        socialDataModel.getCurrentUserProfile(callback = object: FirestoreGetCompleteAny{
+        socialDataModel.getUserSocialData(uid = uid, callback = object: FirestoreGetCompleteAny {
             override fun onGetComplete(result: Any) {
                 Log.d("ProfileFragment", "onGetComplete: $result")
                 result.let { list ->
@@ -96,12 +101,18 @@ class ProfileFragment : Fragment() {
                         layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
                         adapter = ProfileCardRecyclerAdapter(exerciseData)
                     }
-
                 }
             }
 
             override fun onGetFailure(string: String) {
                 Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+                binding.myCardsBodyProfile.text = "No User Data"
+                binding.myCardsBodyProfile.gravity = View.TEXT_ALIGNMENT_CENTER
+                binding.cardTopReyclerViewProfile.visibility = View.GONE
+                binding.myCardsExerciseProfile.visibility = View.GONE
+                binding.cardBottomReyclerViewProfile.visibility = View.GONE
+                binding.leftRecyclerViewButtonProfile.visibility = View.GONE
+                binding.rightRecyclerViewButtonProfile.visibility = View.GONE
             }
 
         })
@@ -116,29 +127,6 @@ class ProfileFragment : Fragment() {
         binding.rightRecyclerViewButtonProfile.setOnClickListener {
             binding.cardTopReyclerViewProfile.smoothScrollToPosition(hzLayoutManager.findLastVisibleItemPosition() + 1)
         }
-    }
-
-    private fun showBottomSheetDialog() {
-        val bottomSheetFragment: BottomSheetDialog = BottomSheetDialog(requireContext())
-        bottomSheetFragment.setContentView(R.layout.dialog_profile)
-        bottomSheetFragment.show()
-        bottomSheetFragment.findViewById<LinearLayout>(R.id.logout_row_profile_diag)?.setOnClickListener {
-            bottomSheetFragment.dismiss()
-            logout()
-        }
-        bottomSheetFragment.findViewById<LinearLayout>(R.id.first_row_profile_diag)?.setOnClickListener {
-            bottomSheetFragment.dismiss()
-            editProfile()
-        }
-
-    }
-
-    fun logout(){
-        authmodel.logout()
-    }
-
-    fun editProfile(){
-        view?.findNavController()?.navigate(R.id.action_profileFragment_to_editInfoFragment)
     }
 
     override fun onDestroyView() {
@@ -240,6 +228,7 @@ class ProfileFragment : Fragment() {
             holder.view.cardName.text = profileCardList[position].name
             holder.view.cardValue.text = profileCardList[position].value
             holder.view.cardUnit.text = profileCardList[position].unit
+            holder.view.cardMore.visibility = View.GONE
             val calendarNow = Calendar.getInstance()
             val diff = calendarNow.timeInMillis - profileCardList[position].updated
             val days = diff / (24 * 60 * 60 * 1000)
@@ -283,27 +272,4 @@ class ProfileFragment : Fragment() {
 
         }
     }
-
-//    private fun inflateMoreDialog(dashboardRecyclerData: DashboardRecyclerData){
-//        val bottomSheetFragment: BottomSheetDialog = BottomSheetDialog(requireContext())
-//        val moreView = DialogDashboardMoreBinding.inflate(layoutInflater)
-//        bottomSheetFragment.setContentView(moreView.root)
-//        bottomSheetFragment.show()
-//        moreView.deleteRowDashMoreDiag.setOnClickListener {
-//            dashboardModel.deleteDashboard(dashboardRecyclerData, callback = object :
-//                FirestoreGetCompleteAny {
-//                override fun onGetComplete(result: Any) {
-//                    Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show()
-//                    bottomSheetFragment.dismiss()
-//                }
-//
-//                override fun onGetFailure(string: String) {
-//                    Toast.makeText(requireContext(), "Error: $string", Toast.LENGTH_SHORT).show()
-//                }
-//
-//            })
-//        }
-//    }
-
-
 }
