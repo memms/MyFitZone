@@ -63,3 +63,19 @@ fun UserBodyMetrics.toPublicSocialData(): PublicSocialData{
         logo = ""
     )
 }
+
+fun Double.toMetricWeight(): Float{
+    return (this / 2.205).toFloat()
+}
+
+fun Double.toImperialWeight(): Float{
+    return (this * 2.205).toFloat()
+}
+
+fun Double.toMetricHeight(): Float{
+    return (Math.round((this/3.281)*10000.0)/10000.0).toFloat()
+}
+
+fun Double.toImperialHeight(): Float{
+    return (Math.round((this*3.281)*10000.0)/10000.0).toFloat()
+}

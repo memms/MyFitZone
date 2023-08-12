@@ -7,6 +7,8 @@ import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.DataModels.CalenderEventData
 import com.example.myfitzone.DataModels.PublicSocialData
 import com.example.myfitzone.DataModels.UserBodyMetrics
+import com.example.myfitzone.Utils.toMetricHeight
+import com.example.myfitzone.Utils.toMetricWeight
 import com.example.myfitzone.Utils.toPublicSocialData
 import com.google.android.gms.tasks.Tasks.whenAllComplete
 import com.google.firebase.auth.ktx.auth
@@ -305,6 +307,24 @@ class UserBodyMeasureModel: ViewModel() {
                         .addOnFailureListener {
                             callback.onGetFailure(it.toString())
                         }
+                    if(userBodyMetrics.metricName == "Weight" || userBodyMetrics.metricName == "Height"){
+                        val docData = if (userBodyMetrics.metricName == "Weight"){
+                            mapOf(
+                                "Weight" to userBodyMetrics.metricValue.toMetricWeight()
+                            )
+                        }else{
+                            mapOf(
+                                "Height" to userBodyMetrics.metricValue.toMetricHeight()
+                            )
+                        }
+                        db.collection("users")
+                            .document(userID)
+                            .set(docData, SetOptions.merge())
+                            .addOnSuccessListener {
+                            }
+                            .addOnFailureListener {
+                            }
+                    }
                 }
             }
 

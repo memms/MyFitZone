@@ -329,5 +329,10 @@
         android:name="com.example.myfitzone.Views.UserProfileFragment"
         android:label="UserProfileFragment"
         tools:layout="@layout/fragment_profile"/>
+    <fragment
+        android:id="@+id/leaderboardFragment"
+        android:name="com.example.myfitzone.Views.LeaderboardFragment"
+        android:label="fragment_leaderboard"
+        tools:layout="@layout/fragment_leaderboard" />
 
 </navigation>

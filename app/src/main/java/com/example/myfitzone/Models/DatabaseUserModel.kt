@@ -4,8 +4,12 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.myfitzone.DataModels.User
+import com.example.myfitzone.DataModels.UserBodyMetrics
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 class DatabaseUserModel: ViewModel() {
 //Use Firestore
@@ -40,9 +44,38 @@ class DatabaseUserModel: ViewModel() {
                 this.user =
                     userToRegister
                 Log.d(TAG, "createUser: ${this.user.toString()}")
+                val timestamp = Calendar.getInstance().timeInMillis
+                setWeight(userToRegister.Weight, userToRegister.Height, timestamp)
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error writing document", e) }
+    }
+
+    private fun setWeight(weight: Float, height: Float, timestamp: Long) {
+
+        val docData = hashMapOf(
+            "$timestamp" to UserBodyMetrics(
+                timestamp = timestamp,
+                metricType = "core",
+                metricName = "Weight",
+                metricValue = weight.toDouble(),
+                dateLastModified = timestamp
+            ),
+            "${timestamp.inc()}" to UserBodyMetrics(
+                timestamp = timestamp.inc(),
+                metricType = "core",
+                metricName = "Height",
+                metricValue = height.toDouble(),
+                dateLastModified = timestamp.inc()
+            )
+        )
+        val simpleDateFormat = SimpleDateFormat("yyyy-MM")
+        val formatted = simpleDateFormat.format(timestamp)
+        db.collection("users")
+            .document(user!!.UID)
+            .collection("userBodyMeasurements")
+            .document(formatted)
+            .set(docData, SetOptions.merge())
     }
 
     //get user data

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="20dp"
+    android:paddingVertical="5dp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/leaderboard_rank"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="{rank}"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="20sp"/>
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/profilePicture_friendItemView"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/ic_profile"
+        app:strokeColor="@null"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.Image.PILL" />
+
+    <TextView
+        android:id="@+id/leaderboard_name"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="{name}"
+        android:gravity="left|center_vertical"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/leaderboard_value"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="{value}"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="20sp" />
+
+</LinearLayout>
