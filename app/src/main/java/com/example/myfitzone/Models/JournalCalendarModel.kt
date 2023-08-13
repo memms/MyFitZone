@@ -20,10 +20,9 @@ import java.time.ZonedDateTime
 
 class JournalCalendarModel: ViewModel() {
 
-    private var userExercise: UserExercise? = null
     private val TAG = "JournalCalendarModel"
     private val db = Firebase.firestore
-    private val eventsList : MutableMap<String, MutableMap<LocalDate, MutableList<CalenderEventData>>> = mutableMapOf<String, MutableMap<LocalDate ,MutableList<CalenderEventData>>>()
+    private val eventsList : MutableMap<String, MutableMap<LocalDate, MutableList<CalenderEventData>>> = mutableMapOf()
 
 
     fun getUserCalendar(yearMonth: String, callback: FirestoreGetCompleteAny) {

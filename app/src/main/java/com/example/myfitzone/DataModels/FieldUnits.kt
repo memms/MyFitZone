@@ -34,6 +34,18 @@ class FieldUnits {
 //                else -> tableBodyUnitsMetric[attribute]!!
 //            }
         }
+        val WEIGHT: String = "Weight"
+        val REPS: String = "Reps"
+        val SPEED: String = "Speed"
+        val DISTANCE: String = "Distance"
+        val DURATION: String = "Duration"
+        val CALORIES: String = "Calories"
+        val REST: String = "Rest"
+        val INCLINE: String = "Incline"
+        val RESISTANCE: String = "Resistance"
+        val INTENSITY: String = "Intensity"
+        val SETS: String = "sets"
+
         private val tableBodyUnitsMetric: Map<String, String> = mapOf(
             "Weight" to "kg",
             "Body Fat %" to "%",

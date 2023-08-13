@@ -40,6 +40,7 @@ class FriendRequestsFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         dashboardModel = ViewModelProvider(requireActivity())[DashboardModel::class.java]
         friendsModel = ViewModelProvider(requireActivity())[FriendsModel::class.java]
+        binding.leaderboardButtonFriends.visibility = View.GONE
         binding.backButtonFriends.apply {
             visibility = View.VISIBLE
             setOnClickListener {

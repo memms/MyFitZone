@@ -24,23 +24,30 @@ fun String.capitalizeFirst(): String {
 
 fun UserExercise.toPublicSocialData(): PublicSocialData{
     val stringBuilder = StringBuilder()
+    val fieldStringBuilder = StringBuilder()
     for (field in this.fieldmap) {
         //average it out
         if (field.key != "sets") {
             stringBuilder.append(findAverage(field.value as List<*>))
             stringBuilder.append("\n")
+            fieldStringBuilder.append(field.key)
+            fieldStringBuilder.append("\n")
         } else {
             stringBuilder.append(field.value)
             stringBuilder.append("\n")
+            fieldStringBuilder.append(field.key)
+            fieldStringBuilder.append("\n")
         }
     }
     return PublicSocialData(
         name = this.name,
         value = stringBuilder.toString().trim('\n'),
+        fields = fieldStringBuilder.toString().trim('\n'),
         unit = FieldUnits.unitOfDashboard(this.fieldmap.keys.toList()).trim('\n'),
         updated = this.timeAdded,
         type = "exercise",
-        logo = ""
+        logo = "",
+        uid = ""
     )
 }
 
@@ -57,10 +64,12 @@ fun UserBodyMetrics.toPublicSocialData(): PublicSocialData{
     return PublicSocialData(
         name = this.metricName,
         value = this.metricValue.toString(),
+        fields = "",
         unit = FieldUnits.unitOfBody(this.metricName),
         updated = this.timestamp,
         type = "bodyMeasure",
-        logo = ""
+        logo = "",
+        uid = ""
     )
 }
 

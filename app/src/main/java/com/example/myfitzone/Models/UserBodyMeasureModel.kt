@@ -250,9 +250,11 @@ class UserBodyMeasureModel: ViewModel() {
                     if (currentLeaderVal != null) {
                         val currentLeaderValDouble = currentLeaderVal as HashMap<String, Any>
                         val publicDataObject = PublicSocialData(
+                            uid = document.id,
                             logo = currentLeaderValDouble["logo"] as String,
                             name = currentLeaderValDouble["name"] as String,
                             value = currentLeaderValDouble["value"] as String,
+                            fields = currentLeaderValDouble["fields"] as String,
                             unit = currentLeaderValDouble["unit"] as String,
                             updated = currentLeaderValDouble["updated"] as Long,
                             type = currentLeaderValDouble["type"] as String

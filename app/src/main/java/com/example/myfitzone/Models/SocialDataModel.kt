@@ -54,8 +54,10 @@ class SocialDataModel: ViewModel() {
                 for (item in data) {
                     val itemData = item.value as HashMap<String, Any>
                     val itemDataMap = PublicSocialData(
+                        uid = item.key,
                         name = itemData["name"].toString(),
                         value = itemData["value"].toString(),
+                        fields = itemData["fields"].toString(),
                         unit = itemData["unit"].toString(),
                         updated = itemData["updated"].toString().toLong(),
                         type = itemData["type"].toString(),

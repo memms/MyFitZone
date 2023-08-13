@@ -43,6 +43,10 @@ class FriendsFragment : Fragment() {
         friendsModel = ViewModelProvider(requireActivity())[FriendsModel::class.java]
         dashboardModel = ViewModelProvider(requireActivity())[DashboardModel::class.java]
 
+        binding.leaderboardButtonFriends.setOnClickListener {
+            view.findNavController().navigate(R.id.action_friendsFragment_to_leaderboardFragment)
+        }
+
         binding.searchViewFriends.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
