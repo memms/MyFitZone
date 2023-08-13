@@ -65,7 +65,6 @@ class LeaderboardModel: ViewModel() {
 
     fun getLeaderboardData(
         friendUIDList: List<Friend>,
-        publicSocialData: PublicSocialData,
         attributeType: String,
         callback: FirestoreGetCompleteAny
     ) {
@@ -75,7 +74,6 @@ class LeaderboardModel: ViewModel() {
             .get()
             .addOnSuccessListener { documents ->
                 val list = mutableListOf<PublicSocialData>()
-                list.add(publicSocialData)
                 for (document in documents) {
                     if (!document.exists()) continue
                     if (document.get(attributeType) == null) continue
@@ -127,9 +125,6 @@ class LeaderboardModel: ViewModel() {
                 FieldUnits.REPS -> {
                     sortedFieldMap[i] = 2
                 }
-                FieldUnits.SETS -> {
-                    sortedFieldMap[i] = 2
-                }
                 FieldUnits.DURATION -> {
                     sortedFieldMap[i] = 2
                 }
@@ -148,6 +143,9 @@ class LeaderboardModel: ViewModel() {
                 FieldUnits.REST -> {
                     sortedFieldMap[i] = 3
                 }
+                FieldUnits.SETS -> {
+                    sortedFieldMap[i] = 4
+                }
             }
         }
         Log.d(TAG, "sortLeaderboardData: sortedFieldMap: NOT SORTED $sortedFieldMap")
@@ -160,6 +158,7 @@ class LeaderboardModel: ViewModel() {
             var additionScore = 0.00
             var multiplicationScore = 0.00
             var subtractionScore = 0.00
+            var sets = 1
             sortedFieldMap.forEach { (key, value) ->
                 Log.d(TAG, "sortLeaderboardData: key: $key, value: $value")
                 when (value) {
@@ -172,10 +171,13 @@ class LeaderboardModel: ViewModel() {
                     3 -> {
                         subtractionScore += values[key].toDouble()
                     }
+                    4 -> {
+                        sets = values[key].toInt()
+                    }
                 }
                 Log.d(TAG, "sortLeaderboardData: additionScore: $additionScore, multiplicationScore: $multiplicationScore, subtractionScore: $subtractionScore")
             }
-            score = additionScore*(if(multiplicationScore>0.00) multiplicationScore else 1.00) - subtractionScore
+            score = (additionScore*(if(multiplicationScore>0.00) multiplicationScore else 1.00) - subtractionScore) * sets
             Log.d(TAG, "sortLeaderboardData: score: $score")
             if(leaderboardDataLocal[list[0].name]?.containsKey(score) == true){
                 leaderboardDataLocal[list[0].name]?.get(score)?.add(it)
@@ -197,6 +199,7 @@ class LeaderboardModel: ViewModel() {
         leaderboardDataLocal[list[0].name]?.toList()?.sortedBy { (key, _) -> key }?.toMap()
         Log.d(TAG, "sortLeaderboardData: leaderboardMap: sorted by score ${leaderboardDataLocal[list[0].name]}")
         //add sorted leaderboardMap to leaderboardData[attributeType]
+
         leaderboardData.value = leaderboardDataLocal
         Log.d(TAG, "sortLeaderboardData: leaderboardData: ${leaderboardData.value}")
  

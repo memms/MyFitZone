@@ -52,10 +52,10 @@ class LeaderboardFragment : Fragment() {
         dashboardModel = ViewModelProvider(requireActivity())[DashboardModel::class.java]
         socialDataModel = ViewModelProvider(requireActivity())[SocialDataModel::class.java]
         friendsList = dashboardModel.getAllFriendsList().clone() as ArrayList<Friend>
-        Log.d(TAG, "onViewCreated: ${friendsList.toString()}")
         binding.backButtonLeaderboard.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
+        Log.d(TAG, "onViewCreated: ${friendsList.toString()}")
         if(friendsList.isNullOrEmpty()){
             binding.progressBarLeaderboard.root.visibility = View.GONE
             Toast.makeText(context, "No friends found", Toast.LENGTH_LONG).show()
@@ -149,7 +149,7 @@ class LeaderboardFragment : Fragment() {
                         }
                         else{
                             currentLeaderboardName = value
-                            getLeaderboardData(currentLeaderboardName, list[position-1])
+                            getLeaderboardData(currentLeaderboardName)
                         }
                     }
 
@@ -169,12 +169,11 @@ class LeaderboardFragment : Fragment() {
 
     private fun getLeaderboardData(
         currentLeaderboardName: String,
-        publicSocialData: PublicSocialData
     ) {
         binding.progressBarLeaderboard.root.visibility = View.VISIBLE
         binding.progressBarLeaderboard.textViewLoading.visibility = View.VISIBLE
         binding.progressBarLeaderboard.textViewLoading.text = "Loading leaderboard data"
-        leaderboardModel.getLeaderboardData(friendsList!!, publicSocialData, currentLeaderboardName, callback = object: FirestoreGetCompleteAny{
+        leaderboardModel.getLeaderboardData(friendsList!!, currentLeaderboardName, callback = object: FirestoreGetCompleteAny{
             override fun onGetComplete(result: Any) {
                 binding.progressBarLeaderboard.root.visibility = View.GONE
             }
