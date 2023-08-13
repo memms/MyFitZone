@@ -101,13 +101,12 @@ class LeaderboardModel: ViewModel() {
   
     //TODO: Thread this for sure
     private fun sortLeaderboardData(friendUIDList: List<Friend>, list: MutableList<PublicSocialData>, callback: FirestoreGetCompleteAny) {
-        //distance, weight, calories: add first
+        //distance, weight, calories/100: add first
         //reps, sets, duration, incline, speed, intensity, resistance: add then multiply to score
         //rest: add then subtract from score
-        //Theoretically this should work, but may need to be tweaked
+        //TODO:Theoretically this should work, but may need to be tweaked
 
         leaderboardDataLocal[list[0].name] = hashMapOf()
-        var score: Double = 1.00
         val fields = list[0].fields.split('\n').toList()
         val sortedFieldMap = hashMapOf<Int, Int>()
         Log.d(TAG, "sortLeaderboardData: fields: $fields")
@@ -153,7 +152,6 @@ class LeaderboardModel: ViewModel() {
         sortedFieldMap.toList().sortedBy { (_, value) -> value }.toMap()
         Log.d(TAG, "sortLeaderboardData: sortedFieldMap: SORTED BY Value $sortedFieldMap")
         list.forEach {
-            score = 1.00
             val values = it.value.split('\n').toList()
             var additionScore = 0.00
             var multiplicationScore = 0.00
@@ -177,7 +175,7 @@ class LeaderboardModel: ViewModel() {
                 }
                 Log.d(TAG, "sortLeaderboardData: additionScore: $additionScore, multiplicationScore: $multiplicationScore, subtractionScore: $subtractionScore")
             }
-            score = (additionScore*(if(multiplicationScore>0.00) multiplicationScore else 1.00) - subtractionScore) * sets
+            val score = (additionScore*(if(multiplicationScore>0.00) multiplicationScore else 1.00)*sets) -subtractionScore*sets
             Log.d(TAG, "sortLeaderboardData: score: $score")
             if(leaderboardDataLocal[list[0].name]?.containsKey(score) == true){
                 leaderboardDataLocal[list[0].name]?.get(score)?.add(it)
