@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackHashMap
 import com.example.myfitzone.DataModels.DatabaseExercise
 import com.example.myfitzone.Models.DatabaseExercisesModel
-import com.example.myfitzone.Models.UserNewExercisesModel
+import com.example.myfitzone.Models.UserExercisesModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.ExercisesListItemLayoutBinding
 import com.example.myfitzone.databinding.FragmentExerciseSelectorBinding
@@ -98,7 +98,7 @@ class ExerciseSelectorFragment : Fragment() {
 
             override fun onClick(p0: View?) {
                 Log.d("TAG", "onClick: ")
-                val userExerciseModel = ViewModelProvider(requireActivity())[UserNewExercisesModel::class.java]
+                val userExerciseModel = ViewModelProvider(requireActivity())[UserExercisesModel::class.java]
                 userExerciseModel.setSelectedExercise(exersiceGroups[exersiceGroups.keys.elementAt(adapterPosition)]!!)
                 view?.let {
                     it.findNavController().navigate(R.id.action_exerciseSelectorFragment_to_addUserExerciseFragment)

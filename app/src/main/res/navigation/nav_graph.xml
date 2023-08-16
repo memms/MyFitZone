@@ -136,6 +136,9 @@
         <action
             android:id="@+id/action_homeFragment_to_friendRequestsFragment"
             app:destination="@id/friendRequestsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_chartsFragment"
+            app:destination="@id/chartsFragment" />
     </fragment>
     <fragment
         android:id="@+id/trackFragment"
@@ -337,5 +340,10 @@
         android:name="com.example.myfitzone.Views.LeaderboardFragment"
         android:label="fragment_leaderboard"
         tools:layout="@layout/fragment_leaderboard" />
+    <fragment
+        android:id="@+id/chartsFragment"
+        android:name="com.example.myfitzone.Views.ChartsFragment"
+        android:label="fragment_charts"
+        tools:layout="@layout/fragment_charts" />
 
 </navigation>

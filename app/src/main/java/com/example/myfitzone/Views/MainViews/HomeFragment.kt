@@ -418,6 +418,12 @@ class HomeFragment : Fragment() {
                     }
                     R.id.cardView_dashboard -> {
                         Log.d("DashCardViewHolder", "onClick: Card")
+                        val bundle = Bundle()
+                        bundle.putString("name", dashCardList[bindingAdapterPosition].cardName)
+                        bundle.putString("type", dashCardList[bindingAdapterPosition].cardType)
+                        view?.let {
+                            it.findNavController().navigate(R.id.action_homeFragment_to_chartsFragment, bundle)
+                        }
                     }
                 }
             }

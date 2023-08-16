@@ -175,7 +175,7 @@ class LeaderboardModel: ViewModel() {
                 }
                 Log.d(TAG, "sortLeaderboardData: additionScore: $additionScore, multiplicationScore: $multiplicationScore, subtractionScore: $subtractionScore")
             }
-            val score = (additionScore*(if(multiplicationScore>0.00) multiplicationScore else 1.00)*sets) -subtractionScore*sets
+            val score = (additionScore*(if(multiplicationScore>0.00) multiplicationScore else 1.00)*sets) - (subtractionScore*sets)
             Log.d(TAG, "sortLeaderboardData: score: $score")
             if(leaderboardDataLocal[list[0].name]?.containsKey(score) == true){
                 leaderboardDataLocal[list[0].name]?.get(score)?.add(it)

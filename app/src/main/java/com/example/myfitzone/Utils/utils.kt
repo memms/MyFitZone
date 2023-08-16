@@ -51,6 +51,10 @@ fun UserExercise.toPublicSocialData(): PublicSocialData{
     )
 }
 
+fun List<String>.getAverage(): String{
+    return findAverage(this)
+}
+
 private fun findAverage(list: List<*>): String{
     var sum = 0.0
     for(item in list){

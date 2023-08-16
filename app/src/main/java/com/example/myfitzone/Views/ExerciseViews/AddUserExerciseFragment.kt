@@ -30,7 +30,7 @@ import com.example.myfitzone.Callbacks.FirestoreGetCompleteCallbackArrayList
 import com.example.myfitzone.DataModels.DatabaseExercise
 import com.example.myfitzone.DataModels.FieldUnits
 import com.example.myfitzone.DataModels.UserExercise
-import com.example.myfitzone.Models.UserNewExercisesModel
+import com.example.myfitzone.Models.UserExercisesModel
 import com.example.myfitzone.R
 import com.example.myfitzone.databinding.FragmentAddUserExerciseBinding
 
@@ -40,7 +40,7 @@ class AddUserExerciseFragment : Fragment() {
     private val TAG = "AddUserExerciseFragment"
     private var _binding: FragmentAddUserExerciseBinding? = null
     private val binding get() = _binding!!
-    private lateinit var userExerciseModel: UserNewExercisesModel
+    private lateinit var userExerciseModel: UserExercisesModel
     private var exerciseTemplate: DatabaseExercise? = null
     private var attributesList: MutableMap<String, ArrayList<String>>? = mutableMapOf()
     private var setNumber = 0
@@ -60,7 +60,7 @@ class AddUserExerciseFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userExerciseModel = ViewModelProvider(requireActivity())[UserNewExercisesModel::class.java]
+        userExerciseModel = ViewModelProvider(requireActivity())[UserExercisesModel::class.java]
         exerciseTemplate = userExerciseModel.getSelectedExercise()
         binding.titleAddUserExercise.text = exerciseTemplate?.exerciseName
         binding.descriptionAddUserExercise.text = exerciseTemplate?.exerciseDescription

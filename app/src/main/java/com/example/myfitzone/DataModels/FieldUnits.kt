@@ -1,5 +1,7 @@
 package com.example.myfitzone.DataModels
 
+import android.util.Log
+
 class FieldUnits {
     companion object {
 
@@ -21,6 +23,7 @@ class FieldUnits {
         }
         fun unitOf(attribute: String): String {
             //TODO: add user settings to determine units
+            Log.d("FieldUnits", "unitOf: $attribute")
             return tableUnitsImperial[attribute]!!
         }
         fun unitOfBody(attribute: String): String {
@@ -76,7 +79,7 @@ class FieldUnits {
         private val tableUnitsImperial: Map<String, String> = mapOf(
             "Weight" to "lbs",
             "Reps" to "reps",
-            "Distance" to "miles",
+            "Distance" to "mi",
             "Duration" to "mins",
             "Calories" to "kcal",
             "Speed" to "mph",
