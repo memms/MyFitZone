@@ -14,10 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteAny
 import com.example.myfitzone.DataModels.FieldUnits
+import com.example.myfitzone.DataModels.UserBodyMetrics
 import com.example.myfitzone.DataModels.UserExercise
 import com.example.myfitzone.Models.UserBodyMeasureModel
 import com.example.myfitzone.Models.UserExercisesModel
@@ -27,6 +29,7 @@ import com.example.myfitzone.databinding.BodyMeasureListLinearLayoutBinding
 import com.example.myfitzone.databinding.ChartExerciseItemViewBinding
 import com.example.myfitzone.databinding.FragmentChartsBinding
 import com.github.mikephil.charting.charts.ScatterChart
+import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.CombinedData
@@ -118,6 +121,43 @@ class ChartsFragment : Fragment() {
     }
 
     private fun getBodyMeasureCharts(name: String) {
+        var timeRange = "30d"
+        val sdf = java.text.SimpleDateFormat("yyyy-MM")
+        var timeRangeMilis= arrayOf<Long>() //[0] = start, [1] = end
+        //TODO:
+        val listDocNames: List<String> = when(timeRange) {
+            "30d" -> {
+                val today = Calendar.getInstance()
+                timeRangeMilis += today.timeInMillis.toLong()
+                val list = mutableListOf<String>()
+                list.add(sdf.format(today.time))
+                today.add(Calendar.DATE, -30)
+                timeRangeMilis += today.timeInMillis.toLong()
+                if (!list.contains(sdf.format(today.time))) {
+                    list.add(sdf.format(today.time))
+                }
+                list.toList()
+
+            }
+            else -> return
+        }
+        val (bodyMeasureName, type) = splitName(name)
+        userBodyMeasureModel.setSelectedName(bodyMeasureName)
+        userBodyMeasureModel.getSelectedBodyMeasureMetrics(callback = object : FirestoreGetCompleteAny{
+            override fun onGetComplete(result: Any) {
+                val result = result as Map<Long, UserBodyMetrics>
+                val list = result.values.toMutableList()
+                list.sortByDescending { it.timestamp }
+                setupRecyclerViewBody(list)
+                setupGraphBody(list)
+                userBodyMeasureModel.setSelectedName("")
+            }
+
+            override fun onGetFailure(string: String) {
+                Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+            }
+
+        })
 
     }
 
@@ -156,16 +196,33 @@ class ChartsFragment : Fragment() {
                 val list: MutableList<UserExercise> = (result as List<UserExercise>).filter { it.name == exercisename
                         && it.timeAdded < timeRangeMilis[0]
                         && it.timeAdded > timeRangeMilis[1] }.toMutableList()
-                setupRecyclerViewExercise(list.sortedBy { it.timeAdded })
+                setupRecyclerViewExercise(list.sortedByDescending { it.timeAdded })
                 setupGraphExercise(list.sortedBy { it.timeAdded })
 
             }
 
             override fun onGetFailure(string: String) {
-                TODO("Not yet implemented")
+                Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
             }
 
         })
+    }
+
+    private fun setupRecyclerViewBody(list: List<UserBodyMetrics>){
+        var chartList = arrayListOf<Chart>()
+        val sdf = SimpleDateFormat("MMM dd, yyyy")
+        val sdf2 = SimpleDateFormat("hh:mm a")
+        list.forEach {
+            val date = sdf.format(it.timestamp)
+            val time = sdf2.format(it.timestamp)
+            val tempArrayList = arrayListOf<String>(it.metricValue.toString(), FieldUnits.unitOfBody(it.metricName))
+            chartList.add(Chart(date, time, tempArrayList))
+        }
+        adapter = ChartsAdapterExercise(chartList)
+        binding.entriesRecyclerViewCharts.addItemDecoration(
+            DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+        binding.entriesRecyclerViewCharts.adapter = adapter
+        binding.entriesRecyclerViewCharts.layoutManager = LinearLayoutManager(requireContext())
     }
 
     private fun setupRecyclerViewExercise(list: List<UserExercise>){
@@ -175,11 +232,8 @@ class ChartsFragment : Fragment() {
         list.forEach {
             val date = sdf.format(it.timeAdded)
             val time = sdf2.format(it.timeAdded)
-            val valueStringBuilder = StringBuilder()
-//            val unitsStringBuilder = StringBuilder()
-            val tempArrayList = arrayListOf<String>()
-//            var array = null
 
+            val tempArrayList = arrayListOf<String>()
             for (field in it.fieldmap){
                 val stringBuilder = StringBuilder()
                 if(field.key == "sets"){
@@ -207,9 +261,74 @@ class ChartsFragment : Fragment() {
         }
 
         adapter = ChartsAdapterExercise(chartList)
+        binding.entriesRecyclerViewCharts.addItemDecoration(
+            DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
         binding.entriesRecyclerViewCharts.adapter = adapter
         binding.entriesRecyclerViewCharts.layoutManager = LinearLayoutManager(requireContext())
 
+    }
+
+    private fun setupGraphBody(list: List<UserBodyMetrics>){
+        val chart = binding.combinedChartCharts
+        chart.description.isEnabled = false
+        val entries = arrayListOf<Entry>()
+        Log.d(TAG, "setGraph: list $list")
+        list.forEach {
+            entries.add(Entry(it.timestamp.toFloat(), it.metricValue.toFloat()))
+        }
+        Collections.sort(entries, EntryXComparator())
+        Log.d(TAG, "setGraph: entries $entries")
+        val dataSet = LineDataSet(entries, list[0].metricName)
+        dataSet.setDrawCircles(true)
+        dataSet.setDrawCircleHole(false)
+        dataSet.circleRadius = 5f
+        dataSet.lineWidth = 3f
+        dataSet.color = Color.Blue.toArgb()
+        dataSet.setDrawFilled(true)
+        dataSet.setDrawValues(false)
+        dataSet.valueFormatter = object : ValueFormatter(){
+            fun getFormattedValueForMarker(value: Float): String {
+                return "${value} ${FieldUnits.unitOfBody(list[0].metricName)}"
+            }
+        }
+
+        val xAxis = chart.xAxis
+        xAxis.valueFormatter = object : IndexAxisValueFormatter(){
+            override fun getFormattedValue(value: Float): String {
+                val calendar = Calendar.getInstance()
+                calendar.timeInMillis = value.toLong()
+                val sdf = SimpleDateFormat("MMM dd")
+                return sdf.format(calendar.time)
+            }
+        }
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false)
+        xAxis.spaceMin = 0.5f
+
+        val yAxisRight = chart.axisRight
+        yAxisRight.isEnabled = false
+
+        val yAxis = chart.axisLeft
+        yAxis.valueFormatter = object : ValueFormatter(){
+            override fun getFormattedValue(value: Float): String {
+                return "${value} ${FieldUnits.unitOfBody(list[0].metricName)}"
+            }
+        }
+
+        chart.setDrawGridBackground(false)
+        chart.setDrawBorders(true)
+        chart.setBorderColor(Color.Black.toArgb())
+        chart.setTouchEnabled(true)
+        chart.isDragEnabled = true
+        chart.setScaleEnabled(false)
+        chart.setPinchZoom(false)
+        chart.setDrawMarkers(true)
+        chart.marker = CustomMarkerView(requireContext(), R.layout.chart_marker)
+        val lineData = LineData(dataSet)
+        val combinedData = CombinedData()
+        combinedData.setData(lineData)
+        chart.data = combinedData
+        chart.invalidate()
     }
 
     private fun setupGraphExercise(list: List<UserExercise>) {
@@ -258,7 +377,7 @@ class ChartsFragment : Fragment() {
 //                }
 //            }
             scatterDataSet.add(dataSet)
-            val lineDataSet2 = LineDataSet(averageEntries, "${list[0].fieldmap.keys.toList()[j]} avg/session")
+            val lineDataSet2 = LineDataSet(averageEntries, "${list[0].fieldmap.keys.toList()[j]} (avg/sess)")
             lineDataSet2.setDrawCircles(false)
             lineDataSet2.setDrawCircleHole(false)
             lineDataSet2.circleRadius = 0f
@@ -311,6 +430,14 @@ class ChartsFragment : Fragment() {
         combinedData.setData(LineData(lineDataSet))
         chart.data = combinedData
         chart.animateXY(1000, 1000)
+        chart.legend.entries.forEach {
+            if(it.label.contains("avg")){
+                it.form = Legend.LegendForm.LINE
+            }
+            else {
+                it.form = Legend.LegendForm.CIRCLE
+            }
+        }
         chart.invalidate();
     }
 

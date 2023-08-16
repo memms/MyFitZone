@@ -28,7 +28,10 @@ class UserBodyMeasureModel: ViewModel() {
     private var selectedName = ""
 
 
-
+    /**
+     * Get all the body metrics for the user given selectedName
+     * @return mutableMapOf<Long,UserBodyMetrics> of all the body metrics for the user
+     */
     fun getSelectedBodyMeasureMetrics(callback: FirestoreGetCompleteAny) {
         val userID = Firebase.auth.currentUser?.uid
         if(userID== null){
