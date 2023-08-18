@@ -64,7 +64,7 @@ class UserProfileFragment:Fragment() {
                     val userData = data as User
                     binding.nameProfile.text = "${userData.name["first"]} ${userData.name["last"]}"
                     binding.usernameProfile.text = userData.username
-                    binding.bioProfile.text = ""
+                    binding.bioProfile.text = userData.bio
                     binding.myCardsBodyProfile.text = "${userData.name["first"]}'s Body Measure Cards"
                     binding.myCardsExerciseProfile.text = "${userData.name["first"]}'s Exercise Cards"
                 }

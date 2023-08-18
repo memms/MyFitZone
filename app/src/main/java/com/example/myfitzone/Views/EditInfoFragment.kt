@@ -252,7 +252,28 @@ class EditInfoFragment : Fragment() {
     }
 
     private fun editBio(){
+        binding.firstTextEditprof.visibility = View.GONE
+        binding.firstEditprof.apply {
+            hint = "Enter your new bio"
+            inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            visibility = View.VISIBLE
+        }
+        binding.secondEditprof.visibility = View.GONE
+        binding.thirdEditprof.visibility = View.GONE
+        binding.confirmEditprof.setOnClickListener {
+            val bio = binding.firstEditprof.text.toString()
+            databaseUserModel.updateAValue("bio", bio, callback = object: FirestoreGetCompleteAny{
+                override fun onGetComplete(result: Any) {
+                    Toast.makeText(requireContext(), "Bio changed successfully", Toast.LENGTH_SHORT).show()
+                    completeEdit()
+                }
 
+                override fun onGetFailure(string: String) {
+                    Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+                }
+
+            })
+        }
     }
 
     private fun editProfilePicture(){
