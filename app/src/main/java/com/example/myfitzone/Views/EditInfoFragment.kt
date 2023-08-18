@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.myfitzone.Callbacks.FirestoreGetCompleteAny
+import com.example.myfitzone.DataModels.User
 import com.example.myfitzone.Models.AuthenticationModel
 import com.example.myfitzone.Models.DatabaseUserModel
 import com.example.myfitzone.databinding.FragmentEditInfoBinding
@@ -39,6 +40,7 @@ class EditInfoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         authenticationModel = ViewModelProvider(requireActivity())[AuthenticationModel::class.java]
         databaseUserModel = ViewModelProvider(requireActivity())[DatabaseUserModel::class.java]
+
         //"Edit Username", "Edit Name", "Edit Bio", "Edit Profile Picture","Edit Email",  "Edit Password"
         arguments?.let {
             when(it.getString("editType")){
@@ -53,11 +55,200 @@ class EditInfoFragment : Fragment() {
     }
 
     private fun editUsername(){
+        getCurrentUserData(object : FirestoreGetCompleteAny{
+            override fun onGetComplete(result: Any) {
+                val user = result as User
+                user.let {
+                    binding.firstTextEditprof.apply {
+                        text = "Current: ${it.username}"
+                        visibility = View.VISIBLE
+                    }
+                }
+            }
 
+            override fun onGetFailure(string: String) {
+                Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+            }
+
+
+        })
+        binding.firstEditprof.apply {
+            hint = "Enter your new username"
+            inputType = InputType.TYPE_TEXT_VARIATION_PERSON_NAME
+            visibility = View.VISIBLE
+        }
+        binding.secondEditprof.apply {
+            hint = "Enter your password"
+            inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD
+            visibility = View.VISIBLE
+        }
+        binding.thirdEditprof.visibility = View.GONE
+        binding.confirmEditprof.setOnClickListener {
+            val newUsername = binding.firstEditprof.text.toString()
+            if(newUsername.isEmpty()){
+                Toast.makeText(requireContext(), "Username cannot be empty", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val password = binding.secondEditprof.text.toString()
+            authenticationModel.getUser().email?.let { it1 ->
+                authenticationModel.reauthUser(it1, password, object : FirestoreGetCompleteAny{
+                    override fun onGetComplete(result: Any) {
+                        if(result==true){
+                            dialogInflator("Confirm Username Change", "Are you sure that you want to change your username to $newUsername", object : FirestoreGetCompleteAny {
+                                override fun onGetComplete(result: Any) {
+                                    if(result == true){
+                                        databaseUserModel.updateAValue("username", newUsername, callback = object: FirestoreGetCompleteAny{
+                                            override fun onGetComplete(result: Any) {
+                                                Toast.makeText(requireContext(), "Username changed successfully", Toast.LENGTH_SHORT).show()
+                                                completeEdit()
+                                            }
+
+                                            override fun onGetFailure(string: String) {
+                                                Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+                                            }
+
+                                        })
+
+                                    }
+                                    else{
+                                        Toast.makeText(requireContext(), "Username change cancelled", Toast.LENGTH_SHORT).show()
+                                        binding.firstEditprof.text?.clear()
+                                        binding.secondEditprof.text?.clear()
+                                    }
+                                }
+
+                                override fun onGetFailure(string: String) {
+                                    Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+                                }
+
+                            })
+                        }
+                        else{
+                            try {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Authentication failed, check current Email and Password",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                binding.firstEditprof.text?.clear()
+                                binding.secondEditprof.text?.clear()
+                            }
+                            catch (e: Exception){
+
+                            }
+                        }
+                    }
+
+                    override fun onGetFailure(string: String) {
+
+                    }
+
+                })
+            }
+        }
+    }
+
+    private fun getCurrentUserData(callback: FirestoreGetCompleteAny){
+        databaseUserModel.getUserData(authenticationModel.getUser().uid, callback)
     }
 
     private fun editName(){
+        getCurrentUserData(object: FirestoreGetCompleteAny{
+            override fun onGetComplete(result: Any) {
+                val user = result as User
+                user.let {
+                    binding.firstTextEditprof.apply {
+                        text = "Current: ${it.name["first"]} ${it.name["last"]}"
+                        visibility = View.VISIBLE
+                    }
+                }
+            }
 
+            override fun onGetFailure(string: String) {
+                Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+            }
+
+        })
+        binding.firstEditprof.apply {
+            hint = "Enter a first name"
+            inputType = InputType.TYPE_TEXT_VARIATION_PERSON_NAME
+            visibility = View.VISIBLE
+        }
+        binding.secondEditprof.apply {
+            hint = "Enter a last name"
+            inputType = InputType.TYPE_TEXT_VARIATION_PERSON_NAME
+            visibility = View.VISIBLE
+        }
+        binding.thirdEditprof.apply {
+            hint = "Enter your password"
+            inputType = InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD
+            visibility = View.VISIBLE
+        }
+        binding.confirmEditprof.setOnClickListener {
+            val firstname = binding.firstEditprof.text.toString()
+            val lastname = binding.secondEditprof.text.toString()
+            val name = mapOf(
+                "first" to firstname,
+                "last" to lastname
+            )
+            val password = binding.thirdEditprof.text.toString()
+            authenticationModel.getUser().email?.let { it1 ->
+                authenticationModel.reauthUser(it1, password, object : FirestoreGetCompleteAny{
+                    override fun onGetComplete(result: Any) {
+                        if(result==true){
+                            dialogInflator("Confirm Username Change", "Are you sure that you want to change your username to $firstname $lastname", object : FirestoreGetCompleteAny {
+                                override fun onGetComplete(result: Any) {
+                                    if(result == true){
+                                        databaseUserModel.updateAValue("name", name, callback = object: FirestoreGetCompleteAny{
+                                            override fun onGetComplete(result: Any) {
+                                                Toast.makeText(requireContext(), "Name changed successfully", Toast.LENGTH_SHORT).show()
+                                                completeEdit()
+                                            }
+
+                                            override fun onGetFailure(string: String) {
+                                                Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+                                            }
+
+                                        })
+
+                                    }
+                                    else{
+                                        Toast.makeText(requireContext(), "Name change cancelled", Toast.LENGTH_SHORT).show()
+                                        binding.firstEditprof.text?.clear()
+                                        binding.secondEditprof.text?.clear()
+                                        binding.thirdEditprof.text?.clear()
+                                    }
+                                }
+
+                                override fun onGetFailure(string: String) {
+                                    Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+                                }
+
+                            })
+                        }
+                        else{
+                            try {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Authentication failed, check current Email and Password",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                binding.firstEditprof.text?.clear()
+                                binding.secondEditprof.text?.clear()
+                            }
+                            catch (e: Exception){
+
+                            }
+                        }
+                    }
+
+                    override fun onGetFailure(string: String) {
+
+                    }
+
+                })
+            }
+        }
     }
 
     private fun editBio(){
@@ -119,7 +310,17 @@ class EditInfoFragment : Fragment() {
                                                     true -> {
                                                         Toast.makeText(requireContext(), "Email changed successfully", Toast.LENGTH_SHORT).show()
                                                         completeEdit()
-                                                        databaseUserModel.updateAValue("email", newEmail)
+                                                        databaseUserModel.updateAValue(
+                                                            "email",
+                                                            newEmail,
+                                                            object: FirestoreGetCompleteAny {
+                                                                override fun onGetComplete(result: Any) {}
+
+                                                                override fun onGetFailure(string: String) {
+                                                                    Toast.makeText(requireContext(), string, Toast.LENGTH_SHORT).show()
+                                                                }
+
+                                                            })
                                                     }
                                                     is FirebaseAuthUserCollisionException -> {
                                                         Toast.makeText(requireContext(), "Email already in use", Toast.LENGTH_SHORT).show()

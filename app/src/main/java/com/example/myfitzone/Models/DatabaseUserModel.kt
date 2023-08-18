@@ -3,6 +3,7 @@ package com.example.myfitzone.Models
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.myfitzone.Callbacks.FirestoreGetCompleteAny
 import com.example.myfitzone.DataModels.User
 import com.example.myfitzone.DataModels.UserBodyMetrics
 import com.google.firebase.auth.ktx.auth
@@ -80,31 +81,38 @@ class DatabaseUserModel: ViewModel() {
     }
 
     //get user data
-    fun getUserData(UID:String) {
+    fun getUserData(UID:String, callback: FirestoreGetCompleteAny) {
         db.collection("users")
             .document(UID)
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
                     Log.d(TAG, "DocumentSnapshot data: ${document.data}")
-                    document.let { user = it.toObject(User::class.java) }
+                    document.let {
+                        user = it.toObject(User::class.java)
+                        callback.onGetComplete(user!!)
+                    }
                 } else {
                     Log.d(TAG, "No such document")
+                    callback.onGetFailure("No such User")
                 }
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents: ", exception)
+                callback.onGetFailure(exception.message.toString())
             }
     }
 
     //update a user data
     //REMINDER: NESTED NEEDS TO BE with dot  key, EX: "name.first"
-    fun updateAValue(key: String, value: Any) {
+    fun updateAValue(key: String, value: Any, callback: FirestoreGetCompleteAny) {
         db.collection("users")
             .document(Firebase.auth.currentUser!!.uid)
             .update(key, value)
-            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
-            .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
+            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!")
+                callback.onGetComplete("")}
+            .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e)
+                callback.onGetFailure(e.message.toString())}
     }
     /**
      *update multiple user data values
