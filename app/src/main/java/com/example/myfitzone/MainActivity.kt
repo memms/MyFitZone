@@ -92,7 +92,6 @@ class MainActivity : AppCompatActivity(), NetworkConectivityReceiver.NetworkConn
             } else {
                 Log.i(TAG, "User is logged out")
                 Toast.makeText(this, "User is logged out", Toast.LENGTH_SHORT).show()
-                //TODO: Navigate to login screen
                 controller.navigate(R.id.go_login)
                 userDetailModel.setUser(User())
                 Log.d(TAG, "UserDetailModel: ${userDetailModel.getUser()}")

@@ -1,11 +1,14 @@
 package com.example.myfitzone.Utils
 
+import android.content.res.Resources
+import android.util.DisplayMetrics
 import android.util.Log
 import com.example.myfitzone.DataModels.FieldUnits
 import com.example.myfitzone.DataModels.PublicSocialData
 import com.example.myfitzone.DataModels.UserBodyMetrics
 import com.example.myfitzone.DataModels.UserExercise
 import java.util.TimeZone
+import kotlin.math.roundToInt
 
 fun convertLocalToUTC(timeInMilis: Long): Long {
     try{
@@ -49,6 +52,10 @@ fun UserExercise.toPublicSocialData(): PublicSocialData{
         logo = "",
         uid = ""
     )
+}
+
+fun Int.dpToPx(): Int{
+    return (this * Resources.getSystem().displayMetrics.density).roundToInt()
 }
 
 fun List<String>.getAverage(): String{

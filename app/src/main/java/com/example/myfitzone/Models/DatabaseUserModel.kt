@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.myfitzone.DataModels.User
 import com.example.myfitzone.DataModels.UserBodyMetrics
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -72,7 +73,7 @@ class DatabaseUserModel: ViewModel() {
         val simpleDateFormat = SimpleDateFormat("yyyy-MM")
         val formatted = simpleDateFormat.format(timestamp)
         db.collection("users")
-            .document(user!!.UID)
+            .document(Firebase.auth.currentUser!!.uid)
             .collection("userBodyMeasurements")
             .document(formatted)
             .set(docData, SetOptions.merge())
@@ -100,7 +101,7 @@ class DatabaseUserModel: ViewModel() {
     //REMINDER: NESTED NEEDS TO BE with dot  key, EX: "name.first"
     fun updateAValue(key: String, value: Any) {
         db.collection("users")
-            .document(user!!.UID)
+            .document(Firebase.auth.currentUser!!.uid)
             .update(key, value)
             .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
             .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
@@ -111,7 +112,7 @@ class DatabaseUserModel: ViewModel() {
      **/
     fun updateMultiValue(hashMap: HashMap<String, Any>) {
         db.collection("users")
-            .document(user!!.UID)
+            .document(Firebase.auth.currentUser!!.uid)
             .update(hashMap)
             .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
             .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
@@ -119,22 +120,5 @@ class DatabaseUserModel: ViewModel() {
 
 
 
-    //delete user data
-
-    //create workout
-
-    //get workout data
-
-    //update workout data
-
-    //delete workout data
-
-    //create exercise
-
-    //get exercise data
-
-    //update exercise data
-
-    //delete exercise data
 
 }

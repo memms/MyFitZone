@@ -103,8 +103,8 @@ class FriendsFragment : Fragment() {
 
         val arrayList = dashboardModel.getAllFriendsList()
         if(arrayList.isEmpty()){
-            Toast.makeText(requireContext(), "No user found", Toast.LENGTH_SHORT).show()
-            Log.d("FriendsFragment", "No user found")
+            Toast.makeText(requireContext(), "No Friends found", Toast.LENGTH_SHORT).show()
+            Log.d("FriendsFragment", "No Friends found")
             binding.recyclerViewFriends.visibility = View.GONE
             binding.noFriendsTextFriends.visibility = View.VISIBLE
         }

@@ -1,16 +1,14 @@
 package com.example.myfitzone.Models
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.myfitzone.Callbacks.FirestoreGetCompleteAny
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.MutableData
 import com.google.firebase.ktx.Firebase
 
 class AuthenticationModel : ViewModel(){
@@ -120,7 +118,7 @@ class AuthenticationModel : ViewModel(){
     }
 
 
-    fun updateEmail(email: String) {
+    fun updateEmail(email: String, callback: FirestoreGetCompleteAny) {
         try {
             auth.currentUser?.let {
                 it.updateEmail(email)
@@ -128,31 +126,38 @@ class AuthenticationModel : ViewModel(){
                         if (task.isSuccessful) {
                             // Set email success
                             Log.d(TAG, "Email updated.")
+                            callback.onGetComplete(true)
+                            it.reload()
                         } else {
                             // Set email failed
                             Log.w(TAG, "Email not updated.", task.exception)
+                            callback.onGetComplete(task.exception!!)
                         }
                     }
             }
         } catch (e: Exception) {
             Log.e(TAG, "Email not updated.", e)
+            callback.onGetFailure(e.message.toString())
         }
     }
 
-    fun updatePassword(password: String) {
+    fun updatePassword(password: String, callback: FirestoreGetCompleteAny) {
         try {
             auth.currentUser!!.updatePassword(password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         // Set password success
                         Log.d(TAG, "Password updated.")
+                        callback.onGetComplete(true)
                     } else {
                         // Set password failed
                         Log.w(TAG, "Password not updated.", task.exception)
+                        callback.onGetComplete(task.exception!!)
                     }
                 }
         } catch (e: Exception) {
             Log.e(TAG, "Password not updated.", e)
+            callback.onGetFailure(e.message.toString())
         }
     }
 
@@ -173,7 +178,11 @@ class AuthenticationModel : ViewModel(){
         }
     }
 
-    fun reauthUser(email: String, password: String) {
+    /**
+     * Reauthenticate user
+     * @return true if reauth success, false if reauth failed
+     */
+    fun reauthUser(email: String, password: String, callback: FirestoreGetCompleteAny) {
         try {
             val credential = EmailAuthProvider.getCredential(email, password)
             auth.currentUser!!.reauthenticate(credential)
@@ -181,13 +190,16 @@ class AuthenticationModel : ViewModel(){
                     if (task.isSuccessful) {
                         // Reauth user success
                         Log.d(TAG, "User reauthenticated.")
+                        callback.onGetComplete(true)
                     } else {
                         // Reauth user failed
                         Log.w(TAG, "User not reauthenticated.", task.exception)
+                        callback.onGetComplete(false)
                     }
                 }
         } catch (e: Exception) {
             Log.e(TAG, "User not reauthenticated.", e)
+            callback.onGetFailure(e.message.toString())
         }
     }
 

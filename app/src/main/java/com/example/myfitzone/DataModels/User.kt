@@ -11,4 +11,5 @@ data class User(@Exclude var UID:String = "",
                 @PropertyName("DOB") var DOB: String = "",
                 @PropertyName("Weight") var Weight: Float = 0f,
                 @PropertyName("Height") var Height: Float= 0f,
-                @PropertyName("Gender") var Gender: String= "")
+                @PropertyName("Gender") var Gender: String= "",
+                @PropertyName("bio") var bio: String = "")
